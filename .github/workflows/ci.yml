@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "*"
+    tags:
+      - 'v*'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      GH_USERNAME: ${{ github.actor }}
+      GH_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: make build
