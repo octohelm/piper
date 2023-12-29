@@ -6,7 +6,6 @@ replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20231227032657
 
 require (
 	cuelang.org/go v0.7.0
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.16.0
 	github.com/go-courier/logr v0.3.0
 	github.com/go-json-experiment/json v0.0.0-20231102232822-2e55bd4e08b0
@@ -23,7 +22,6 @@ require (
 	github.com/opencontainers/image-spec v1.1.0-rc5
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.6
-	github.com/stretchr/objx v0.5.0
 	github.com/vito/progrock v0.10.2-0.20230913234310-64b4a1cfb007
 	golang.org/x/crypto v0.17.0
 	golang.org/x/net v0.19.0
