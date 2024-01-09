@@ -6,7 +6,6 @@ replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20231227032657
 
 require (
 	cuelang.org/go v0.7.0
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.16.0
 	github.com/go-courier/logr v0.3.0
 	github.com/go-json-experiment/json v0.0.0-20231102232822-2e55bd4e08b0
@@ -14,7 +13,7 @@ require (
 	github.com/k0sproject/rig v0.15.2-0.20231219072317-afaa2d5ee397
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/mattn/go-isatty v0.0.20
-	github.com/octohelm/cuemod v0.9.1
+	github.com/octohelm/cuemod v0.9.3
 	github.com/octohelm/gengo v0.0.0-20230809023313-1339e47458a4
 	github.com/octohelm/storage v0.0.0-20231213035828-4a91cdd3f879
 	github.com/octohelm/unifs v0.0.0-20231226074527-c0e3199d2e39
