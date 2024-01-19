@@ -13,13 +13,13 @@ require (
 	github.com/k0sproject/rig v0.15.2-0.20231219072317-afaa2d5ee397
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/mattn/go-isatty v0.0.20
-	github.com/octohelm/cuemod v0.9.3
+	github.com/octohelm/cuemod v0.8.6
 	github.com/octohelm/gengo v0.0.0-20240116032423-048028ecb7bb
 	github.com/octohelm/storage v0.0.0-20240110105112-64398426f19b
 	github.com/octohelm/unifs v0.0.0-20240108082849-67a9126d8379
 	github.com/octohelm/x v0.0.0-20231115103341-17be3238221d
 	github.com/opencontainers/go-digest v1.0.0
-	github.com/opencontainers/image-spec v1.1.0-rc5
+	github.com/opencontainers/image-spec v1.1.0-rc4
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.6
 	github.com/vito/progrock v0.10.2-0.20230913234310-64b4a1cfb007
@@ -29,7 +29,7 @@ require (
 )
 
 require (
-	cuelabs.dev/go/oci/ociregistry v0.0.0-20231217163254-6feb86eb6e06 // indirect
+	cuelabs.dev/go/oci/ociregistry v0.0.0-20231103182354-93e78c079a13 // indirect
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/ChrisTrenkamp/goxpath v0.0.0-20210404020558-97928f7e12b6 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
