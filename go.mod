@@ -19,7 +19,7 @@ require (
 	github.com/octohelm/unifs v0.0.0-20240108082849-67a9126d8379
 	github.com/octohelm/x v0.0.0-20231115103341-17be3238221d
 	github.com/opencontainers/go-digest v1.0.0
-	github.com/opencontainers/image-spec v1.1.0-rc5
+	github.com/opencontainers/image-spec v1.1.0-rc6
 	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.6
