@@ -5,7 +5,7 @@ go 1.21
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20231227032657-9e06f34ba252
 
 require (
-	cuelang.org/go v0.7.0
+	cuelang.org/go v0.7.1
 	github.com/fatih/color v1.16.0
 	github.com/go-courier/logr v0.3.0
 	github.com/go-json-experiment/json v0.0.0-20231102232822-2e55bd4e08b0
