@@ -17,5 +17,9 @@ release:
 gen:
 	go run ./internal/cmd/tool gen ./cmd/piper
 
+
+dep.update:
+	go get -u ./...
+
 install:
 	go install ./cmd/piper
