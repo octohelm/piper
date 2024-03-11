@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/go-json-experiment/json"
+	"encoding/json"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
@@ -54,13 +54,11 @@ func (t *WriteAsJSON) Do(ctx context.Context) error {
 			}
 		}()
 
-		data, err := json.Marshal(t.Data.Value)
-		if err != nil {
-			return errors.Wrap(err, "marshal to json failed")
-		}
+		enc := json.NewEncoder(f)
+		enc.SetIndent("", "  ")
 
-		if _, err := f.Write(data); err != nil {
-			return errors.Wrap(err, "write data failed")
+		if err := enc.Encode(t.Data.Value); err != nil {
+			return errors.Wrap(err, "marshal to json failed")
 		}
 
 		return
