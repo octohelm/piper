@@ -27,10 +27,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-func NewRunner(value Value) *Runner {
-	r := &Runner{}
-	r.root.Store(&scope{Value: value})
-	return r
+func NewRunner(build func() (Value, error)) *Runner {
+	return &Runner{
+		build: build,
+	}
 }
 
 type scope struct {
@@ -38,6 +38,7 @@ type scope struct {
 }
 
 type Runner struct {
+	build    func() (Value, error)
 	root     atomic.Pointer[scope]
 	taskDone sync.Map
 
@@ -164,11 +165,24 @@ func (r *Runner) Run(ctx context.Context, action []string) error {
 	})
 }
 
+func (r *Runner) init() error {
+	rootValue, err := r.build()
+	if err != nil {
+		return err
+	}
+	r.root.Store(&scope{Value: rootValue})
+	return nil
+}
+
 func (r *Runner) run(ctx context.Context) error {
+	// init for scanning task
+	if err := r.init(); err != nil {
+		return err
+	}
 	f := NewFlow(r, noOpRunner)
 
 	if err := r.prepareTasks(ctx, f.Tasks()); err != nil {
-		return err
+		return errors.Wrap(err, "prepare task failed")
 	}
 
 	defer func() {
@@ -192,14 +206,16 @@ func (r *Runner) run(ctx context.Context) error {
 		_, ok := r.setups[value.Path().String()]
 		return ok
 	})); err != nil {
-		return err
+		return errors.Wrap(err, "run setup task failed")
 	}
 
 	if err := RunTasks(ctx, r, WithShouldRunFunc(func(value cue.Value) bool {
+		_, setupOk := r.setups[value.Path().String()]
+
 		_, ok := r.targets[value.Path().String()]
-		return ok
+		return setupOk || ok
 	})); err != nil {
-		return err
+		return errors.Wrap(err, "run task failed")
 	}
 
 	return nil

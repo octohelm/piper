@@ -7,18 +7,13 @@ import (
 	"strings"
 	"sync"
 
-	"cuelang.org/go/cue/build"
-	"cuelang.org/go/cue/cuecontext"
-	cueload "cuelang.org/go/cue/load"
 	"github.com/k0sproject/rig"
-	"github.com/octohelm/cuemod/pkg/cuemod"
-	"github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
-	"golang.org/x/net/context"
-
+	"github.com/octohelm/cuekit/pkg/cuecontext"
 	"github.com/octohelm/piper/cuepkg"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/wd"
+	"golang.org/x/net/context"
 
 	_ "github.com/octohelm/piper/pkg/engine/task/archive"
 	_ "github.com/octohelm/piper/pkg/engine/task/client"
@@ -30,7 +25,7 @@ import (
 )
 
 func init() {
-	if err := cuepkg.RegistryCueStdlibs(); err != nil {
+	if err := cuepkg.RegisterAsMemModule(); err != nil {
 		panic(err)
 	}
 }
@@ -40,6 +35,7 @@ type Project interface {
 }
 
 type option struct {
+	cwd      string
 	entry    string
 	cacheDir string
 }
@@ -77,20 +73,10 @@ func New(ctx context.Context, opts ...OptFunc) (Project, error) {
 		return nil, err
 	}
 
+	c.opt.cwd = cwd
+
 	c.client, err = fromOpt(cwd, &c.opt)
 	if err != nil {
-		return nil, err
-	}
-
-	buildConfig := cuemod.ContextFor(cwd).BuildConfig(ctx)
-
-	instances := cueload.Instances([]string{c.opt.entry}, buildConfig)
-	if len(instances) != 1 {
-		return nil, errors.New("only one package is supported at a time")
-	}
-	c.instance = instances[0]
-
-	if err := c.instance.Err; err != nil {
 		return nil, err
 	}
 
@@ -101,17 +87,22 @@ type project struct {
 	opt option
 
 	*client
-
-	instance *build.Instance
 }
 
 func (p *project) Run(ctx context.Context, action ...string) error {
-	val := cuecontext.New().BuildInstance(p.instance)
-	if err := val.Err(); err != nil {
-		return err
-	}
+	runner := cueflow.NewRunner(func() (cueflow.Value, error) {
+		buildConfig, err := cuecontext.NewConfig(cuecontext.WithRoot(p.opt.cwd))
+		if err != nil {
+			return nil, err
+		}
 
-	runner := cueflow.NewRunner(cueflow.WrapValue(val))
+		val, err := cuecontext.Build(buildConfig, p.opt.entry)
+		if err != nil {
+			return nil, err
+		}
+
+		return cueflow.WrapValue(val), nil
+	})
 
 	ctx = cueflow.TaskRunnerFactoryContext.Inject(ctx, task.Factory)
 	ctx = task.ClientContext.Inject(ctx, p)
