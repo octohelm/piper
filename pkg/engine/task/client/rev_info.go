@@ -2,11 +2,11 @@ package client
 
 import (
 	"context"
+	"github.com/octohelm/cuekit/pkg/version/gomod"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/wd"
 
-	"github.com/octohelm/cuemod/pkg/modutil"
 	"github.com/octohelm/piper/pkg/engine/task"
 )
 
@@ -35,12 +35,11 @@ func (t *RevInfo) Do(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
 	realPath, err := wd.RealPath(cwd)
 	if err != nil {
 		return err
 	}
-	r, err := modutil.RevInfoFromDir(context.Background(), realPath)
+	r, err := gomod.RevInfoFromDir(context.Background(), realPath)
 	if err != nil {
 		return err
 	}

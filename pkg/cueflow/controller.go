@@ -2,7 +2,6 @@ package cueflow
 
 import (
 	"context"
-
 	"cuelang.org/go/cue"
 	cueerrors "cuelang.org/go/cue/errors"
 	"cuelang.org/go/tools/flow"
@@ -19,7 +18,6 @@ func RunTasks(ctx context.Context, scope Scope, opts ...RunTaskOptionFunc) error
 			return value.LookupPath(TaskPath).Exists()
 		},
 	}
-
 	tr.Build(opts...)
 
 	if err := tr.Run(ctx, scope); err != nil {
