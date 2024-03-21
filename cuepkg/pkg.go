@@ -17,7 +17,7 @@ import (
 func RegisterAsMemModule() error {
 	base := "piper.octohelm.tech"
 
-	m, err := modmem.NewModule(base, "v0.0.0", func(ctx context.Context, fsDest filesystem.FileSystem) error {
+	m, err := modmem.NewModule(base, "v0.0.0-builtin", func(ctx context.Context, fsDest filesystem.FileSystem) error {
 		fsSrc, err := task.Factory.Sources(context.Background())
 		if err != nil {
 			return err

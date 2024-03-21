@@ -6,10 +6,8 @@ type Task = cueflow.TaskImpl
 
 type SetupTask struct {
 	Task
-}
 
-func (v *SetupTask) Setup() bool {
-	return true
+	cueflow.IsSetup
 }
 
 var _ cueflow.Group = &Group{}

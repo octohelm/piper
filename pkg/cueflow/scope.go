@@ -1,9 +1,15 @@
 package cueflow
 
-import "cuelang.org/go/cue"
+import (
+	"context"
+	"cuelang.org/go/cue"
+)
 
 type Scope interface {
 	Value() Value
-	Fill(path cue.Path, value Value) error
+	LookupPath(path cue.Path) Value
+	FillPath(path cue.Path, value any) error
 	Processed(path cue.Path) bool
+
+	RunTasks(ctx context.Context, optFns ...TaskOptionFunc) error
 }

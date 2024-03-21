@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"context"
 	"os"
 	"path"
 	"path/filepath"
@@ -13,10 +14,11 @@ import (
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
-	"golang.org/x/net/context"
 
 	_ "github.com/octohelm/piper/pkg/engine/task/archive"
 	_ "github.com/octohelm/piper/pkg/engine/task/client"
+	_ "github.com/octohelm/piper/pkg/engine/task/container"
+	_ "github.com/octohelm/piper/pkg/engine/task/encoding"
 	_ "github.com/octohelm/piper/pkg/engine/task/exec"
 	_ "github.com/octohelm/piper/pkg/engine/task/file"
 	_ "github.com/octohelm/piper/pkg/engine/task/flow"

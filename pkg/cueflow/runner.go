@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"github.com/octohelm/piper/pkg/dagger"
 	"io"
 	"os"
 	"sort"
@@ -45,8 +46,11 @@ type Runner struct {
 	target cue.Path
 	output string
 
-	setups  map[string][]string
-	targets map[string][]string
+	setups     map[string][]string
+	targets    map[string][]string
+	graphPaths map[string][]string
+
+	mu sync.RWMutex
 }
 
 func (r *Runner) printAllowedTasksTo(w io.Writer, tasks []*flow.Task) {
@@ -120,7 +124,7 @@ func printSelectors(w io.Writer, selectors ...cue.Selector) {
 }
 
 func (r *Runner) resolveDependencies(t *flow.Task, collection map[string][]string) {
-	p := t.Path().String()
+	p := formatPath(t.Path())
 	if _, ok := collection[p]; ok {
 		return
 	}
@@ -130,7 +134,7 @@ func (r *Runner) resolveDependencies(t *flow.Task, collection map[string][]strin
 
 	deps := make([]string, 0)
 	for _, d := range t.Dependencies() {
-		deps = append(deps, d.Path().String())
+		deps = append(deps, formatPath(d.Path()))
 		r.resolveDependencies(d, collection)
 	}
 
@@ -141,15 +145,31 @@ func (r *Runner) Value() Value {
 	return r.root.Load().Value
 }
 
-func (r *Runner) Fill(p cue.Path, v Value) error {
-	r.taskDone.Store(p.String(), true)
-	r.root.Store(&scope{Value: r.Value().FillPath(p, v)})
+func (r *Runner) LookupPath(p cue.Path) Value {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	return r.root.Load().Value.LookupPath(p)
+}
+
+func (r *Runner) FillPath(p cue.Path, v any) error {
+	_, ok := r.taskDone.LoadOrStore(p.String(), true)
+	if !ok {
+		r.mu.Lock()
+		defer r.mu.Unlock()
+
+		r.root.Store(&scope{Value: r.root.Load().Value.FillPath(p, v)})
+	}
 	return nil
 }
 
 func (r *Runner) Processed(p cue.Path) bool {
 	_, ok := r.taskDone.Load(p.String())
 	return ok
+}
+
+func (r *Runner) RunTasks(ctx context.Context, optFns ...TaskOptionFunc) error {
+	return runTasks(ctx, r, optFns...)
 }
 
 func (r *Runner) Run(ctx context.Context, action []string) error {
@@ -179,9 +199,8 @@ func (r *Runner) run(ctx context.Context) error {
 	if err := r.init(); err != nil {
 		return err
 	}
-	f := NewFlow(r, noOpRunner)
 
-	if err := r.prepareTasks(ctx, f.Tasks()); err != nil {
+	if err := r.prepareTasks(ctx, resoleTasks(ctx, r)); err != nil {
 		return errors.Wrap(err, "prepare task failed")
 	}
 
@@ -202,18 +221,16 @@ func (r *Runner) run(ctx context.Context) error {
 		}
 	}()
 
-	if err := RunTasks(ctx, r, WithShouldRunFunc(func(value cue.Value) bool {
-		_, ok := r.setups[value.Path().String()]
+	if err := r.RunTasks(ctx, WithShouldRunFunc(func(value cue.Value) bool {
+		_, ok := r.setups[formatPath(value.Path())]
 		return ok
 	})); err != nil {
 		return errors.Wrap(err, "run setup task failed")
 	}
 
-	if err := RunTasks(ctx, r, WithShouldRunFunc(func(value cue.Value) bool {
-		_, setupOk := r.setups[value.Path().String()]
-
-		_, ok := r.targets[value.Path().String()]
-		return setupOk || ok
+	if err := r.RunTasks(ctx, WithShouldRunFunc(func(value cue.Value) bool {
+		_, ok := r.targets[formatPath(value.Path())]
+		return ok
 	})); err != nil {
 		return errors.Wrap(err, "run task failed")
 	}
@@ -221,32 +238,87 @@ func (r *Runner) run(ctx context.Context) error {
 	return nil
 }
 
-func (r *Runner) prepareTasks(ctx context.Context, tasks []*flow.Task) error {
-	taskRunnerFactory := TaskRunnerFactoryContext.From(ctx)
+func formatPath(p cue.Path) string {
+	b := &strings.Builder{}
 
-	r.setups = map[string][]string{}
-	r.targets = map[string][]string{}
+	for i, s := range p.Selectors() {
+		if i > 0 {
+			b.WriteRune('/')
+		}
+		b.WriteString(s.String())
+	}
+
+	return b.String()
+}
+
+func (r *Runner) walkTasks(ctx context.Context, tasks []*flow.Task, prefix []string) error {
+	taskRunnerFactory := TaskRunnerFactoryContext.From(ctx)
 
 	for i := range tasks {
 		tk := WrapTask(tasks[i], r)
+
+		taskPath := formatPath(tk.Path())
+
+		prefixFullPath := strings.Join(prefix, "/")
+
+		var currentPath = prefix
+
+		if strings.HasPrefix(taskPath, prefixFullPath) && taskPath != prefixFullPath {
+			currentPath = append(prefix, strings.TrimPrefix(taskPath, prefixFullPath+"/"))
+		}
+
+		r.graphPaths[taskPath] = currentPath
 
 		t, err := taskRunnerFactory.ResolveTaskRunner(tk)
 		if err != nil {
 			return cueerrors.Wrapf(err, tk.Value().Pos(), "resolve task failed")
 		}
 
-		if _, ok := t.Underlying().(interface{ Setup() bool }); ok {
+		switch t.Underlying().(type) {
+		case IsSetup:
 			r.resolveDependencies(tasks[i], r.setups)
+		case Group:
+			stepIter, err := IterSteps(CueValue(tk.Value()))
+			if err == nil {
+				for i, step := range stepIter {
+					stepPath := append(currentPath, fmt.Sprintf("steps/%d", i))
+
+					if i > 0 {
+						// dep pre step
+						r.targets[formatPath(step.Path())] = []string{
+							strings.Join(append(currentPath, fmt.Sprintf("steps/%d", i-1)), "/"),
+						}
+
+						r.graphPaths[formatPath(step.Path())] = stepPath
+					}
+
+					if err := r.walkTasks(ctx, resoleTasks(ctx, r, WithPrefix(step.Path())), stepPath); err != nil {
+						return err
+					}
+				}
+			}
 		}
 
-		if strings.HasPrefix(tk.Path().String(), r.target.String()) {
+		if strings.HasPrefix(formatPath(tk.Path()), formatPath(r.target)) {
 			r.resolveDependencies(tasks[i], r.targets)
 		}
 	}
 
+	return nil
+}
+
+func (r *Runner) prepareTasks(ctx context.Context, tasks []*flow.Task) error {
+	r.graphPaths = map[string][]string{}
+	r.setups = map[string][]string{}
+	r.targets = map[string][]string{}
+
+	if err := r.walkTasks(ctx, tasks, nil); err != nil {
+		return err
+	}
+
 	if r.target.String() != "actions" && len(r.targets) > 0 {
 		if os.Getenv("GRAPH") != "" {
-			fmt.Println(printGraph(r.targets))
+			fmt.Println(printGraph(r.targets, r.graphPaths))
 		}
 		return nil
 	}
@@ -256,26 +328,7 @@ func (r *Runner) prepareTasks(ctx context.Context, tasks []*flow.Task) error {
 	return errors.New(buf.String())
 }
 
-func noOpRunner(cueValue cue.Value) (flow.Runner, error) {
-	v := cueValue.LookupPath(TaskPath)
-
-	if !v.Exists() {
-		return nil, nil
-	}
-
-	// task in slice not be valid task
-	for _, s := range v.Path().Selectors() {
-		if s.Type() == cue.IndexLabel {
-			return nil, nil
-		}
-	}
-
-	return flow.RunnerFunc(func(t *flow.Task) error {
-		return nil
-	}), nil
-}
-
-func printGraph(targets map[string][]string) (string, error) {
+func printGraph(targets map[string][]string, graphPaths map[string][]string) (string, error) {
 	buffer := bytes.NewBuffer(nil)
 
 	w, err := zlib.NewWriterLevel(buffer, 9)
@@ -283,10 +336,24 @@ func printGraph(targets map[string][]string) (string, error) {
 		return "", errors.Wrap(err, "fail to create the w")
 	}
 
-	_, _ = fmt.Fprintf(w, "direction: right\n")
+	wrap := func(name string) string {
+		if parts, ok := graphPaths[name]; ok {
+			p := make([]string, len(parts))
+			for i, x := range parts {
+				p[i] = fmt.Sprintf("%q", x)
+			}
+			return strings.Join(p, ".")
+		}
+		return fmt.Sprintf("%q", name)
+	}
+
+	_, _ = fmt.Fprintf(w, `direction: right
+`)
 	for name, deps := range targets {
 		for _, d := range deps {
-			_, _ = fmt.Fprintf(w, "%q -> %q\n", d, name)
+			_, _ = fmt.Fprintf(w, `
+%s -> %s
+`, wrap(d), wrap(name))
 		}
 	}
 	_ = w.Close()
@@ -313,16 +380,22 @@ var isTTY = sync.OnceValue(func() bool {
 	return false
 })
 
+var debugEnabled = false
+
+func init() {
+	if os.Getenv("DEBUG") != "" {
+		debugEnabled = true
+	}
+}
+
 func runWith(ctx context.Context, name string, fn func(ctx context.Context) error) error {
 	if isTTY() {
 		tape := progrock.NewTape()
-		tape.ShowInternal(true)
+		tape.ShowInternal(debugEnabled)
 		tape.ShowAllOutput(true)
 		tape.VerboseEdges(true)
 
-		rec := progrock.NewRecorder(tape)
-
-		ctx = progrock.ToContext(ctx, rec)
+		rec := progrock.NewRecorder(WrapProgrockWriter(tape))
 
 		defer func() {
 			_ = rec.Close()
@@ -338,15 +411,22 @@ func runWith(ctx context.Context, name string, fn func(ctx context.Context) erro
 				Value: name,
 				Order: 1,
 			})
-			return fn(ctx)
+			r, err := dagger.NewRunner(dagger.WithProgrockWriter(WrapProgrockWriter(tape)))
+			if err != nil {
+				return err
+			}
+			daggerRunner := WrapDaggerRunner(r)
+			ctx = dagger.RunnerContext.Inject(ctx, daggerRunner)
+			return fn(progrock.ToContext(ctx, rec))
 		})
 	}
 
-	rootRec := progrock.NewRecorder(
-		console.NewWriter(os.Stdout,
-			console.ShowInternal(true),
-		),
-	)
-
-	return fn(progrock.ToContext(ctx, rootRec))
+	w := WrapProgrockWriter(console.NewWriter(os.Stdout, console.ShowInternal(debugEnabled)))
+	r, err := dagger.NewRunner(dagger.WithProgrockWriter(WrapProgrockWriter(w)))
+	if err != nil {
+		return err
+	}
+	daggerRunner := WrapDaggerRunner(r)
+	ctx = dagger.RunnerContext.Inject(ctx, daggerRunner)
+	return fn(progrock.ToContext(ctx, progrock.NewRecorder(w)))
 }

@@ -1,11 +1,15 @@
 package main
 
 import (
+	"path"
+
 	"piper.octohelm.tech/wd"
 	"piper.octohelm.tech/client"
+	"piper.octohelm.tech/container"
 
 	"github.com/octohelm/piper/cuepkg/github"
 	"github.com/octohelm/piper/cuepkg/golang"
+	"github.com/octohelm/piper/cuepkg/debian"
 )
 
 hosts: {
@@ -49,5 +53,74 @@ actions: release: {
 				f.result.file
 			},
 		]
+	}
+}
+
+settings: {
+	_env: client.#Env & {
+		GH_USERNAME: string | *""
+		GH_PASSWORD: client.#Secret
+	}
+
+	registry: container.#Config & {
+		auths: "ghcr.io": {
+			username: _env.GH_USERNAME
+			secret:   _env.GH_PASSWORD
+		}
+	}
+}
+
+actions: ship: {
+	arch: [
+		"amd64",
+		"arm64",
+	]
+
+	build: {
+		for a in arch {
+			"linux/\(a)": {
+				_built: actions.go.build["linux/\(a)"].result.file
+
+				_bin: container.#Source & {
+					"cwd":  _built.cwd
+					"path": path.Dir(_built.filename)
+					"include": [
+						path.Base(_built.filename),
+					]
+				}
+
+				debian.#Image & {
+					platform: "linux/\(a)"
+					packages: {
+						"git":  _
+						"wget": _
+						"curl": _
+						"make": _
+					}
+					steps: [
+						container.#Copy & {
+							contents: _bin.output
+							source:   "/"
+							dest:     "/"
+						},
+						container.#Set & {
+							config: {
+								label: "org.opencontainers.image.source": "https://github.com/octohelm/piper"
+								entrypoint: ["/bin/sh"]
+							}
+						},
+					]
+				}
+			}
+		}
+	}
+
+	publish: container.#Push & {
+		dest: "ghcr.io/octohelm/piper:\(ver.version)"
+		images: {
+			for a in arch {
+				"linux/\(a)": build["linux/\(a)"].output
+			}
+		}
 	}
 }

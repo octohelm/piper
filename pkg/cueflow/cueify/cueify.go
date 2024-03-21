@@ -182,7 +182,7 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 				}
 			}
 
-			if field.Optional {
+			if field.Optional && field.DefaultValue == nil {
 				if t.Kind() == reflect.Ptr {
 					t = t.Elem()
 				}

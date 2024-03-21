@@ -17,3 +17,7 @@ type TaskImpl struct {
 
 func (TaskImpl) flowTask() {
 }
+
+type IsSetup interface {
+	Setup() bool
+}

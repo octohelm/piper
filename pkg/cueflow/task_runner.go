@@ -79,6 +79,8 @@ func (t *taskRunner) resultValues() map[string]any {
 }
 
 func (t *taskRunner) Run(ctx context.Context) (err error) {
+	ctx = TaskPathContext.Inject(ctx, t.task.Path().String())
+
 	taskValue := t.inputTaskRunner.Interface()
 
 	stepRunner := taskValue.(StepRunner)

@@ -8,73 +8,149 @@ import (
 	"github.com/pkg/errors"
 )
 
-type RunTaskOptionFunc func(c *taskController)
+type TaskOptionFunc func(c *flowTaskConfig)
 
-func RunTasks(ctx context.Context, scope Scope, opts ...RunTaskOptionFunc) error {
-	tr := &taskController{
-		scope:              scope,
-		taskRunnerResolver: TaskRunnerFactoryContext.From(ctx),
-		shouldRun: func(value cue.Value) bool {
-			return value.LookupPath(TaskPath).Exists()
-		},
-	}
-	tr.Build(opts...)
-
-	if err := tr.Run(ctx, scope); err != nil {
-		return err
-	}
-
-	return nil
+type flowTaskConfig struct {
+	prefix     *cue.Path
+	shouldRun  func(value cue.Value) bool
+	taskFunc   flow.RunnerFunc
+	updateFunc func(c *flow.Controller, t *flow.Task) error
 }
 
-func WithShouldRunFunc(shouldRun func(value cue.Value) bool) RunTaskOptionFunc {
-	return func(c *taskController) {
+func (c *flowTaskConfig) Build(optFns ...TaskOptionFunc) {
+	for _, optFn := range optFns {
+		optFn(c)
+	}
+
+	if c.shouldRun == nil {
+		c.shouldRun = func(value cue.Value) bool {
+			return value.LookupPath(TaskPath).Exists()
+		}
+	}
+
+	if c.taskFunc == nil {
+		c.taskFunc = func(t *flow.Task) error {
+			return nil
+		}
+	}
+}
+
+func isPrefix(selectors []cue.Selector, prefixSelectors []cue.Selector) bool {
+	if len(selectors) < len(prefixSelectors) {
+		return false
+	}
+
+	for i, x := range prefixSelectors {
+		if x.String() != selectors[i].String() {
+			return false
+		}
+	}
+
+	return true
+}
+
+func trimPrefix(selectors []cue.Selector, prefixParts []cue.Selector) []cue.Selector {
+	if isPrefix(selectors, prefixParts) {
+		return selectors[len(prefixParts):]
+	}
+	return selectors
+}
+
+func isInSlice(selectors []cue.Selector) bool {
+	for _, x := range selectors {
+		if x.Type() == cue.IndexLabel {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *flowTaskConfig) New(v Scope) *flow.Controller {
+	return flow.New(&flow.Config{
+		FindHiddenTasks: true,
+		UpdateFunc:      c.updateFunc,
+	}, CueValue(v.Value()), func(v cue.Value) (flow.Runner, error) {
+		selectors := v.Path().Selectors()
+
+		if prefix := c.prefix; prefix != nil {
+			if !isPrefix(selectors, prefix.Selectors()) {
+				return nil, nil
+			}
+		}
+
+		if !(c.shouldRun(v)) {
+			return nil, nil
+		}
+
+		if prefix := c.prefix; prefix != nil {
+			if isInSlice(trimPrefix(selectors, prefix.Selectors())) {
+				return nil, nil
+			}
+		} else {
+			if isInSlice(selectors) {
+				return nil, nil
+			}
+		}
+
+		return c.taskFunc, nil
+	})
+}
+
+func WithShouldRunFunc(shouldRun func(value cue.Value) bool) TaskOptionFunc {
+	return func(c *flowTaskConfig) {
 		c.shouldRun = shouldRun
 	}
 }
 
-func WithPrefix(path cue.Path) RunTaskOptionFunc {
-	return func(c *taskController) {
-		c.prefix = path
+func WithPrefix(path cue.Path) TaskOptionFunc {
+	return func(c *flowTaskConfig) {
+		c.prefix = &path
 	}
 }
 
-type taskController struct {
-	scope              Scope
-	taskRunnerResolver TaskRunnerResolver
-	shouldRun          func(value cue.Value) bool
-	prefix             cue.Path
+func resoleTasks(ctx context.Context, scope Scope, opts ...TaskOptionFunc) []*flow.Task {
+	c := &flowTaskConfig{}
+	c.Build(opts...)
+	return c.New(scope).Tasks()
 }
 
-func (fc *taskController) Build(optFns ...RunTaskOptionFunc) {
-	for _, optFn := range optFns {
-		optFn(fc)
+func runTasks(ctx context.Context, scope Scope, opts ...TaskOptionFunc) error {
+	c := &flowTaskConfig{}
+	c.Build(opts...)
+
+	taskRunnerResolver := TaskRunnerFactoryContext.From(ctx)
+
+	c.updateFunc = func(c *flow.Controller, t *flow.Task) error {
+		if t != nil {
+			// when task value changes
+			// need to put back value to root for using by child tasks
+			return scope.FillPath(t.Path(), t.Value())
+		}
+		return nil
 	}
-}
 
-func (fc *taskController) Run(ctx context.Context, scope Scope) error {
-	return NewFlow(scope, func(cueValue cue.Value) (flow.Runner, error) {
-		if !(fc.shouldRun(cueValue)) {
-			return nil, nil
+	c.taskFunc = func(t *flow.Task) error {
+		if scope.Processed(t.Path()) {
+			return nil
 		}
 
-		return flow.RunnerFunc(func(t *flow.Task) (err error) {
-			if fc.scope.Processed(t.Path()) {
-				return nil
-			}
+		tk := WrapTask(t, scope)
 
-			tk := WrapTask(t, scope)
+		tr, err := taskRunnerResolver.ResolveTaskRunner(tk)
+		if err != nil {
+			return errors.Wrap(err, "resolve task failed")
+		}
 
-			tr, err := fc.taskRunnerResolver.ResolveTaskRunner(tk)
-			if err != nil {
-				return errors.Wrap(err, "resolve task failed")
-			}
+		if err := tr.Run(ctx); err != nil {
+			return cueerrors.Wrapf(err, tk.Value().Pos(), "%s run failed", tk.Name())
+		}
 
-			if err := tr.Run(ctx); err != nil {
-				return cueerrors.Wrapf(err, tk.Value().Pos(), "%s run failed", tk.Name())
-			}
+		return nil
+	}
 
-			return nil
-		}), nil
-	}).Run(ctx)
+	if err := c.New(scope).Run(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }

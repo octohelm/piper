@@ -18,9 +18,9 @@ type File struct {
 	Filename string `json:"filename"`
 }
 
-func (f *File) SetBy(ctx context.Context, cwd pkgwd.WorkDir, filename string) {
-	f.Cwd.SetBy(ctx, cwd)
+func (f *File) Sync(ctx context.Context, cwd pkgwd.WorkDir, filename string) error {
 	f.Filename = filename
+	return f.Cwd.Sync(ctx, cwd)
 }
 
 type StringOrFile struct {

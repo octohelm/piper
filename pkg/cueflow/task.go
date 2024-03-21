@@ -6,7 +6,12 @@ import (
 
 	"cuelang.org/go/cue"
 	"cuelang.org/go/tools/flow"
+	contextx "github.com/octohelm/x/context"
 )
+
+var TaskPathContext = contextx.New[string](contextx.WithDefaultsFunc(func() string {
+	return ""
+}))
 
 var TaskPath = cue.ParsePath("$$task.name")
 
@@ -79,7 +84,7 @@ func (t *task) Name() string {
 
 func (t *task) Value() Value {
 	// always pick value from root
-	return t.scope.Value().LookupPath(t.task.Path())
+	return t.scope.LookupPath(t.task.Path())
 }
 
 func (t *task) Fill(values map[string]any) error {

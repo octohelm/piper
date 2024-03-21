@@ -33,8 +33,9 @@ func (w *WorkDir) Do(ctx context.Context, action func(ctx context.Context, wd wd
 	return nil
 }
 
-func (w *WorkDir) SetBy(ctx context.Context, workdir wd.WorkDir) {
+func (w *WorkDir) Sync(ctx context.Context, workdir wd.WorkDir) error {
 	w.Ref.ID = task.WorkDirContext.From(ctx).Set(workdir)
+	return nil
 }
 
 func (w *WorkDir) ScopeName(ctx context.Context) (string, error) {

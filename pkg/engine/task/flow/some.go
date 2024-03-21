@@ -2,8 +2,6 @@ package flow
 
 import (
 	"context"
-	"strings"
-
 	"cuelang.org/go/cue"
 	"github.com/pkg/errors"
 
@@ -41,18 +39,13 @@ func (t *Some) Do(ctx context.Context) error {
 	}
 
 	for idx := 0; list.Next(); idx++ {
-		valuePath := list.Value().Path()
+		itemPath := list.Value().Path()
 
-		if err := cueflow.RunTasks(ctx, p.Scope(),
-			cueflow.WithShouldRunFunc(func(value cue.Value) bool {
-				return value.LookupPath(cueflow.TaskPath).Exists() && strings.HasPrefix(value.Path().String(), valuePath.String())
-			}),
-			cueflow.WithPrefix(t.Parent().Path()),
-		); err != nil {
+		if err := p.Scope().RunTasks(ctx, cueflow.WithPrefix(itemPath)); err != nil {
 			return errors.Wrapf(err, "steps[%d]", idx)
 		}
 
-		resultValue := p.Scope().Value().LookupPath(valuePath)
+		resultValue := p.Scope().Value().LookupPath(itemPath)
 
 		ti := &StepInterface{}
 		if err := resultValue.Decode(ti); err != nil {

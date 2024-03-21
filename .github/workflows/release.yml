@@ -1,25 +1,36 @@
-name: ci
+name: release
 
 on:
   push:
     branches:
-      - "*"
+      - "main"
     tags:
       - 'v*'
 
 jobs:
-  ci:
+  release:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [ ship, release ]
+
+    env:
+      GOEXPERIMENT: rangefunc
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - uses: docker/setup-qemu-action@v3
+
       - uses: actions/setup-go@v5
         with:
           go-version: '^1.22'
 
-      - run: go mod download -x
-      - run: make release
+      - run: make ${{ matrix.target }}
         env:
+          GH_USERNAME: ${{ github.actor }}
           GH_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 

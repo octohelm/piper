@@ -195,6 +195,117 @@ func (v ReadAsTableResult) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
+func (v ReadFromJSON) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "CurrentWorkDir":
+			return []string{}, true
+		case "Filename":
+			return []string{
+				"filename",
+			}, true
+		case "ReadFromJSONResult":
+			return []string{
+				"data",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.CurrentWorkDir, names...); ok {
+			return doc, ok
+		}
+		if doc, ok := runtimeDoc(v.ReadFromJSONResult, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"ReadFromJSON read and parse json",
+	}, true
+}
+
+func (v ReadFromJSONResult) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Result":
+			return []string{}, true
+		case "Data":
+			return []string{}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Result, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v ReadFromTOML) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "CurrentWorkDir":
+			return []string{}, true
+		case "Filename":
+			return []string{
+				"filename",
+			}, true
+		case "With":
+			return []string{}, true
+		case "ReadFromTOMLResult":
+			return []string{
+				"data",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.CurrentWorkDir, names...); ok {
+			return doc, ok
+		}
+		if doc, ok := runtimeDoc(v.ReadFromTOMLResult, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"ReadFromTOML read and parse yaml",
+	}, true
+}
+
+func (v ReadFromTOMLOption) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "AsList":
+			return []string{
+				"read as list",
+			}, true
+
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v ReadFromTOMLResult) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Result":
+			return []string{}, true
+		case "Data":
+			return []string{}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Result, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
 func (v ReadFromYAML) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
@@ -204,6 +315,8 @@ func (v ReadFromYAML) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"filename",
 			}, true
+		case "With":
+			return []string{}, true
 		case "ReadFromYAMLResult":
 			return []string{
 				"data",
@@ -222,6 +335,21 @@ func (v ReadFromYAML) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{
 		"ReadFromYAML read and parse yaml",
 	}, true
+}
+
+func (v ReadFromYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "AsList":
+			return []string{
+				"read as list",
+			}, true
+
+		}
+
+		return nil, false
+	}
+	return []string{}, true
 }
 
 func (v ReadFromYAMLResult) RuntimeDoc(names ...string) ([]string, bool) {
@@ -365,6 +493,37 @@ func (v WriteAsJSON) RuntimeDoc(names ...string) ([]string, bool) {
 	}
 	return []string{
 		"WriteAsJSON read and parse json",
+	}, true
+}
+
+func (v WriteAsTOML) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "CurrentWorkDir":
+			return []string{}, true
+		case "Filename":
+			return []string{
+				"filename",
+			}, true
+		case "Data":
+			return []string{
+				"data could convert to yaml",
+			}, true
+		case "WrittenFileResult":
+			return []string{}, true
+
+		}
+		if doc, ok := runtimeDoc(v.CurrentWorkDir, names...); ok {
+			return doc, ok
+		}
+		if doc, ok := runtimeDoc(v.WrittenFileResult, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"WriteAsYAML read and parse yaml",
 	}, true
 }
 

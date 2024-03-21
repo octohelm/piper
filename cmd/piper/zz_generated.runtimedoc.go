@@ -34,3 +34,43 @@ func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
 	}
 	return []string{}, true
 }
+
+func (v Init) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "InitRun":
+			return []string{}, true
+
+		}
+		if doc, ok := runtimeDoc(v.InitRun, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v InitRun) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Name":
+			return []string{}, true
+
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v Tidy) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}

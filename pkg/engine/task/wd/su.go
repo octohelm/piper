@@ -29,7 +29,6 @@ type Su struct {
 
 func (e *Su) Do(ctx context.Context) error {
 	return e.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) error {
-		e.WorkDir.SetBy(ctx, cwd)
-		return nil
+		return e.WorkDir.Sync(ctx, cwd)
 	}, wd.WithUser(e.User))
 }

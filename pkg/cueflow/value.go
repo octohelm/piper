@@ -28,6 +28,21 @@ func CueValue(v Value) cue.Value {
 	return cue.Value{}
 }
 
+func IterSteps(value cue.Value) (func(yield func(idx int, item cue.Value) bool), error) {
+	v := value.LookupPath(cue.ParsePath("steps"))
+	list, err := v.List()
+	if err != nil {
+		return nil, err
+	}
+	return func(yield func(idx int, item cue.Value) bool) {
+		for idx := 0; list.Next(); idx++ {
+			if !yield(idx, list.Value()) {
+				return
+			}
+		}
+	}, err
+}
+
 type CueValueWrapper interface {
 	CueValue() cue.Value
 }

@@ -22,7 +22,7 @@ type Sub struct {
 	CurrentWorkDir
 
 	// related path from current work dir
-	Dir string `json:"dir"`
+	Path string `json:"path"`
 
 	// new work dir
 	WorkDir WorkDir `json:"-" output:"wd"`
@@ -30,7 +30,6 @@ type Sub struct {
 
 func (e *Sub) Do(ctx context.Context) error {
 	return e.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) error {
-		e.WorkDir.SetBy(ctx, cwd)
-		return nil
-	}, wd.WithDir(e.Dir))
+		return e.WorkDir.Sync(ctx, cwd)
+	}, wd.WithDir(e.Path))
 }

@@ -79,9 +79,7 @@ func (r *Fetch) Do(ctx context.Context) error {
 		}
 	}
 
-	r.WrittenFileResult.File.SetBy(ctx, cwd, path.Join(key, "data"))
-
-	return nil
+	return r.WrittenFileResult.File.Sync(ctx, cwd, path.Join(key, "data"))
 }
 
 func readHitValue(ctx context.Context, fs filesystem.FileSystem, key string) (string, error) {

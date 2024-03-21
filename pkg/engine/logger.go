@@ -90,14 +90,13 @@ func (l *logger) Start(ctx context.Context, name string, keyAndValues ...any) (c
 		case cueflow.LogAttrProgressTotal:
 			taskTotal = attr.Value.Int64()
 		case cueflow.LogAttrName:
-			display += " "
-			display += color.WhiteString(attr.Value.String())
+			display = color.WhiteString(attr.Value.String())
 			continue
 		case cueflow.LogAttrDep:
 			inputs = append(inputs, digest.FromString(attr.Value.String()))
 			continue
 		case cueflow.LogAttrScope:
-			rec = rec.WithGroup(attr.Value.String())
+			rec = rec.WithGroup(attr.Value.String(), progrock.WithGroupID(attr.Value.String()))
 			continue
 		}
 		finalAttrs = append(finalAttrs, attr)
@@ -121,9 +120,9 @@ func (l *logger) Start(ctx context.Context, name string, keyAndValues ...any) (c
 		}
 	}
 
-	r := rec.Vertex(
+	r := rec.WithGroup(name, progrock.WithGroupID(name), progrock.Weak()).Vertex(
 		digest.FromString(name),
-		color.MagentaString(display),
+		display,
 		progrock.WithInputs(inputs...),
 	)
 

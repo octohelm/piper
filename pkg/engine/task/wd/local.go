@@ -32,7 +32,5 @@ func (local *Local) Do(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	id := task.WorkDirContext.From(ctx).Set(cwd)
-	local.WorkDir.Ref.ID = id
-	return nil
+	return local.WorkDir.Sync(ctx, cwd)
 }

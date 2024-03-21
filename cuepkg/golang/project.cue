@@ -62,8 +62,8 @@ import (
 				_built: build["\(_os)/\(_arch)"].result.file
 
 				_dir: wd.#Sub & {
-					cwd: _built.cwd
-					dir: path.Dir(_built.filename)
+					"cwd":  _built.cwd
+					"path": path.Dir(_built.filename)
 				}
 
 				_tar: archive.#Tar & {
