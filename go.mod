@@ -9,7 +9,7 @@ replace cuelang.org/go => github.com/morlay/cue v0.8.1-0.20240319082713-06f7982c
 require (
 	cuelang.org/go v0.8.0
 	dagger.io/dagger v0.10.2
-	github.com/dagger/dagger v0.10.2
+	github.com/dagger/dagger v0.10.3
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.16.0
 	github.com/go-courier/logr v0.3.0
