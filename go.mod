@@ -14,7 +14,7 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/go-courier/logr v0.3.0
 	github.com/go-json-experiment/json v0.0.0-20231102232822-2e55bd4e08b0
-	github.com/google/go-containerregistry v0.19.0
+	github.com/google/go-containerregistry v0.19.1
 	github.com/innoai-tech/infra v0.0.0-20240304023514-48eaf27b837d
 	github.com/k0sproject/rig v0.15.2-0.20231219072317-afaa2d5ee397
 	github.com/kevinburke/ssh_config v1.2.0
