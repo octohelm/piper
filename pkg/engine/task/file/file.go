@@ -13,14 +13,14 @@ import (
 
 type File struct {
 	// current work dir
-	Cwd wd.WorkDir `json:"cwd"`
+	Wd wd.WorkDir `json:"wd"`
 	// filename related from current work dir
 	Filename string `json:"filename"`
 }
 
 func (f *File) Sync(ctx context.Context, cwd pkgwd.WorkDir, filename string) error {
 	f.Filename = filename
-	return f.Cwd.Sync(ctx, cwd)
+	return f.Wd.Sync(ctx, cwd)
 }
 
 type StringOrFile struct {
@@ -62,7 +62,7 @@ func (s StringOrFile) MarshalJSON() ([]byte, error) {
 
 func (s *StringOrFile) Size(ctx context.Context) (int64, error) {
 	if s.File != nil {
-		cwd, err := s.File.Cwd.Get(ctx)
+		cwd, err := s.File.Wd.Get(ctx)
 		if err != nil {
 			return -1, err
 		}
@@ -77,7 +77,7 @@ func (s *StringOrFile) Size(ctx context.Context) (int64, error) {
 
 func (s *StringOrFile) Open(ctx context.Context) (io.ReadCloser, error) {
 	if s.File != nil {
-		cwd, err := s.File.Cwd.Get(ctx)
+		cwd, err := s.File.Wd.Get(ctx)
 		if err != nil {
 			return nil, err
 		}

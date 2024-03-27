@@ -49,7 +49,7 @@ func (t *WriteAsTOML) Do(ctx context.Context) error {
 		defer func() {
 			if err == nil {
 				t.WrittenFileResult.Ok = true
-				t.WrittenFileResult.File.Cwd = t.Cwd
+				t.WrittenFileResult.File.Wd = t.Cwd
 				t.WrittenFileResult.File.Filename = t.Filename
 			}
 		}()

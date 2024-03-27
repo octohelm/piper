@@ -79,13 +79,13 @@ actions: ship: {
 	build: {
 		for a in arch {
 			"linux/\(a)": {
-				_built: actions.go.build["linux/\(a)"].result.file
+				_built_file: actions.go.build["linux/\(a)"].result.file
 
 				_bin: container.#Source & {
-					"cwd":  _built.cwd
-					"path": path.Dir(_built.filename)
+					"cwd":  _built_file.wd
+					"path": path.Dir(_built_file.filename)
 					"include": [
-						path.Base(_built.filename),
+						path.Base(_built_file.filename),
 					]
 				}
 

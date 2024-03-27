@@ -31,11 +31,11 @@ type Tar struct {
 
 	taskwd.CurrentWorkDir
 
-	// final tar filename base on the current work dir
-	Filename string `json:"filename"`
-
 	// specified dir for tar
 	Dir taskwd.WorkDir `json:"dir"`
+
+	// tar out filename base on the current work dir
+	OutFile string `json:"outFile"`
 
 	// output tar file when created
 	// just group cwd and filename
@@ -44,11 +44,11 @@ type Tar struct {
 
 func (t *Tar) Do(ctx context.Context) error {
 	return t.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
-		if err := filesystem.MkdirAll(ctx, cwd, filepath.Dir(t.Filename)); err != nil {
+		if err := filesystem.MkdirAll(ctx, cwd, filepath.Dir(t.OutFile)); err != nil {
 			return err
 		}
 
-		tarFile, err := cwd.OpenFile(ctx, t.Filename, os.O_TRUNC|os.O_RDWR|os.O_CREATE, os.ModePerm)
+		tarFile, err := cwd.OpenFile(ctx, t.OutFile, os.O_TRUNC|os.O_RDWR|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			return err
 		}
@@ -56,8 +56,8 @@ func (t *Tar) Do(ctx context.Context) error {
 		defer func() {
 			if err == nil {
 				t.File = file.File{
-					Cwd:      t.Cwd,
-					Filename: t.Filename,
+					Wd:       t.Cwd,
+					Filename: t.OutFile,
 				}
 
 				logr.FromContext(ctx).Info(fmt.Sprintf("%s created.", t.File.Filename))
@@ -67,7 +67,7 @@ func (t *Tar) Do(ctx context.Context) error {
 		return t.Dir.Do(ctx, func(ctx context.Context, contents wd.WorkDir) error {
 			var w io.WriteCloser = tarFile
 
-			if strings.HasSuffix(t.Filename, ".gz") {
+			if strings.HasSuffix(t.OutFile, ".gz") {
 				w = gzip.NewWriter(w)
 				defer func() {
 					_ = w.Close()

@@ -52,7 +52,7 @@ func (t *Write) Do(ctx context.Context) error {
 		}
 
 		t.WrittenFileResult.Ok = true
-		t.WrittenFileResult.File.Cwd = t.Cwd
+		t.WrittenFileResult.File.Wd = t.Cwd
 		t.WrittenFileResult.File.Filename = t.Filename
 
 		return nil

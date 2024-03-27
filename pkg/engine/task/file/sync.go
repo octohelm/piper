@@ -40,11 +40,11 @@ type SyncOption struct {
 var _ cueflow.WithScopeName = &Sync{}
 
 func (w *Sync) ScopeName(ctx context.Context) (string, error) {
-	return w.Dest.Cwd.ScopeName(ctx)
+	return w.Dest.Wd.ScopeName(ctx)
 }
 
 func (t *Sync) Do(ctx context.Context) error {
-	return t.Source.Cwd.Do(ctx, func(ctx context.Context, src wd.WorkDir) error {
+	return t.Source.Wd.Do(ctx, func(ctx context.Context, src wd.WorkDir) error {
 		srcFileInfo, err := src.Stat(ctx, t.Source.Filename)
 		if err != nil {
 			return errors.Wrapf(err, "%s: get digest failed", src)
@@ -54,7 +54,7 @@ func (t *Sync) Do(ctx context.Context) error {
 			return errors.Wrapf(err, "%s: get digest failed", src)
 		}
 
-		return t.Dest.Cwd.Do(ctx, func(ctx context.Context, dst wd.WorkDir) (err error) {
+		return t.Dest.Wd.Do(ctx, func(ctx context.Context, dst wd.WorkDir) (err error) {
 			dstDgst, _ := dst.Digest(ctx, t.Dest.Filename)
 
 			defer func() {

@@ -47,7 +47,7 @@ import (
 
 					if _run.result.ok {
 						"file": file.#File & {
-							cwd:      _run.cwd
+							wd:      _run.cwd
 							filename: _filename
 						}
 					}
@@ -59,17 +59,17 @@ import (
 	"archive": {
 		for _os in os for _arch in arch {
 			"\(_os)/\(_arch)": {
-				_built: build["\(_os)/\(_arch)"].result.file
+				_built_file: build["\(_os)/\(_arch)"].result.file
 
 				_dir: wd.#Sub & {
-					"cwd":  _built.cwd
-					"path": path.Dir(_built.filename)
+					"cwd":  _built_file.wd
+					"path": path.Dir(_built_file.filename)
 				}
 
 				_tar: archive.#Tar & {
-					cwd:      _built.cwd
-					filename: "\(_buildDir)/\(bin)_\(_os)_\(_arch).tar.gz"
+					cwd:      _built_file.wd
 					dir:      _dir.wd
+					outFile: "\(_buildDir)/\(bin)_\(_os)_\(_arch).tar.gz"
 				}
 
 				result: _tar.result

@@ -35,7 +35,11 @@ type Fetch struct {
 	file.WrittenFileResult `json:"-" output:"result"`
 }
 
-func (r *Fetch) Do(ctx context.Context) error {
+func (r *Fetch) Do(ctx context.Context) (e error) {
+	defer func() {
+		r.WrittenFileResult.Done(e)
+	}()
+
 	cwd, err := task.ClientContext.From(ctx).CacheDir(ctx, "http")
 	if err != nil {
 		return err
