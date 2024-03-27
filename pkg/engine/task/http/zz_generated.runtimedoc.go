@@ -17,6 +17,8 @@ func runtimeDoc(v any, names ...string) ([]string, bool) {
 func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Task":
+			return []string{}, true
 		case "Method":
 			return []string{
 				"http method",
@@ -38,10 +40,17 @@ func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
 				"http request body",
 			}, true
 		case "With":
-			return []string{}, true
-		case "Result":
-			return []string{}, true
+			return []string{
+				"options",
+			}, true
+		case "Response":
+			return []string{
+				"Response",
+			}, true
 
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
 		}
 
 		return nil, false
@@ -54,7 +63,7 @@ func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
 func (v DoOption) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Header":
+		case "ExposeHeaders":
 			return []string{
 				"header keys for result",
 			}, true
@@ -69,6 +78,8 @@ func (v DoOption) RuntimeDoc(names ...string) ([]string, bool) {
 func (v Fetch) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Task":
+			return []string{}, true
 		case "Url":
 			return []string{
 				"http request url",
@@ -77,13 +88,13 @@ func (v Fetch) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"hit by response header",
 			}, true
-		case "WrittenFileResult":
+		case "File":
 			return []string{
-				"downloaded file",
+				"fetched file",
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.WrittenFileResult, names...); ok {
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
 			return doc, ok
 		}
 
@@ -94,11 +105,9 @@ func (v Fetch) RuntimeDoc(names ...string) ([]string, bool) {
 	}, true
 }
 
-func (v ResponseResult) RuntimeDoc(names ...string) ([]string, bool) {
+func (v Response) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Result":
-			return []string{}, true
 		case "Status":
 			return []string{
 				"status code",
@@ -113,13 +122,8 @@ func (v ResponseResult) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Result, names...); ok {
-			return doc, ok
-		}
 
 		return nil, false
 	}
-	return []string{
-		"ResponseResult ok when status code >= 200 < 300",
-	}, true
+	return []string{}, true
 }

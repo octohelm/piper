@@ -10,7 +10,6 @@ import (
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
-	taskwd "github.com/octohelm/piper/pkg/engine/task/wd"
 	"github.com/octohelm/piper/pkg/wd"
 )
 
@@ -22,15 +21,12 @@ func init() {
 type ReadFromTOML struct {
 	task.Task
 
-	taskwd.CurrentWorkDir
-
-	// filename
-	Filename string `json:"filename"`
-
+	// file
+	File File `json:"file"`
+	// options
 	With ReadFromTOMLOption `json:"with"`
-
 	// data
-	ReadFromTOMLResult `json:"-" output:"result"`
+	Data client.Any `json:"-" output:"data"`
 }
 
 type ReadFromTOMLOption struct {
@@ -38,23 +34,9 @@ type ReadFromTOMLOption struct {
 	AsList bool `json:"asList,omitempty"`
 }
 
-type ReadFromTOMLResult struct {
-	cueflow.Result
-
-	Data client.Any `json:"data"`
-}
-
-func (t *ReadFromTOMLResult) ResultValue() any {
-	return t
-}
-
 func (t *ReadFromTOML) Do(ctx context.Context) error {
-	return t.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
-		defer func() {
-			t.Done(err)
-		}()
-
-		f, err := cwd.OpenFile(ctx, t.Filename, os.O_RDONLY, os.ModePerm)
+	return t.File.WorkDir.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
+		f, err := cwd.OpenFile(ctx, t.File.Filename, os.O_RDONLY, os.ModePerm)
 		if err != nil {
 			return err
 		}

@@ -15,7 +15,7 @@ func init() {
 // ReadSecret
 // read secret value for the secret
 type ReadSecret struct {
-	cueflow.TaskImpl
+	task.Task
 
 	// secret ref
 	Secret Secret `json:"secret"`

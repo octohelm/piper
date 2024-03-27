@@ -5,13 +5,14 @@ import (
 	"compress/gzip"
 	"context"
 	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/piper/pkg/engine/task/file"
+	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"io"
 	"os"
 
 	"github.com/octohelm/piper/pkg/engine/task"
-	taskwd "github.com/octohelm/piper/pkg/engine/task/wd"
-	"github.com/octohelm/piper/pkg/wd"
+	"github.com/octohelm/piper/pkg/engine/task/wd"
 )
 
 func init() {
@@ -23,30 +24,19 @@ func init() {
 type UnTar struct {
 	task.Task
 
-	taskwd.CurrentWorkDir
-
 	// tar filename base on the current work dest
-	Filename string `json:"filename"`
+	SrcFile file.File `json:"srcFile"`
 	// tar file content encoding
 	ContentEncoding string `json:"contentEncoding,omitempty"`
-
 	// output dest for tar
-	OutDir taskwd.WorkDir `json:"outDir"`
-
-	Result cueflow.Result `json:"-" output:"result"`
-}
-
-func (t *UnTar) ResultValue() any {
-	return t.Result
+	OutDir wd.WorkDir `json:"outDir"`
+	// final dir contains tar files
+	Dir wd.WorkDir `json:"-" output:"dir"`
 }
 
 func (t *UnTar) Do(ctx context.Context) error {
-	return t.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
-		defer func() {
-			t.Result.Done(err)
-		}()
-
-		f, err := cwd.OpenFile(ctx, t.Filename, os.O_TRUNC|os.O_RDWR|os.O_CREATE, os.ModePerm)
+	return t.SrcFile.WorkDir.Do(ctx, func(ctx context.Context, cwd pkgwd.WorkDir) error {
+		f, err := cwd.OpenFile(ctx, t.SrcFile.Filename, os.O_RDONLY, os.ModePerm)
 		if err != nil {
 			return err
 		}
@@ -65,7 +55,7 @@ func (t *UnTar) Do(ctx context.Context) error {
 
 		tarReader := tar.NewReader(r)
 
-		return t.OutDir.Do(ctx, func(ctx context.Context, dest wd.WorkDir) error {
+		return t.OutDir.Do(ctx, func(ctx context.Context, dest pkgwd.WorkDir) error {
 			sync := func(ctx context.Context, hdr *tar.Header) error {
 				fi := hdr.FileInfo()
 
@@ -73,7 +63,7 @@ func (t *UnTar) Do(ctx context.Context) error {
 					return filesystem.MkdirAll(ctx, dest, fi.Name())
 				}
 
-				f, err := dest.OpenFile(ctx, fi.Name(), os.O_TRUNC|os.O_RDWR|os.O_CREATE, os.ModePerm)
+				f, err := dest.OpenFile(ctx, fi.Name(), os.O_TRUNC|os.O_RDWR|os.O_CREATE, fi.Mode())
 				if err != nil {
 					return err
 				}
@@ -96,7 +86,6 @@ func (t *UnTar) Do(ctx context.Context) error {
 				if err := sync(ctx, hdr); err != nil {
 					return err
 				}
-
 			}
 
 			return nil

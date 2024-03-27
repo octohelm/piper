@@ -3,6 +3,7 @@ package flow
 import (
 	"context"
 	"cuelang.org/go/cue"
+	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
@@ -19,19 +20,14 @@ type Some struct {
 
 	// do the step one by one
 	Steps []StepInterface `json:"steps"`
-
-	// util some step ok, and remain steps will not execute.
-	Result ResultInterface `json:"-" output:"result"`
-}
-
-func (t *Some) ResultValue() any {
-	return t.Result
+	// result values of steps
+	Condition []client.Any `json:"-" output:"condition"`
 }
 
 func (t *Some) Do(ctx context.Context) error {
-	p := t.Parent()
+	parent := t.Parent()
 
-	scope := cueflow.CueValue(p.Value().LookupPath(cue.ParsePath("steps")))
+	scope := cueflow.CueValue(parent.Value().LookupPath(cue.ParsePath("steps")))
 
 	list, err := scope.List()
 	if err != nil {
@@ -41,19 +37,21 @@ func (t *Some) Do(ctx context.Context) error {
 	for idx := 0; list.Next(); idx++ {
 		itemPath := list.Value().Path()
 
-		if err := p.Scope().RunTasks(ctx, cueflow.WithPrefix(itemPath)); err != nil {
+		if err := parent.Scope().RunTasks(ctx, cueflow.WithPrefix(itemPath)); err != nil {
 			return errors.Wrapf(err, "steps[%d]", idx)
 		}
 
-		resultValue := p.Scope().Value().LookupPath(itemPath)
+		stepValue := parent.Scope().Value().LookupPath(itemPath)
 
 		ti := &StepInterface{}
-		if err := resultValue.Decode(ti); err != nil {
+		if err := stepValue.Decode(ti); err != nil {
 			return err
 		}
 
-		if ti.Result.Success() {
-			t.Result = ti.Result
+		t.Condition = append(t.Condition, client.Any{Value: ti.ResultValue()})
+
+		// when first ok should ok
+		if ti.Ok {
 			return nil
 		}
 	}

@@ -44,7 +44,7 @@ func (pipeline *Pipeline) Run(ctx context.Context) error {
 	if err := p.Run(ctx, pipeline.Action...); err != nil {
 		if errList := cueerrors.Errors(err); len(errList) > 0 {
 			buf := bytes.NewBuffer(nil)
-			_, _ = fmt.Fprintf(buf, "%s", err)
+			_, _ = fmt.Fprintf(buf, "%s\n", err)
 
 			records := map[cuetoken.Pos]bool{}
 			for _, e := range errList {

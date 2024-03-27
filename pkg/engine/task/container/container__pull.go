@@ -28,12 +28,6 @@ type Pull struct {
 	Output Container `json:"-" output:"output"`
 }
 
-func (x *Pull) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
-}
-
 func (x *Pull) Do(ctx context.Context) error {
 	engine := piperdagger.Select(ctx, piperdagger.Scope{Platform: piperdagger.Platform(x.Platform)})
 

@@ -12,18 +12,12 @@ func init() {
 }
 
 type Dir struct {
-	task.Group
+	task.Task
 
 	Input Container `json:"input,omitempty"`
 	Path  string    `json:"path" default:"/"`
 
 	Output Fs `json:"-" output:"output"`
-}
-
-func (x *Dir) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
 }
 
 func (x *Dir) Do(ctx context.Context) error {

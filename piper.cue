@@ -21,7 +21,7 @@ ver: client.#RevInfo & {
 }
 
 actions: go: golang.#Project & {
-	cwd:  hosts.local.wd
+	cwd:  hosts.local.dir
 	main: "./cmd/piper"
 	os: [
 		"darwin",
@@ -50,7 +50,7 @@ actions: release: {
 		prerelease: true
 		assets: [
 			for f in actions.go.archive {
-				f.result.file
+				f.file
 			},
 		]
 	}
@@ -79,7 +79,7 @@ actions: ship: {
 	build: {
 		for a in arch {
 			"linux/\(a)": {
-				_built_file: actions.go.build["linux/\(a)"].result.file
+				_built_file: actions.go.build["linux/\(a)"].file
 
 				_bin: container.#Source & {
 					"cwd":  _built_file.wd

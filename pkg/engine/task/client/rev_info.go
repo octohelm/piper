@@ -15,19 +15,13 @@ func init() {
 }
 
 type RevInfo struct {
-	task.SetupTask
+	task.Task
 
 	// get pseudo version same of go mod
 	// like
 	//   v0.0.0-20231222030512-c093d5e89975
 	//   v0.0.0-dirty.0.20231222022414-5f9d1d44dacc
 	Version string `json:"-" output:"version"`
-}
-
-func (t *RevInfo) ResultValue() any {
-	return map[string]any{
-		"version": t.Version,
-	}
 }
 
 func (t *RevInfo) Do(ctx context.Context) error {

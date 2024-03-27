@@ -20,12 +20,6 @@ type Diff struct {
 	Output Fs `json:"-" output:"output"`
 }
 
-func (x *Diff) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
-}
-
 func (x *Diff) Do(ctx context.Context) error {
 	return x.Upper.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
 		upper, err := x.Upper.Directory(ctx, c)

@@ -8,7 +8,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
-	"path/filepath"
 )
 
 func init() {
@@ -18,26 +17,21 @@ func init() {
 type Dump struct {
 	task.Task
 
-	Cwd    wd.WorkDir     `json:"cwd"`
-	Input  Fs             `json:"input"`
-	Dest   string         `json:"dest,omitempty" default:"."`
-	Result cueflow.Result `json:"-" output:"result"`
-}
+	Input Fs `json:"input"`
 
-func (x *Dump) ResultValue() any {
-	return map[string]any{
-		"result": x.Result,
-	}
+	OutDir wd.WorkDir `json:"outDir"`
+
+	Dir wd.WorkDir `json:"-" output:"dir"`
 }
 
 func (x *Dump) Do(ctx context.Context) error {
 	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *piperdagger.Client) error {
-		w, err := x.Cwd.Get(ctx)
+		w, err := x.OutDir.Get(ctx)
 		if err != nil {
 			return err
 		}
 
-		base, err := pkgwd.RealPath(w)
+		realpath, err := pkgwd.RealPath(w)
 		if err != nil {
 			return errors.Errorf("%T: only support cwd in local host", x)
 		}
@@ -47,17 +41,15 @@ func (x *Dump) Do(ctx context.Context) error {
 			return err
 		}
 
-		ok, err := d.Export(ctx, filepath.Join(base, x.Dest))
+		ok, err := d.Export(ctx, realpath)
 		if err != nil {
 			return err
 		}
 
 		if ok {
-			x.Result.Done(nil)
-			return nil
+			return x.Dir.Sync(ctx, w)
 		}
 
-		x.Result.Done(errors.New("export failed"))
-		return nil
+		return errors.New("dump failed")
 	})
 }

@@ -22,12 +22,6 @@ type Mkdir struct {
 	Output Fs `json:"-" output:"output"`
 }
 
-func (x *Mkdir) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
-}
-
 func (x *Mkdir) Do(ctx context.Context) error {
 	return x.Output.SyncLazyDirectory(ctx, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
 		dir, err := x.Input.Directory(ctx, c)

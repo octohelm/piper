@@ -18,17 +18,13 @@ func init() {
 type UnmarshalTOML struct {
 	task.Task
 	// toml raw
-	Raw client.StringOrBytes `json:"raw"`
+	Contents client.StringOrBytes `json:"contents"`
 	// data
 	Data client.Any `json:"-" output:"data"`
 }
 
-func (t *UnmarshalTOML) ResultValue() any {
-	return t.Data
-}
-
 func (t *UnmarshalTOML) Do(ctx context.Context) error {
-	err := toml.Unmarshal(t.Raw, &t.Data.Value)
+	err := toml.Unmarshal(t.Contents, &t.Data.Value)
 	if err != nil {
 		return errors.Wrap(err, "unmarshal to toml failed")
 	}

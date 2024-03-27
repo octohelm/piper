@@ -33,12 +33,8 @@ type SSH struct {
 	IdentityFile string `json:"identityFile,omitempty"`
 	// ssh user
 	User string `json:"user,omitempty" default:"root"`
-
-	WorkDir WorkDir `json:"-" output:"wd"`
-}
-
-func (c *SSH) ResultValue() any {
-	return c.WorkDir
+	// the workdir from ssh
+	WorkDir WorkDir `json:"-" output:"dir"`
 }
 
 func (c *SSH) Do(ctx context.Context) error {

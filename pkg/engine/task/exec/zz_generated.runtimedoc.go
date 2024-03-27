@@ -17,8 +17,12 @@ func runtimeDoc(v any, names ...string) ([]string, bool) {
 func (v Run) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "CurrentWorkDir":
+		case "Task":
 			return []string{}, true
+		case "Cwd":
+			return []string{
+				"current workdir",
+			}, true
 		case "Command":
 			return []string{
 				"cmd for executing",
@@ -35,16 +39,17 @@ func (v Run) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"other setting",
 			}, true
-		case "RunResult":
+		case "Stdout":
 			return []string{
-				"result",
+				"exists when `with.stdout` enabled",
+			}, true
+		case "Stderr":
+			return []string{
+				"exists when `with.stdout` enabled",
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.CurrentWorkDir, names...); ok {
-			return doc, ok
-		}
-		if doc, ok := runtimeDoc(v.RunResult, names...); ok {
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
 			return doc, ok
 		}
 
@@ -87,30 +92,4 @@ func (v RunOption) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
-}
-
-func (v RunResult) RuntimeDoc(names ...string) ([]string, bool) {
-	if len(names) > 0 {
-		switch names[0] {
-		case "Result":
-			return []string{}, true
-		case "Stdout":
-			return []string{
-				"exists when `with.stdout` enabled",
-			}, true
-		case "Stderr":
-			return []string{
-				"exists when `with.stdout` enabled",
-			}, true
-
-		}
-		if doc, ok := runtimeDoc(v.Result, names...); ok {
-			return doc, ok
-		}
-
-		return nil, false
-	}
-	return []string{
-		"result of the executing",
-	}, true
 }

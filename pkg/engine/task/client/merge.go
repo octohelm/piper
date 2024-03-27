@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 
@@ -16,14 +15,11 @@ func init() {
 // Merge
 // read secret value for the secret
 type Merge struct {
-	cueflow.TaskImpl
+	task.Task
 
 	Inputs []Any `json:"inputs"`
-	Output Any   `json:"-" output:"output"`
-}
 
-func (e *Merge) ResultValue() any {
-	return e.Output
+	Output Any `json:"-" output:"output"`
 }
 
 func (e *Merge) Do(ctx context.Context) error {
@@ -33,20 +29,4 @@ func (e *Merge) Do(ctx context.Context) error {
 	}
 	e.Output.Value = o.Value()
 	return nil
-}
-
-type Any struct {
-	Value any
-}
-
-func (Any) CueType() []byte {
-	return []byte("_")
-}
-
-func (v *Any) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &v.Value)
-}
-
-func (v Any) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.Value)
 }

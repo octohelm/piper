@@ -21,16 +21,10 @@ type Source struct {
 	// working dir
 	Cwd     wd.WorkDir `json:"cwd"`
 	Path    string     `json:"path" default:"."`
-	Include []string   `json:"include"`
-	Exclude []string   `json:"exclude"`
+	Include []string   `json:"include,omitempty"`
+	Exclude []string   `json:"exclude,omitempty"`
 
 	Output Fs `json:"-" output:"output"`
-}
-
-func (x *Source) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
 }
 
 func (x *Source) Do(ctx context.Context) error {

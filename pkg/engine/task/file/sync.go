@@ -27,8 +27,8 @@ type Sync struct {
 	With SyncOption `json:"with"`
 	// dest fie
 	Dest File `json:"dest"`
-
-	WrittenFileResult `json:"-" output:"result"`
+	// synced file same as dest
+	File File `json:"-" output:"file"`
 }
 
 type SyncOption struct {
@@ -40,11 +40,11 @@ type SyncOption struct {
 var _ cueflow.WithScopeName = &Sync{}
 
 func (w *Sync) ScopeName(ctx context.Context) (string, error) {
-	return w.Dest.Wd.ScopeName(ctx)
+	return w.Dest.WorkDir.ScopeName(ctx)
 }
 
 func (t *Sync) Do(ctx context.Context) error {
-	return t.Source.Wd.Do(ctx, func(ctx context.Context, src wd.WorkDir) error {
+	return t.Source.WorkDir.Do(ctx, func(ctx context.Context, src wd.WorkDir) error {
 		srcFileInfo, err := src.Stat(ctx, t.Source.Filename)
 		if err != nil {
 			return errors.Wrapf(err, "%s: get digest failed", src)
@@ -54,7 +54,7 @@ func (t *Sync) Do(ctx context.Context) error {
 			return errors.Wrapf(err, "%s: get digest failed", src)
 		}
 
-		return t.Dest.Wd.Do(ctx, func(ctx context.Context, dst wd.WorkDir) (err error) {
+		return t.Dest.WorkDir.Do(ctx, func(ctx context.Context, dst wd.WorkDir) (err error) {
 			dstDgst, _ := dst.Digest(ctx, t.Dest.Filename)
 
 			defer func() {
@@ -62,8 +62,8 @@ func (t *Sync) Do(ctx context.Context) error {
 					// when err should remove file
 					_ = dst.RemoveAll(ctx, t.Dest.Filename)
 				} else {
-					t.WrittenFileResult.Ok = true
-					t.WrittenFileResult.File = t.Dest
+					t.File = t.Dest
+					t.Done(nil)
 				}
 			}()
 

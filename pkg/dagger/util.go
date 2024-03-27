@@ -9,10 +9,10 @@ import (
 
 type ImageConfig struct {
 	WorkingDir string            `json:"workdir" default:""`
-	Env        map[string]string `json:"env"`
-	Labels     map[string]string `json:"label"`
-	Entrypoint []string          `json:"entrypoint"`
-	Cmd        []string          `json:"cmd"`
+	Env        map[string]string `json:"env,omitempty"`
+	Labels     map[string]string `json:"label,omitempty"`
+	Entrypoint []string          `json:"entrypoint,omitempty"`
+	Cmd        []string          `json:"cmd,omitempty"`
 	User       string            `json:"user" default:""`
 }
 

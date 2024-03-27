@@ -5,6 +5,7 @@ import (
 	"encoding"
 	"fmt"
 	"go/ast"
+	"io"
 	"reflect"
 	"strings"
 
@@ -59,12 +60,13 @@ func FromType(tpe reflect.Type, optFns ...OptionFunc) *Decl {
 	}
 
 	c := &Decl{
-		Name:    "#" + tpe.Name(),
+		Name:    "#" + s.normalizeName(tpe.Name()),
 		PkgPath: s.pkgPathReplace(tpe.PkgPath()),
 	}
 
 	c.Source = s.CueDecl(tpe, opt{
-		naming: c.Name,
+		naming:          c.Name,
+		additionalProps: strings.HasSuffix(tpe.Name(), "Interface"),
 	})
 
 	c.Imports = s.imports
@@ -87,19 +89,27 @@ type scanner struct {
 }
 
 type opt struct {
-	naming string
-	embed  string
+	naming          string
+	embed           string
+	additionalProps bool
+}
+
+func (s *scanner) normalizeName(name string) string {
+	if strings.HasSuffix(name, "Interface") {
+		return strings.TrimSuffix(name, "Interface")
+	}
+	return name
 }
 
 func (s *scanner) Named(name string, pkgPath string) string {
 	if pkgPath == s.pkgPath {
-		return "#" + name
+		return "#" + s.normalizeName(name)
 	}
 
 	replaced := s.pkgPathReplace(pkgPath)
 	alias := camelcase.LowerSnakeCase(replaced)
 	s.imports[replaced] = alias
-	return alias + ".#" + name
+	return alias + ".#" + s.normalizeName(name)
 }
 
 func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
@@ -151,17 +161,24 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 		}
 		return []byte(fmt.Sprintf("[...%s]", s.CueDecl(tpe.Elem(), opt{embed: o.embed})))
 	case reflect.Struct:
-		b := bytes.NewBuffer(nil)
+		final := bytes.NewBuffer(nil)
 
 		fields := map[string]*Field{}
 		defer func() {
 			s.fieldInfos[tpe] = fields
 		}()
 
-		_, _ = fmt.Fprintf(b, `{
+		_, _ = fmt.Fprintf(final, `{
 `)
 
+		output := bytes.NewBuffer(nil)
+
 		walkFields(tpe, func(field *Field) {
+			b := final
+			if field.AsOutput {
+				b = output
+			}
+
 			fields[field.Name] = field
 
 			t := field.Type
@@ -182,14 +199,34 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 				}
 			}
 
-			if field.Optional && field.DefaultValue == nil {
+			// all output optional
+			if field.AsOutput {
+				field.DefaultValue = nil
+				field.Optional = true
+			}
+
+			fieldSuffix := "!"
+
+			if field.Optional {
 				if t.Kind() == reflect.Ptr {
 					t = t.Elem()
 				}
-				_, _ = fmt.Fprintf(b, "%s?: ", field.Name)
-			} else {
-				_, _ = fmt.Fprintf(b, "%s: ", field.Name)
+				fieldSuffix = "?"
 			}
+
+			if strings.HasPrefix(field.Name, "$$") {
+				fieldSuffix = ""
+			}
+
+			if field.DefaultValue != nil {
+				fieldSuffix = ""
+			}
+
+			if len(field.Enum) > 0 {
+				fieldSuffix = ""
+			}
+
+			_, _ = fmt.Fprintf(b, "%s%s: ", field.Name, fieldSuffix)
 
 			cueType := s.CueDecl(t, opt{
 				embed: field.Embed,
@@ -224,15 +261,17 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 			_, _ = fmt.Fprint(b, "\n")
 		})
 
-		if strings.HasSuffix(o.naming, "Interface") {
-			_, _ = fmt.Fprintf(b, `
+		_, _ = io.Copy(final, output)
+
+		if o.additionalProps {
+			_, _ = fmt.Fprintf(final, `
 ...
 `)
 		}
 
-		_, _ = fmt.Fprintf(b, `}`)
+		_, _ = fmt.Fprintf(final, `}`)
 
-		return b.Bytes()
+		return final.Bytes()
 	case reflect.Interface:
 		return []byte("_")
 	default:
@@ -244,7 +283,7 @@ type Field struct {
 	Name         string
 	Doc          []string
 	Embed        string
-	Idx          int
+	Loc          []int
 	Type         reflect.Type
 	AsOutput     bool
 	Optional     bool
@@ -270,7 +309,7 @@ func (i *Field) EmptyDefaults() (string, bool) {
 	}
 }
 
-func walkFields(st reflect.Type, each func(info *Field)) {
+func walkFields(st reflect.Type, each func(info *Field), parentLoc ...int) {
 	if st.Kind() != reflect.Struct {
 		return
 	}
@@ -280,12 +319,17 @@ func walkFields(st reflect.Type, each func(info *Field)) {
 	for i := 0; i < st.NumField(); i++ {
 		f := st.Field(i)
 
+		// skip func
+		if f.Type.Kind() == reflect.Func {
+			continue
+		}
+
 		if !ast.IsExported(f.Name) {
 			continue
 		}
 
 		info := &Field{}
-		info.Idx = i
+		info.Loc = append(parentLoc, i)
 		info.Name = f.Name
 		info.Type = f.Type
 		if doc, ok := getRuntimeDoc(v, f.Name); ok {
@@ -295,7 +339,7 @@ func walkFields(st reflect.Type, each func(info *Field)) {
 		jsonTag, hasJsonTag := f.Tag.Lookup("json")
 		if !hasJsonTag {
 			if f.Anonymous && f.Type.Kind() == reflect.Struct {
-				walkFields(f.Type, each)
+				walkFields(f.Type, each, append(info.Loc)...)
 			}
 			continue
 		}

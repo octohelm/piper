@@ -28,7 +28,7 @@ func TestUnmarshal(t *testing.T) {
 		"employees": List{
 			Map{
 				"name":    "octo",
-				"salary":  56000.0,
+				"salary":  int64(56000),
 				"married": false,
 			},
 		},

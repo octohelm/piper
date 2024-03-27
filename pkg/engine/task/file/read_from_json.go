@@ -9,7 +9,6 @@ import (
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
-	taskwd "github.com/octohelm/piper/pkg/engine/task/wd"
 	"github.com/octohelm/piper/pkg/wd"
 )
 
@@ -21,31 +20,15 @@ func init() {
 type ReadFromJSON struct {
 	task.Task
 
-	taskwd.CurrentWorkDir
-	// filename
-	Filename string `json:"filename"`
-
+	// file
+	File File `json:"file"`
 	// data
-	ReadFromJSONResult `json:"-" output:"result"`
-}
-
-type ReadFromJSONResult struct {
-	cueflow.Result
-
-	Data client.Any `json:"data"`
-}
-
-func (t *ReadFromJSONResult) ResultValue() any {
-	return t
+	Data client.Any `json:"-" output:"data"`
 }
 
 func (t *ReadFromJSON) Do(ctx context.Context) error {
-	return t.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
-		defer func() {
-			t.Done(err)
-		}()
-
-		f, err := cwd.OpenFile(ctx, t.Filename, os.O_RDONLY, os.ModePerm)
+	return t.File.WorkDir.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
+		f, err := cwd.OpenFile(ctx, t.File.Filename, os.O_RDONLY, os.ModePerm)
 		if err != nil {
 			return err
 		}

@@ -31,12 +31,6 @@ type Exec struct {
 	Output Container `json:"-" output:"output"`
 }
 
-func (x *Exec) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
-}
-
 func (e *Exec) Do(ctx context.Context) error {
 	return e.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
 		container := e.Input.Container(c)

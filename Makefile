@@ -2,7 +2,7 @@ PIPER = go run ./cmd/piper
 
 DEBUG = 0
 ifeq ($(DEBUG),1)
-	PIPER := $(PIPER) --log-level=debug
+	PIPER := TTY=0 $(PIPER) --log-level=debug
 endif
 
 tidy:

@@ -20,12 +20,6 @@ type ReadFile struct {
 	Contents string `json:"-" output:"contents"`
 }
 
-func (x *ReadFile) ResultValue() any {
-	return map[string]any{
-		"output": x.Contents,
-	}
-}
-
 func (x *ReadFile) Do(ctx context.Context) error {
 	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
 		dir, err := x.Input.Directory(ctx, c)

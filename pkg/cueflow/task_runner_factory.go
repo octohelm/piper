@@ -58,8 +58,8 @@ func (f *factory) register(tpe reflect.Type) {
 
 	pt := &namedType{
 		tpe:          tpe,
-		outputFields: map[string]int{},
 		decl:         block,
+		outputFields: map[string][]int{},
 	}
 
 	if _, ok := reflect.New(tpe).Interface().(FlowTask); ok {
@@ -68,7 +68,7 @@ func (f *factory) register(tpe reflect.Type) {
 
 	for _, info := range pt.decl.Fields {
 		if info.AsOutput {
-			pt.outputFields[info.Name] = info.Idx
+			pt.outputFields[info.Name] = info.Loc
 		}
 	}
 
@@ -184,7 +184,7 @@ func WriteFile(ctx context.Context, fs filesystem.FileSystem, filename string, d
 type namedType struct {
 	tpe          reflect.Type
 	flowTask     bool
-	outputFields map[string]int
+	outputFields map[string][]int
 	decl         *cueify.Decl
 }
 
@@ -192,7 +192,7 @@ func (nt *namedType) New(planTask Task) (TaskRunner, error) {
 	r := &taskRunner{
 		task:            planTask,
 		inputTaskRunner: reflect.New(nt.tpe),
-		outputFields:    map[string]int{},
+		outputFields:    map[string][]int{},
 	}
 
 	for f, i := range nt.outputFields {

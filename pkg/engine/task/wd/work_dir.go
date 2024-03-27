@@ -3,7 +3,6 @@ package wd
 import (
 	"context"
 
-	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
@@ -44,15 +43,4 @@ func (w *WorkDir) ScopeName(ctx context.Context) (string, error) {
 		return "", err
 	}
 	return cwd.String(), nil
-}
-
-type CurrentWorkDir struct {
-	// current word dir
-	Cwd WorkDir `json:"cwd"`
-}
-
-var _ cueflow.WithScopeName = CurrentWorkDir{}
-
-func (w CurrentWorkDir) ScopeName(ctx context.Context) (string, error) {
-	return w.Cwd.ScopeName(ctx)
 }

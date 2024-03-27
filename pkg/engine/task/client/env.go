@@ -19,8 +19,7 @@ func init() {
 
 // Env of client
 type Env struct {
-	cueflow.TaskImpl
-
+	task.Task `json:"-"`
 	// pick the requested env vars
 	Env map[string]SecretOrString `json:",inline" output:"env"`
 }

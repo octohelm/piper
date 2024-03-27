@@ -6,7 +6,7 @@ import (
 
 #ImageBase: {
 	packages: [pkgName=string]: #PackageOption
-	steps: [...container.#StepInterface]
+	steps: [...container.#Step]
 	...
 }
 
@@ -27,7 +27,7 @@ import (
 				}
 			},
 			#InstallPackage & {
-				input:      _
+				"input":    _
 				"packages": packages
 			},
 			for step in steps {

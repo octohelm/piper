@@ -30,11 +30,16 @@ func (v Any) RuntimeDoc(names ...string) ([]string, bool) {
 func (v Env) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Task":
+			return []string{}, true
 		case "Env":
 			return []string{
 				"pick the requested env vars",
 			}, true
 
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
 		}
 
 		return nil, false
@@ -47,11 +52,16 @@ func (v Env) RuntimeDoc(names ...string) ([]string, bool) {
 func (v Merge) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Task":
+			return []string{}, true
 		case "Inputs":
 			return []string{}, true
 		case "Output":
 			return []string{}, true
 
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
 		}
 
 		return nil, false
@@ -65,6 +75,8 @@ func (v Merge) RuntimeDoc(names ...string) ([]string, bool) {
 func (v ReadSecret) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Task":
+			return []string{}, true
 		case "Secret":
 			return []string{
 				"secret ref",
@@ -74,6 +86,9 @@ func (v ReadSecret) RuntimeDoc(names ...string) ([]string, bool) {
 				"secret value",
 			}, true
 
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
 		}
 
 		return nil, false
@@ -87,7 +102,7 @@ func (v ReadSecret) RuntimeDoc(names ...string) ([]string, bool) {
 func (v RevInfo) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "SetupTask":
+		case "Task":
 			return []string{}, true
 		case "Version":
 			return []string{
@@ -98,7 +113,7 @@ func (v RevInfo) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.SetupTask, names...); ok {
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
 			return doc, ok
 		}
 
@@ -124,6 +139,21 @@ func (v SecretOrString) RuntimeDoc(names ...string) ([]string, bool) {
 		case "Secret":
 			return []string{}, true
 		case "Value":
+			return []string{}, true
+
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v StringOrBool) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "String":
+			return []string{}, true
+		case "Bool":
 			return []string{}, true
 
 		}

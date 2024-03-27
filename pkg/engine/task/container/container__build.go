@@ -22,14 +22,9 @@ type StepInterface struct {
 // Build docker build step
 type Build struct {
 	task.Group
+
 	Steps  []StepInterface `json:"steps"`
 	Output Container       `json:"-" output:"output"`
-}
-
-func (x *Build) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
 }
 
 func (x *Build) Do(ctx context.Context) error {

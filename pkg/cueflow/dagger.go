@@ -73,6 +73,10 @@ func (c *customProgrockWriter) WriteStatus(update *progrock.StatusUpdate) error 
 
 			if isTaskPath(parent) {
 				g.Parent = ptr.String(decodeTaskPath(parent))
+
+				if *g.Parent == g.Id {
+					g.Parent = nil
+				}
 			}
 		}
 	}

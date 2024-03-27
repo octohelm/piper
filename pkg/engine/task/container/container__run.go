@@ -17,22 +17,17 @@ type Run struct {
 
 	Input Container `json:"input"`
 
-	Mounts  map[string]Mount                 `json:"mounts"`
-	Env     map[string]client.SecretOrString `json:"env"`
+	Mounts  map[string]Mount                 `json:"mounts,omitempty"`
+	Env     map[string]client.SecretOrString `json:"env,omitempty"`
 	Workdir string                           `json:"workdir,omitempty" default:"/"`
 	User    string                           `json:"user,omitempty" default:"root:root"`
 	Always  bool                             `json:"always,omitempty"`
 
-	Shell string               `json:"shell,omitempty" default:"sh"`
-	Run   client.StringOrSlice `json:"run"`
+	Shell string `json:"shell,omitempty" default:"sh"`
+
+	Run client.StringOrSlice `json:"run"`
 
 	Output Container `json:"-" output:"output"`
-}
-
-func (x *Run) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
 }
 
 func (x *Run) Do(ctx context.Context) error {

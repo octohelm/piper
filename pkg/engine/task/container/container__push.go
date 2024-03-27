@@ -35,12 +35,6 @@ type Push struct {
 	Result string `json:"-" output:"result"`
 }
 
-func (x *Push) ResultValue() any {
-	return map[string]any{
-		"result": x.Result,
-	}
-}
-
 func (x *Push) Do(ctx context.Context) error {
 	if len(x.Images) == 0 {
 		return errors.New("Push at least one image")

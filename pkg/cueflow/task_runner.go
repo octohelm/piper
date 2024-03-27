@@ -34,7 +34,7 @@ type WithScopeName interface {
 type taskRunner struct {
 	task            Task
 	inputTaskRunner reflect.Value
-	outputFields    map[string]int
+	outputFields    map[string][]int
 }
 
 func (t *taskRunner) Underlying() any {
@@ -54,13 +54,14 @@ func (t *taskRunner) resultValues() map[string]any {
 
 	rv := t.inputTaskRunner
 
-	if rv.Kind() == reflect.Ptr {
+	for rv.Kind() == reflect.Ptr {
 		rv = rv.Elem()
 	}
 
-	for name, i := range t.outputFields {
+	for name, loc := range t.outputFields {
+		f := getField(rv, loc)
+
 		if name == "" {
-			f := rv.Field(i)
 			if f.Kind() == reflect.Map {
 				for _, k := range f.MapKeys() {
 					key := k.String()
@@ -72,10 +73,21 @@ func (t *taskRunner) resultValues() map[string]any {
 			}
 			continue
 		}
-		values[name] = rv.Field(i).Interface()
+		values[name] = f.Interface()
 	}
 
 	return values
+}
+
+func getField(rv reflect.Value, loc []int) reflect.Value {
+	switch len(loc) {
+	case 0:
+		return rv
+	case 1:
+		return rv.Field(loc[0])
+	default:
+		return getField(rv.Field(loc[0]), loc[1:])
+	}
 }
 
 func (t *taskRunner) Run(ctx context.Context) (err error) {
@@ -118,17 +130,32 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 		return errors.Wrapf(err, "%T do failed", stepRunner)
 	}
 
-	values := t.resultValues()
+	if canDone, ok := stepRunner.(interface{ Done(err error) }); ok {
+		canDone.Done(nil)
+	}
+
+	resultValues := t.resultValues()
 
 	defer func() {
 		if err != nil {
 			l.Error(err)
+		} else if x, ok := stepRunner.(ResultValuer); ok {
+			values := x.ResultValue()
+			keyAndValues := make([]any, 0, len(values)*2)
+			for k, v := range values {
+				keyAndValues = append(keyAndValues, k, CueLogValue(v))
+			}
+			l.WithValues(keyAndValues...).Debug("done.")
 		} else {
-			logTaskResult(l, stepRunner)
+			l.Debug("done.")
 		}
 	}()
 
-	if err := t.task.Fill(values); err != nil {
+	if resultSetter, ok := stepRunner.(TaskFeedback); ok {
+		resultSetter.SetResultValue(resultValues)
+	}
+
+	if err := t.task.Fill(resultValues); err != nil {
 		return errors.Wrap(err, "fill result failed")
 	}
 

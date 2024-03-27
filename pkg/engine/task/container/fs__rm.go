@@ -20,12 +20,6 @@ type Rm struct {
 	Output Fs                   `json:"-" output:"output"`
 }
 
-func (x *Rm) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
-}
-
 func (x *Rm) Do(ctx context.Context) error {
 	return x.Output.SyncLazyDirectory(ctx, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
 		dir, err := x.Input.Directory(ctx, c)

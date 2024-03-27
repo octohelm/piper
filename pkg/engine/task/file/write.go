@@ -5,7 +5,6 @@ import (
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
-	taskwd "github.com/octohelm/piper/pkg/engine/task/wd"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/errors"
@@ -21,27 +20,21 @@ func init() {
 type Write struct {
 	task.Task
 
-	taskwd.CurrentWorkDir
-
-	// filename
-	Filename string `json:"filename"`
+	// output file
+	OutFile File `json:"outFile"`
 	// file contents
 	Contents client.StringOrBytes `json:"contents"`
-
-	// the written file
-	// just group cwd and filename
-	WrittenFileResult `json:"-" output:"result"`
+	// writen file
+	File File `json:"-" output:"file"`
 }
 
 func (t *Write) Do(ctx context.Context) error {
-	return t.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
-		defer t.Done(err)
-
-		if err := filesystem.MkdirAll(ctx, cwd, path.Dir(t.Filename)); err != nil {
+	return t.OutFile.WorkDir.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
+		if err := filesystem.MkdirAll(ctx, cwd, path.Dir(t.OutFile.Filename)); err != nil {
 			return err
 		}
 
-		f, err := cwd.OpenFile(ctx, t.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
+		f, err := cwd.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			return errors.Wrapf(err, "%s: open file failed", cwd)
 		}
@@ -51,20 +44,6 @@ func (t *Write) Do(ctx context.Context) error {
 			return errors.Wrapf(err, "%s: write file failed", cwd)
 		}
 
-		t.WrittenFileResult.Ok = true
-		t.WrittenFileResult.File.Wd = t.Cwd
-		t.WrittenFileResult.File.Filename = t.Filename
-
-		return nil
+		return t.File.SyncWith(ctx, t.OutFile)
 	})
-}
-
-type WrittenFileResult struct {
-	cueflow.Result
-
-	File File `json:"file"`
-}
-
-func (t *WrittenFileResult) ResultValue() any {
-	return t
 }

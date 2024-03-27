@@ -5,6 +5,8 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
+	"github.com/octohelm/piper/pkg/engine/task/wd"
+	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"io"
 	"os"
 	"path/filepath"
@@ -15,8 +17,6 @@ import (
 
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
-	taskwd "github.com/octohelm/piper/pkg/engine/task/wd"
-	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 )
 
@@ -28,46 +28,30 @@ func init() {
 // make a tar archive file of specified dir
 type Tar struct {
 	task.Task
-
-	taskwd.CurrentWorkDir
-
 	// specified dir for tar
-	Dir taskwd.WorkDir `json:"dir"`
-
+	SrcDir wd.WorkDir `json:"srcDir"`
 	// tar out filename base on the current work dir
-	OutFile string `json:"outFile"`
-
-	// output tar file when created
-	// just group cwd and filename
-	file.WrittenFileResult `json:"-" output:"result"`
+	OutFile file.File `json:"outFile"`
+	// created tarfile
+	File file.File `json:"-" output:"file"`
 }
 
 func (t *Tar) Do(ctx context.Context) error {
-	return t.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
-		if err := filesystem.MkdirAll(ctx, cwd, filepath.Dir(t.OutFile)); err != nil {
+	return t.OutFile.WorkDir.Do(ctx, func(ctx context.Context, outDir pkgwd.WorkDir) (err error) {
+		if err := filesystem.MkdirAll(ctx, outDir, filepath.Dir(t.OutFile.Filename)); err != nil {
 			return err
 		}
 
-		tarFile, err := cwd.OpenFile(ctx, t.OutFile, os.O_TRUNC|os.O_RDWR|os.O_CREATE, os.ModePerm)
+		tarFile, err := outDir.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_RDWR|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			return err
 		}
 		defer tarFile.Close()
-		defer func() {
-			if err == nil {
-				t.File = file.File{
-					Wd:       t.Cwd,
-					Filename: t.OutFile,
-				}
 
-				logr.FromContext(ctx).Info(fmt.Sprintf("%s created.", t.File.Filename))
-			}
-		}()
-
-		return t.Dir.Do(ctx, func(ctx context.Context, contents wd.WorkDir) error {
+		return t.SrcDir.Do(ctx, func(ctx context.Context, srcDir pkgwd.WorkDir) error {
 			var w io.WriteCloser = tarFile
 
-			if strings.HasSuffix(t.OutFile, ".gz") {
+			if strings.HasSuffix(t.OutFile.Filename, ".gz") {
 				w = gzip.NewWriter(w)
 				defer func() {
 					_ = w.Close()
@@ -79,8 +63,8 @@ func (t *Tar) Do(ctx context.Context) error {
 				_ = tw.Close()
 			}()
 
-			err := wd.ListFile(contents, ".", func(filename string) error {
-				s, err := contents.Stat(ctx, filename)
+			err := pkgwd.ListFile(srcDir, ".", func(filename string) error {
+				s, err := srcDir.Stat(ctx, filename)
 				if err != nil {
 					return err
 				}
@@ -93,17 +77,21 @@ func (t *Tar) Do(ctx context.Context) error {
 					return err
 				}
 
-				f, err := contents.OpenFile(ctx, filename, os.O_RDONLY, os.ModePerm)
+				f, err := srcDir.OpenFile(ctx, filename, os.O_RDONLY, os.ModePerm)
 				if err != nil {
 					return err
 				}
 				_, err = io.Copy(tw, f)
 				return err
 			})
+
 			if err != nil {
 				return err
 			}
-			return nil
+
+			logr.FromContext(ctx).Info(fmt.Sprintf("%s created.", t.File.Filename))
+
+			return t.File.SyncWith(ctx, t.OutFile)
 		})
 	})
 }

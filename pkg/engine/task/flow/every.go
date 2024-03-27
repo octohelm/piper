@@ -3,6 +3,7 @@ package flow
 import (
 	"context"
 	"cuelang.org/go/cue"
+	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
@@ -19,19 +20,8 @@ type Every struct {
 
 	// do the step one by one
 	Steps []StepInterface `json:"steps"`
-
-	EveryResult `json:"-" output:"result"`
-}
-
-// EveryResult util every step ok
-type EveryResult struct {
-	cueflow.Result
-
-	Results []ResultInterface `json:"results"`
-}
-
-func (t *EveryResult) ResultValue() any {
-	return t
+	// result values of steps
+	Condition []any `json:"-" output:"condition"`
 }
 
 func (t *Every) Do(ctx context.Context) error {
@@ -60,15 +50,12 @@ func (t *Every) Do(ctx context.Context) error {
 			return err
 		}
 
-		t.Results = append(t.Results, ti.Result)
+		t.Condition = append(t.Condition, client.Any{Value: ti.ResultValue()})
 
-		if !ti.Result.Success() {
-			t.Result.Done(errors.New(ti.Result.Reason))
-			return nil
+		if !ti.Ok {
+			return errors.Wrapf(err, "steps[%d] failed", idx)
 		}
 	}
-
-	t.Result.Done(nil)
 
 	return nil
 }

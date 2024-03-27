@@ -25,12 +25,6 @@ type Sub struct {
 	Output Fs `json:"-" output:"output"`
 }
 
-func (x *Sub) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
-}
-
 func (x *Sub) Do(ctx context.Context) error {
 	return x.Output.SyncLazyDirectory(ctx, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
 		base, err := x.Input.Directory(ctx, c)

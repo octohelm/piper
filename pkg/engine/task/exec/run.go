@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"github.com/octohelm/piper/pkg/engine/task/wd"
+	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"io"
 	"strings"
 
@@ -14,8 +16,6 @@ import (
 
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
-	taskwd "github.com/octohelm/piper/pkg/engine/task/wd"
-	"github.com/octohelm/piper/pkg/wd"
 )
 
 func init() {
@@ -26,8 +26,8 @@ func init() {
 type Run struct {
 	task.Task
 
-	taskwd.CurrentWorkDir
-
+	// current workdir
+	Cwd wd.WorkDir `json:"cwd"`
 	// cmd for executing
 	Command client.StringOrSlice `json:"cmd"`
 	// env vars
@@ -38,8 +38,10 @@ type Run struct {
 	// other setting
 	With RunOption `json:"with,omitempty"`
 
-	// result
-	RunResult `json:"-" output:"result"`
+	// exists when `with.stdout` enabled
+	Stdout *string `json:"-" output:"stdout,omitempty"`
+	// exists when `with.stdout` enabled
+	Stderr *string `json:"-" output:"stderr,omitempty"`
 }
 
 type RunOption struct {
@@ -63,25 +65,8 @@ type RunOption struct {
 	Stderr bool `json:"stderr,omitempty" default:"false"`
 }
 
-// result of the executing
-type RunResult struct {
-	cueflow.Result
-	// exists when `with.stdout` enabled
-	Stdout *string `json:"stdout,omitempty"`
-	// exists when `with.stdout` enabled
-	Stderr *string `json:"stderr,omitempty"`
-}
-
-func (r *RunResult) ResultValue() any {
-	return r
-}
-
-func (r RunResult) Success() bool {
-	return r.Ok
-}
-
 func (r *Run) Do(ctx context.Context) error {
-	return r.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) error {
+	return r.Cwd.Do(ctx, func(ctx context.Context, cwd pkgwd.WorkDir) error {
 		cmd := strings.Join(r.Command, " ")
 
 		env := map[string]string{}
@@ -101,25 +86,25 @@ func (r *Run) Do(ctx context.Context) error {
 		stdout := bytes.NewBuffer(nil)
 		stderr := bytes.NewBuffer(nil)
 
-		opts := []wd.OptionFunc{
-			wd.WithEnv(env),
-			wd.WithUser(r.User),
+		opts := []pkgwd.OptionFunc{
+			pkgwd.WithEnv(env),
+			pkgwd.WithUser(r.User),
 		}
 
 		if r.With.Stdout {
-			opts = append(opts, wd.WithStdout(stdout))
+			opts = append(opts, pkgwd.WithStdout(stdout))
 		} else {
 			w := (&forward{l: logr.FromContext(ctx)}).NewWriter()
 			defer w.Close()
-			opts = append(opts, wd.WithStdout(w))
+			opts = append(opts, pkgwd.WithStdout(w))
 		}
 
 		if r.With.Stderr {
-			opts = append(opts, wd.WithStderr(stderr))
+			opts = append(opts, pkgwd.WithStderr(stderr))
 		} else {
 			w := (&forward{l: logr.FromContext(ctx), stderr: true}).NewWriter()
 			defer w.Close()
-			opts = append(opts, wd.WithStderr(w))
+			opts = append(opts, pkgwd.WithStderr(w))
 		}
 
 		err := cwd.Exec(ctx, cmd, opts...)
@@ -129,16 +114,14 @@ func (r *Run) Do(ctx context.Context) error {
 				return err
 			}
 		} else {
-			r.Result.Ok = true
+			r.Done(nil)
 		}
 
 		if r.With.Stdout {
 			r.Stdout = ptr.Ptr(stdout.String())
 
 			if !r.With.StdoutOmitempty {
-				r.Result.Ok = stdout.Len() > 0
-
-				if !r.Result.Ok && r.With.Failfast {
+				if !r.Success() && r.With.Failfast {
 					return errors.New("empty stdout")
 				}
 			}

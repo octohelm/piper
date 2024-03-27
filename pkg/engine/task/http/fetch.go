@@ -31,15 +31,11 @@ type Fetch struct {
 	// hit by response header
 	HitBy string `json:"hitBy,omitempty" default:"etag"`
 
-	// downloaded file
-	file.WrittenFileResult `json:"-" output:"result"`
+	// fetched file
+	File file.File `json:"-" output:"file"`
 }
 
 func (r *Fetch) Do(ctx context.Context) (e error) {
-	defer func() {
-		r.WrittenFileResult.Done(e)
-	}()
-
 	cwd, err := task.ClientContext.From(ctx).CacheDir(ctx, "http")
 	if err != nil {
 		return err
@@ -83,7 +79,7 @@ func (r *Fetch) Do(ctx context.Context) (e error) {
 		}
 	}
 
-	return r.WrittenFileResult.File.Sync(ctx, cwd, path.Join(key, "data"))
+	return r.File.Sync(ctx, cwd, path.Join(key, "data"))
 }
 
 func readHitValue(ctx context.Context, fs filesystem.FileSystem, key string) (string, error) {

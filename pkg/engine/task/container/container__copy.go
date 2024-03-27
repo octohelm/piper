@@ -26,12 +26,6 @@ type Copy struct {
 	Output Container `json:"-" output:"output"`
 }
 
-func (x *Copy) ResultValue() any {
-	return map[string]any{
-		"output": x.Output,
-	}
-}
-
 func (x *Copy) Do(ctx context.Context) error {
 	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
 		base := x.Input.Container(c)

@@ -35,10 +35,13 @@ import (
 	_get_or_create_release: {
 		_ret: flow.#Some & {
 			steps: [
+				// get release by tag
 				_client.#Do & {
 					method: "GET"
 					url:    "\(#GithubAPI.core)/repos/\(owner)/\(repo)/releases/tags/\(name)"
 				},
+				// or
+				// create an new release
 				_client.#Do & {
 					"method": "POST"
 					"url":    "\(#GithubAPI.core)/repos/\(owner)/\(repo)/releases"
@@ -56,7 +59,13 @@ import (
 			]
 		}
 
-		id: _ret.result.data.id
+		id: [
+			if _ret.ok {
+				for step in _ret.condition if step.ok {
+					step.response.data.id
+				}
+			},
+		][0]
 	}
 
 	_list_assets: {
@@ -66,7 +75,7 @@ import (
 		}
 
 		assets: {
-			for asset in _req.result.data {
+			for asset in _req.response.data {
 				"\(asset.name)": strconv.FormatFloat(asset.id, strings.ByteAt("f", 0), 0, 64)
 			}
 		}
@@ -103,7 +112,8 @@ import (
 			},
 		]
 	}
-	result: _upload_assets.result
+
+	ok: _upload_assets.ok
 }
 
 #Client: {
@@ -143,6 +153,7 @@ import (
 			}
 		}
 
-		result: _req.result
+		ok:       _req.ok
+		response: _req.response
 	}
 }

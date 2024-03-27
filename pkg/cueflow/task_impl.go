@@ -21,3 +21,7 @@ func (TaskImpl) flowTask() {
 type IsSetup interface {
 	Setup() bool
 }
+
+type TaskFeedback interface {
+	SetResultValue(values map[string]any)
+}

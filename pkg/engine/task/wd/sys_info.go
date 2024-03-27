@@ -17,8 +17,8 @@ func init() {
 type SysInfo struct {
 	task.Task
 
-	CurrentWorkDir
-
+	// current workdir
+	Cwd WorkDir `json:"cwd"`
 	// home
 	Home string `json:"-" output:"home"`
 	// os release info
@@ -27,17 +27,9 @@ type SysInfo struct {
 	Platform Platform `json:"-" output:"platform"`
 }
 
-func (t SysInfo) ResultValue() any {
-	return map[string]any{
-		"home":     t.Home,
-		"release":  t.Release,
-		"platform": t.Platform,
-	}
-}
-
 type Platform struct {
 	OS           string `json:"os"`
-	Architecture string `json:"architecture"`
+	Architecture string `json:"arch"`
 }
 
 type Release struct {

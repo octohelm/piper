@@ -8,7 +8,6 @@ import (
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
-	taskwd "github.com/octohelm/piper/pkg/engine/task/wd"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pelletier/go-toml/v2"
@@ -23,36 +22,24 @@ func init() {
 type WriteAsTOML struct {
 	task.Task
 
-	taskwd.CurrentWorkDir
 	// filename
-	Filename string `json:"filename"`
+	OutFile File `json:"outFile"`
 	// data could convert to yaml
 	Data client.Any `json:"data"`
-
-	WrittenFileResult `json:"-" output:"result"`
+	// writen file
+	File File `json:"-" output:"file"`
 }
 
 func (t *WriteAsTOML) Do(ctx context.Context) error {
-	return t.Cwd.Do(ctx, func(ctx context.Context, cwd wd.WorkDir) (err error) {
-		defer t.Done(err)
-
-		if err := filesystem.MkdirAll(ctx, cwd, path.Dir(t.Filename)); err != nil {
+	return t.OutFile.WorkDir.Do(ctx, func(ctx context.Context, outDir wd.WorkDir) (err error) {
+		if err := filesystem.MkdirAll(ctx, outDir, path.Dir(t.OutFile.Filename)); err != nil {
 			return err
 		}
-
-		f, err := cwd.OpenFile(ctx, t.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
+		f, err := outDir.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			return errors.Wrap(err, "open file failed")
 		}
 		defer f.Close()
-
-		defer func() {
-			if err == nil {
-				t.WrittenFileResult.Ok = true
-				t.WrittenFileResult.File.Wd = t.Cwd
-				t.WrittenFileResult.File.Filename = t.Filename
-			}
-		}()
 
 		data, err := toml.Marshal(t.Data.Value)
 		if err != nil {
@@ -63,6 +50,6 @@ func (t *WriteAsTOML) Do(ctx context.Context) error {
 			return errors.Wrap(err, "write data failed")
 		}
 
-		return
+		return t.File.SyncWith(ctx, t.OutFile)
 	})
 }

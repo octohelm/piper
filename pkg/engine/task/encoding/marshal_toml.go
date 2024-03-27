@@ -20,11 +20,7 @@ type MarshalTOML struct {
 	// data
 	Data client.Any `json:"data"`
 	// raw
-	Raw string `json:"-" output:"raw"`
-}
-
-func (t *MarshalTOML) ResultValue() any {
-	return t.Raw
+	Contents string `json:"-" output:"contents"`
 }
 
 func (t *MarshalTOML) Do(ctx context.Context) error {
@@ -32,6 +28,6 @@ func (t *MarshalTOML) Do(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "marshal to toml failed")
 	}
-	t.Raw = string(data)
+	t.Contents = string(data)
 	return nil
 }

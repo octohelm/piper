@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/octohelm/x/ptr"
 	"io"
 	"log/slog"
 	"net/http"
@@ -36,19 +37,19 @@ type Do struct {
 	// http request body
 	RequestBody file.StringOrFile `json:"body,omitempty"`
 
+	// options
 	With DoOption `json:"with,omitempty"`
 
-	Result ResponseResult `json:"-" output:"result"`
+	// Response
+	Response Response `json:"-" output:"response"`
 }
 
 type DoOption struct {
 	// header keys for result
-	Header []string `json:"header"`
+	ExposeHeaders []string `json:"exposeHeaders"`
 }
 
-// ResponseResult ok when status code >= 200 < 300
-type ResponseResult struct {
-	cueflow.Result
+type Response struct {
 	// status code
 	Status int `json:"status,omitempty"`
 	// response header, only pick headers requests by `with.header`
@@ -115,11 +116,11 @@ func (r *Do) Do(ctx context.Context) error {
 	}
 	defer resp.Body.Close()
 
-	r.Result.Ok = resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices
-	r.Result.Status = resp.StatusCode
+	r.Ok = ptr.Ptr(resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices)
+	r.Response.Status = resp.StatusCode
 
 	if contentType := resp.Header.Get("Content-Type"); strings.Contains(contentType, "json") {
-		if err := json.NewDecoder(resp.Body).Decode(&r.Result.Data); err != nil {
+		if err := json.NewDecoder(resp.Body).Decode(&r.Response.Data); err != nil {
 			return err
 		}
 	} else if strings.HasPrefix(contentType, "text/") {
@@ -127,24 +128,20 @@ func (r *Do) Do(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		r.Result.Data = string(data)
+		r.Response.Data = string(data)
 	} else {
 		data, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return err
 		}
-		r.Result.Data = data
+		r.Response.Data = data
 	}
 
-	r.Result.Header = map[string]client.StringOrSlice{}
+	r.Response.Header = map[string]client.StringOrSlice{}
 
-	for _, k := range r.With.Header {
-		r.Result.Header[k] = resp.Header.Values(k)
+	for _, k := range r.With.ExposeHeaders {
+		r.Response.Header[k] = resp.Header.Values(k)
 	}
 
 	return nil
-}
-
-func (r ResponseResult) Success() bool {
-	return r.Ok
 }

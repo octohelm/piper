@@ -23,14 +23,13 @@ func (v Every) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"do the step one by one",
 			}, true
-		case "EveryResult":
-			return []string{}, true
+		case "Condition":
+			return []string{
+				"result values of steps",
+			}, true
 
 		}
 		if doc, ok := runtimeDoc(v.Group, names...); ok {
-			return doc, ok
-		}
-		if doc, ok := runtimeDoc(v.EveryResult, names...); ok {
 			return doc, ok
 		}
 
@@ -38,45 +37,6 @@ func (v Every) RuntimeDoc(names ...string) ([]string, bool) {
 	}
 	return []string{
 		"Every task group",
-	}, true
-}
-
-func (v EveryResult) RuntimeDoc(names ...string) ([]string, bool) {
-	if len(names) > 0 {
-		switch names[0] {
-		case "Result":
-			return []string{}, true
-		case "Results":
-			return []string{}, true
-
-		}
-		if doc, ok := runtimeDoc(v.Result, names...); ok {
-			return doc, ok
-		}
-
-		return nil, false
-	}
-	return []string{
-		"EveryResult util every step ok",
-	}, true
-}
-
-func (v ResultInterface) RuntimeDoc(names ...string) ([]string, bool) {
-	if len(names) > 0 {
-		switch names[0] {
-		case "Result":
-			return []string{}, true
-
-		}
-		if doc, ok := runtimeDoc(v.Result, names...); ok {
-			return doc, ok
-		}
-
-		return nil, false
-	}
-	return []string{
-		"ResultInterface",
-		"support additional fields but the `ok: bool`",
 	}, true
 }
 
@@ -89,9 +49,9 @@ func (v Some) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"do the step one by one",
 			}, true
-		case "Result":
+		case "Condition":
 			return []string{
-				"util some step ok, and remain steps will not execute.",
+				"result values of steps",
 			}, true
 
 		}
@@ -109,7 +69,9 @@ func (v Some) RuntimeDoc(names ...string) ([]string, bool) {
 func (v StepInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Result":
+		case "Ok":
+			return []string{}, true
+		case "Values":
 			return []string{}, true
 
 		}
@@ -118,6 +80,6 @@ func (v StepInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	}
 	return []string{
 		"StepInterface",
-		"support additional fields but must the `result: ResultInterface` as result checking",
+		"support additional fields but must the `result: Result` as result checking",
 	}, true
 }

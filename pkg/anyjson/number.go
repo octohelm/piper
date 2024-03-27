@@ -6,7 +6,7 @@ import (
 )
 
 type Number struct {
-	value *float64
+	value any
 	raw   []byte
 }
 
@@ -19,10 +19,17 @@ func (v *Number) MarshalJSON() ([]byte, error) {
 
 func (v *Number) Value() any {
 	if v.value == nil {
-		num, _ := strconv.ParseFloat(string(v.raw), 64)
-		v.value = &num
+		i, err := strconv.ParseInt(string(v.raw), 10, 64)
+		if err == nil {
+			v.value = i
+		} else {
+			f, err := strconv.ParseFloat(string(v.raw), 64)
+			if err == nil {
+				v.value = f
+			}
+		}
 	}
-	return *v.value
+	return v.value
 }
 
 func (v *Number) String() string {
