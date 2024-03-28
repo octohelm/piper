@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"github.com/octohelm/piper/pkg/generic/record"
 	"io"
 	"os"
 	"sort"
@@ -41,7 +42,7 @@ type scope struct {
 type Runner struct {
 	build    func() (Value, error)
 	root     atomic.Pointer[scope]
-	taskDone sync.Map
+	taskDone record.Map[string, any]
 
 	match  func(p string) bool
 	output string
@@ -145,7 +146,7 @@ func (r *Runner) LookupPath(p cue.Path) Value {
 }
 
 func (r *Runner) FillPath(p cue.Path, v any) error {
-	_, ok := r.taskDone.LoadOrStore(p.String(), true)
+	_, ok := r.taskDone.LoadOrStore(formatPath(p), v)
 	if !ok {
 		r.mu.Lock()
 		defer r.mu.Unlock()

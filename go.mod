@@ -19,7 +19,7 @@ require (
 	github.com/k0sproject/rig v0.15.2-0.20231219072317-afaa2d5ee397
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/mattn/go-isatty v0.0.20
-	github.com/octohelm/cuekit v0.0.0-20240326111757-e082c55f1ff5
+	github.com/octohelm/cuekit v0.0.0-20240328091840-d09c19b01e22
 	github.com/octohelm/gengo v0.0.0-20240227021734-f42e02623187
 	github.com/octohelm/storage v0.0.0-20240311031904-722fae0a0075
 	github.com/octohelm/unifs v0.0.0-20240306103420-0aa38195fb0a

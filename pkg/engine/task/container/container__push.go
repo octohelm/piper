@@ -89,6 +89,8 @@ func (x *Push) Do(ctx context.Context) error {
 			return fmt.Errorf("published manifest list failed")
 		}
 
+		logr.FromContext(ctx).WithValues("image", result).Info("published.")
+
 		x.Result = result
 
 		return nil
