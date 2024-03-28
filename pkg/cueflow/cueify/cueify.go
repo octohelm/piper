@@ -199,12 +199,6 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 				}
 			}
 
-			// all output optional
-			if field.AsOutput {
-				field.DefaultValue = nil
-				field.Optional = true
-			}
-
 			fieldSuffix := "!"
 
 			if field.Optional {
@@ -214,7 +208,7 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 				fieldSuffix = "?"
 			}
 
-			if strings.HasPrefix(field.Name, "$$") {
+			if field.AsOutput || strings.HasPrefix(field.Name, "$$") {
 				fieldSuffix = ""
 			}
 

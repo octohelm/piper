@@ -21,10 +21,8 @@ import (
 	_build: container.#Build & {
 		"steps": [
 			container.#Pull & {
-				"source": source
-				if platform != _|_ {
-					"platform": platform
-				}
+				"source":   source
+				"platform": platform
 			},
 			#InstallPackage & {
 				"input":    _

@@ -33,6 +33,10 @@ func (x *Source) Do(ctx context.Context) error {
 		return errors.Errorf("%T: get cwd failed: %s", x, err)
 	}
 
+	if w.Addr().Scheme != "file" {
+		return errors.New("only support local dir as container source")
+	}
+
 	base, err := pkgwd.RealPath(w)
 	if err != nil {
 		return errors.Errorf("%T: only support cwd in local host", x)
@@ -42,7 +46,7 @@ func (x *Source) Do(ctx context.Context) error {
 
 	// store the meta until some builder need to use.
 	// important for multi-builder build
-	return x.Output.SyncLazyDirectory(ctx, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
+	return x.Output.SyncLazyDirectory(ctx, x, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
 		return c.Host().Directory(path, dagger.HostDirectoryOpts{
 			Include: x.Include,
 			Exclude: x.Exclude,

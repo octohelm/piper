@@ -21,7 +21,7 @@ type Rm struct {
 }
 
 func (x *Rm) Do(ctx context.Context) error {
-	return x.Output.SyncLazyDirectory(ctx, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
+	return x.Output.SyncLazyDirectory(ctx, x, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
 		dir, err := x.Input.Directory(ctx, c)
 		if err != nil {
 			return nil, err
