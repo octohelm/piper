@@ -79,7 +79,7 @@ func (fs *Fs) Sync(ctx context.Context, c *dagger.Directory) error {
 }
 
 func (fs *Fs) SyncLazyDirectory(ctx context.Context, do LazyDoFn) error {
-	key := "lazy://" + digest.FromString(fmt.Sprintf("%p", do)).String()
+	key := "lazy+" + digest.FromString(fmt.Sprintf("%p", do)).String()
 	fsIDs.Store(key, lazyAction{
 		taskPath: cueflow.TaskPathContext.From(ctx),
 		do:       do,

@@ -275,7 +275,7 @@ func (r *Runner) walkTasks(ctx context.Context, tasks []*flow.Task, prefix []str
 		}
 
 		switch t.Underlying().(type) {
-		case IsSetup:
+		case TaskSetup:
 			r.resolveDependencies(tasks[i], r.setups)
 		case TaskUnmarshaler:
 			stepIter, err := IterSteps(CueValue(tk.Value()))

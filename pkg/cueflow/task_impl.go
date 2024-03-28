@@ -1,15 +1,12 @@
 package cueflow
 
-func RegisterTask(r TaskImplRegister, task FlowTask) {
-	r.Register(task)
-}
-
-type TaskImplRegister interface {
-	Register(t any)
-}
-
 type FlowTask interface {
 	flowTask()
+}
+
+// TaskSetup which task will run before all others tasks
+type TaskSetup interface {
+	Setup() bool
 }
 
 type TaskImpl struct {
@@ -18,10 +15,23 @@ type TaskImpl struct {
 func (TaskImpl) flowTask() {
 }
 
-type IsSetup interface {
-	Setup() bool
+type OutputValuer interface {
+	OutputValues() map[string]any
+}
+
+type CacheDisabler interface {
+	CacheDisabled() bool
+}
+
+type Successor interface {
+	Success() bool
+}
+
+type ResultValuer interface {
+	ResultValue() map[string]any
 }
 
 type TaskFeedback interface {
-	SetResultValue(values map[string]any)
+	Done(err error)
+	FillResult(values map[string]any)
 }

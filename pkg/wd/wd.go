@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"strings"
 
@@ -27,6 +28,8 @@ type WorkDir interface {
 	Digest(ctx context.Context, path string) (digest.Digest, error)
 
 	Exec(ctx context.Context, cmd string, optFns ...OptionFunc) error
+
+	Addr() *url.URL
 }
 
 type WorkDirConnection interface {
@@ -185,13 +188,26 @@ func (w *wd) Options() Options {
 	return w.opt
 }
 
-func (w *wd) String() string {
+func (w *wd) Addr() *url.URL {
 	switch w.connection.Protocol() {
 	case "Local":
-		return fmt.Sprintf("%s@local %s", w.opt.User, w.opt.BasePath)
+		return &url.URL{
+			Scheme: "file",
+			User:   url.User(w.opt.User),
+			Path:   string(w.opt.BasePath),
+		}
 	default:
-		return fmt.Sprintf("[%s] %s@%s %s", strings.ToLower(w.connection.Protocol()), w.opt.User, w.connection.Address(), w.opt.BasePath)
+		return &url.URL{
+			Scheme: strings.ToLower(w.connection.Protocol()),
+			User:   url.User(w.opt.User),
+			Host:   w.connection.Address(),
+			Path:   string(w.opt.BasePath),
+		}
 	}
+}
+
+func (w *wd) String() string {
+	return w.Addr().String()
 }
 
 func (w *wd) Exec(ctx context.Context, cmd string, optFns ...OptionFunc) error {
@@ -243,4 +259,8 @@ func RealPath(dir WorkDir) (string, error) {
 		return x.opt.BasePath.String(), nil
 	}
 	return "", errors.New("unsupported")
+}
+
+func SameFileSystem(a *url.URL, b *url.URL) bool {
+	return a.Scheme == b.Scheme && a.Host == b.Host
 }

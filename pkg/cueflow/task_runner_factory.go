@@ -18,6 +18,14 @@ import (
 	"github.com/octohelm/piper/pkg/cueflow/cueify"
 )
 
+func RegisterTask(r TaskImplRegister, task FlowTask) {
+	r.Register(task)
+}
+
+type TaskImplRegister interface {
+	Register(t any)
+}
+
 type TaskRunnerFactory interface {
 	New(task Task) (TaskRunner, error)
 }

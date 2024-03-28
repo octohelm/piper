@@ -52,9 +52,10 @@ func (t *Some) Do(ctx context.Context) error {
 
 		// when first ok should ok
 		if ti.Ok {
+
 			return nil
 		}
 	}
 
-	return nil
+	return errors.New("all sub task failed")
 }

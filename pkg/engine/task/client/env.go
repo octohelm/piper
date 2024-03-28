@@ -26,6 +26,12 @@ type EnvInterface struct {
 	OptionalEnv map[string]SecretOrString `json:"-"`
 }
 
+func (EnvInterface) CacheDisabled() bool {
+	return true
+}
+
+var _ cueflow.CacheDisabler = &EnvInterface{}
+
 func (ei *EnvInterface) UnmarshalTask(t cueflow.Task) error {
 	v := cueflow.CueValue(t.Value())
 

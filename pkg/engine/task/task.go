@@ -14,6 +14,12 @@ type Task struct {
 	cueflow.TaskImpl
 }
 
+var _ cueflow.Successor = &Task{}
+
+func (t *Task) Success() bool {
+	return t.Ok != nil && *t.Ok
+}
+
 var _ cueflow.TaskFeedback = &Task{}
 
 func (t *Task) Done(err error) {
@@ -22,11 +28,7 @@ func (t *Task) Done(err error) {
 	}
 }
 
-func (t *Task) Success() bool {
-	return t.Ok != nil && *t.Ok
-}
-
-func (t *Task) SetResultValue(v map[string]any) {
+func (t *Task) FillResult(v map[string]any) {
 	t.values = v
 }
 
@@ -40,13 +42,11 @@ type SetupTask struct {
 	Task
 }
 
-var _ cueflow.IsSetup = &SetupTask{}
+var _ cueflow.TaskSetup = &SetupTask{}
 
 func (SetupTask) Setup() bool {
 	return true
 }
-
-var _ cueflow.TaskUnmarshaler = &Group{}
 
 type Group struct {
 	Task
@@ -54,11 +54,19 @@ type Group struct {
 	t cueflow.Task
 }
 
+func (v *Group) T() cueflow.Task {
+	return v.t
+}
+
+var _ cueflow.TaskUnmarshaler = &Group{}
+
 func (v *Group) UnmarshalTask(t cueflow.Task) error {
 	v.t = t
 	return nil
 }
 
-func (v *Group) T() cueflow.Task {
-	return v.t
+var _ cueflow.CacheDisabler = &Group{}
+
+func (Group) CacheDisabled() bool {
+	return true
 }
