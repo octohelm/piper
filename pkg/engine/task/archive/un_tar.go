@@ -20,15 +20,15 @@ func init() {
 }
 
 // UnTar
-// un tar files into specified dest
+// un tar files into specified outDir
 type UnTar struct {
 	task.Task
 
-	// tar filename base on the current work dest
+	// tar filename base on the current work outDir
 	SrcFile file.File `json:"srcFile"`
 	// tar file content encoding
 	ContentEncoding string `json:"contentEncoding,omitempty"`
-	// output dest for tar
+	// output outDir for tar
 	OutDir wd.WorkDir `json:"outDir"`
 	// final dir contains tar files
 	Dir wd.WorkDir `json:"-" output:"dir"`
@@ -55,15 +55,15 @@ func (t *UnTar) Do(ctx context.Context) error {
 
 		tarReader := tar.NewReader(r)
 
-		return t.OutDir.Do(ctx, func(ctx context.Context, dest pkgwd.WorkDir) error {
+		return t.OutDir.Do(ctx, func(ctx context.Context, outDir pkgwd.WorkDir) error {
 			sync := func(ctx context.Context, hdr *tar.Header) error {
 				fi := hdr.FileInfo()
 
 				if fi.IsDir() {
-					return filesystem.MkdirAll(ctx, dest, fi.Name())
+					return filesystem.MkdirAll(ctx, outDir, fi.Name())
 				}
 
-				f, err := dest.OpenFile(ctx, fi.Name(), os.O_TRUNC|os.O_RDWR|os.O_CREATE, fi.Mode())
+				f, err := outDir.OpenFile(ctx, fi.Name(), os.O_TRUNC|os.O_RDWR|os.O_CREATE, fi.Mode())
 				if err != nil {
 					return err
 				}
@@ -88,7 +88,7 @@ func (t *UnTar) Do(ctx context.Context) error {
 				}
 			}
 
-			return nil
+			return t.Dir.Sync(ctx, outDir)
 		})
 	})
 }

@@ -40,7 +40,7 @@ actions: go: golang.#Project & {
 
 actions: release: {
 	_env: client.#Env & {
-		GH_PASSWORD: client.#Secret
+		GH_PASSWORD!: client.#Secret
 	}
 
 	github.#Release & {
@@ -58,8 +58,8 @@ actions: release: {
 
 settings: {
 	_env: client.#Env & {
-		GH_USERNAME: string | *""
-		GH_PASSWORD: client.#Secret
+		GH_USERNAME!: string
+		GH_PASSWORD!: client.#Secret
 	}
 
 	registry: container.#Config & {

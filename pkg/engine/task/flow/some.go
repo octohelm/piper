@@ -25,9 +25,9 @@ type Some struct {
 }
 
 func (t *Some) Do(ctx context.Context) error {
-	parent := t.Parent()
+	tt := t.T()
 
-	scope := cueflow.CueValue(parent.Value().LookupPath(cue.ParsePath("steps")))
+	scope := cueflow.CueValue(tt.Value().LookupPath(cue.ParsePath("steps")))
 
 	list, err := scope.List()
 	if err != nil {
@@ -37,11 +37,11 @@ func (t *Some) Do(ctx context.Context) error {
 	for idx := 0; list.Next(); idx++ {
 		itemPath := list.Value().Path()
 
-		if err := parent.Scope().RunTasks(ctx, cueflow.WithPrefix(itemPath)); err != nil {
+		if err := tt.Scope().RunTasks(ctx, cueflow.WithPrefix(itemPath)); err != nil {
 			return errors.Wrapf(err, "steps[%d]", idx)
 		}
 
-		stepValue := parent.Scope().Value().LookupPath(itemPath)
+		stepValue := tt.Scope().Value().LookupPath(itemPath)
 
 		ti := &StepInterface{}
 		if err := stepValue.Decode(ti); err != nil {

@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"encoding/json"
+	"cuelang.org/go/cue"
 	"os"
 	"strings"
 	"sync"
@@ -14,70 +14,111 @@ import (
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Env{})
+	cueflow.RegisterTask(task.Factory, &EnvInterface{})
 }
 
-// Env of client
-type Env struct {
+// EnvInterface of client
+type EnvInterface struct {
+	// to avoid added ok
 	task.Task `json:"-"`
-	// pick the requested env vars
-	Env map[string]SecretOrString `json:",inline" output:"env"`
+
+	RequiredEnv map[string]SecretOrString `json:"-"`
+	OptionalEnv map[string]SecretOrString `json:"-"`
 }
 
-func (ce *Env) UnmarshalJSON(data []byte) error {
-	if err := json.Unmarshal(data, &ce.Env); err != nil {
+func (ei *EnvInterface) UnmarshalTask(t cueflow.Task) error {
+	v := cueflow.CueValue(t.Value())
+
+	i, err := v.Fields(cue.All())
+	if err != nil {
 		return err
 	}
 
-	for k := range ce.Env {
-		if strings.HasPrefix(k, "$$") {
-			delete(ce.Env, k)
+	ei.RequiredEnv = make(map[string]SecretOrString)
+	ei.OptionalEnv = make(map[string]SecretOrString)
+
+	for i.Next() {
+		envKey := i.Selector().Unquoted()
+
+		if strings.HasPrefix(envKey, "$$") {
+			continue
+		}
+
+		v := SecretOrString{}
+
+		if i.Value().LookupPath(SecretPath).Exists() {
+			v.Secret = &Secret{}
+		}
+
+		if i.Selector().Type()&cue.RequiredConstraint != 0 {
+			ei.RequiredEnv[envKey] = v
+		} else {
+			ei.OptionalEnv[envKey] = v
 		}
 	}
 
 	return nil
 }
 
-func (ce *Env) MarshalJSON() ([]byte, error) {
+var _ cueflow.TaskUnmarshaler = &EnvInterface{}
 
-	return json.Marshal(ce.Env)
+var _ cueflow.OutputValuer = EnvInterface{}
+
+func (ei EnvInterface) OutputValues() map[string]any {
+	values := map[string]any{}
+
+	for k, v := range ei.RequiredEnv {
+		values[k] = v
+	}
+
+	for k, v := range ei.OptionalEnv {
+		values[k] = v
+	}
+
+	return values
 }
 
-func (ce *Env) Do(ctx context.Context) error {
+func (ei *EnvInterface) Do(ctx context.Context) error {
 	secretStore := task.SecretContext.From(ctx)
-
 	clientEnvs := getClientEnvs()
 
-	env := map[string]SecretOrString{}
-
-	for key := range ce.Env {
-		e := ce.Env[key]
-
+	for key, e := range ei.RequiredEnv {
 		if envVar, ok := clientEnvs[key]; ok {
 			if secret := e.Secret; secret != nil {
 				id := secretStore.Set(task.Secret{
 					Key:   key,
 					Value: envVar,
 				})
-
-				env[key] = SecretOrString{
+				ei.RequiredEnv[key] = SecretOrString{
 					Secret: SecretOfID(id),
 				}
 			} else {
-				env[key] = SecretOrString{
+				ei.RequiredEnv[key] = SecretOrString{
 					Value: envVar,
 				}
 			}
 		} else {
-			if secret := e.Secret; secret != nil {
-				return errors.Errorf("EnvVar %s is not defined.", key)
-			}
-
-			env[key] = e
+			return errors.Errorf("EnvVar %s is required, but not defined.", key)
 		}
 	}
 
-	ce.Env = env
+	for key, e := range ei.OptionalEnv {
+		if envVar, ok := clientEnvs[key]; ok {
+			if secret := e.Secret; secret != nil {
+				id := secretStore.Set(task.Secret{
+					Key:   key,
+					Value: envVar,
+				})
+				ei.OptionalEnv[key] = SecretOrString{
+					Secret: SecretOfID(id),
+				}
+			} else {
+				ei.OptionalEnv[key] = SecretOrString{
+					Value: envVar,
+				}
+			}
+		}
+	}
 
 	return nil
 }

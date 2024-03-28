@@ -25,9 +25,8 @@ type Task interface {
 	Fill(values map[string]any) error
 }
 
-type Group interface {
-	SetParent(t Task)
-	Parent() Task
+type TaskUnmarshaler interface {
+	UnmarshalTask(t Task) error
 }
 
 func WrapTask(t *flow.Task, scope Scope) Task {
@@ -64,9 +63,8 @@ func (t *task) Scope() Scope {
 }
 
 func (t *task) Decode(input any) error {
-	if lv, ok := input.(Group); ok {
-		lv.SetParent(t)
-		return nil
+	if u, ok := input.(TaskUnmarshaler); ok {
+		return u.UnmarshalTask(t)
 	}
 
 	if err := t.Value().Decode(input); err != nil {

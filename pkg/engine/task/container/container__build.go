@@ -28,9 +28,9 @@ type Build struct {
 }
 
 func (x *Build) Do(ctx context.Context) error {
-	p := x.Parent()
+	tt := x.T()
 
-	stepIter, err := cueflow.IterSteps(cueflow.CueValue(p.Value()))
+	stepIter, err := cueflow.IterSteps(cueflow.CueValue(tt.Value()))
 	if err != nil {
 		return err
 	}
@@ -44,16 +44,16 @@ func (x *Build) Do(ctx context.Context) error {
 				cue.ParsePath("input").Selectors(),
 			)...)
 
-			if err := p.Scope().FillPath(path, step.Output); err != nil {
+			if err := tt.Scope().FillPath(path, step.Output); err != nil {
 				return err
 			}
 		}
 
-		if err := p.Scope().RunTasks(ctx, cueflow.WithPrefix(itemValue.Path())); err != nil {
+		if err := tt.Scope().RunTasks(ctx, cueflow.WithPrefix(itemValue.Path())); err != nil {
 			return errors.Wrapf(err, "steps[%d]", idx)
 		}
 
-		stepValue := p.Scope().LookupPath(itemValue.Path())
+		stepValue := tt.Scope().LookupPath(itemValue.Path())
 
 		if err := stepValue.Decode(step); err != nil {
 			return errors.Wrapf(err, "steps[%d]: decode result failed", idx)

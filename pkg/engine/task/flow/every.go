@@ -25,9 +25,9 @@ type Every struct {
 }
 
 func (t *Every) Do(ctx context.Context) error {
-	p := t.Parent()
+	tt := t.T()
 
-	scope := cueflow.CueValue(p.Value().LookupPath(cue.ParsePath("steps")))
+	scope := cueflow.CueValue(tt.Value().LookupPath(cue.ParsePath("steps")))
 
 	list, err := scope.List()
 	if err != nil {
@@ -37,11 +37,11 @@ func (t *Every) Do(ctx context.Context) error {
 	for idx := 0; list.Next(); idx++ {
 		itemValue := list.Value()
 
-		if err := p.Scope().RunTasks(ctx, cueflow.WithPrefix(itemValue.Path())); err != nil {
+		if err := tt.Scope().RunTasks(ctx, cueflow.WithPrefix(itemValue.Path())); err != nil {
 			return errors.Wrapf(err, "steps[%d]", idx)
 		}
 
-		resultValue := p.Scope().Value().LookupPath(itemValue.Path())
+		resultValue := tt.Scope().Value().LookupPath(itemValue.Path())
 
 		ti := &StepInterface{}
 

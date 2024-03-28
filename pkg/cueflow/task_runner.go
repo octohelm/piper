@@ -49,14 +49,22 @@ func (t *taskRunner) Task() Task {
 	return t.task
 }
 
-func (t *taskRunner) resultValues() map[string]any {
-	values := map[string]any{}
+type OutputValuer interface {
+	OutputValues() map[string]any
+}
 
+func (t *taskRunner) outputValues() map[string]any {
 	rv := t.inputTaskRunner
+
+	if valuer, ok := rv.Interface().(OutputValuer); ok {
+		return valuer.OutputValues()
+	}
 
 	for rv.Kind() == reflect.Ptr {
 		rv = rv.Elem()
 	}
+
+	values := map[string]any{}
 
 	for name, loc := range t.outputFields {
 		f := getField(rv, loc)
@@ -134,7 +142,7 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 		canDone.Done(nil)
 	}
 
-	resultValues := t.resultValues()
+	resultValues := t.outputValues()
 
 	defer func() {
 		if err != nil {

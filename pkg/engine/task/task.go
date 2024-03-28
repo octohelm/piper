@@ -46,18 +46,19 @@ func (SetupTask) Setup() bool {
 	return true
 }
 
-var _ cueflow.Group = &Group{}
+var _ cueflow.TaskUnmarshaler = &Group{}
 
 type Group struct {
 	Task
 
-	parent cueflow.Task
+	t cueflow.Task
 }
 
-func (v *Group) SetParent(t cueflow.Task) {
-	v.parent = t
+func (v *Group) UnmarshalTask(t cueflow.Task) error {
+	v.t = t
+	return nil
 }
 
-func (v *Group) Parent() cueflow.Task {
-	return v.parent
+func (v *Group) T() cueflow.Task {
+	return v.t
 }
