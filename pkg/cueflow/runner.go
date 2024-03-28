@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/octohelm/piper/pkg/dagger"
 	"io"
 	"os"
 	"sort"
@@ -16,16 +15,17 @@ import (
 	"sync/atomic"
 	"text/tabwriter"
 
-	"github.com/mattn/go-isatty"
-	"github.com/vito/progrock"
-	"github.com/vito/progrock/console"
-
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/ast"
 	cueerrors "cuelang.org/go/cue/errors"
 	"cuelang.org/go/tools/flow"
-	"github.com/go-courier/logr"
+	"github.com/gobwas/glob"
+	"github.com/mattn/go-isatty"
 	"github.com/pkg/errors"
+	"github.com/vito/progrock"
+	"github.com/vito/progrock/console"
+
+	"github.com/octohelm/piper/pkg/dagger"
 )
 
 func NewRunner(build func() (Value, error)) *Runner {
@@ -43,7 +43,7 @@ type Runner struct {
 	root     atomic.Pointer[scope]
 	taskDone sync.Map
 
-	target cue.Path
+	match  func(p string) bool
 	output string
 
 	setups     map[string][]string
@@ -54,14 +54,6 @@ type Runner struct {
 }
 
 func (r *Runner) printAllowedTasksTo(w io.Writer, tasks []*flow.Task) {
-	scope := r.target
-
-	_, _ = fmt.Fprintf(w, `
-Undefined action:
-
-`)
-	printSelectors(w, scope.Selectors()[1:]...)
-
 	_, _ = fmt.Fprintf(w, `
 Allowed action:
 
@@ -178,9 +170,20 @@ func (r *Runner) Run(ctx context.Context, action []string) error {
 		actions[i] = strconv.Quote(actions[i])
 	}
 
-	r.target = cue.ParsePath(strings.Join(actions, "."))
+	p := cue.ParsePath(strings.Join(actions, "."))
 
-	return runWith(ctx, r.target.String(), func(ctx context.Context) error {
+	targetPath := formatPath(p)
+
+	g := glob.MustCompile(targetPath)
+
+	r.match = func(taskPath string) bool {
+		if strings.HasPrefix(taskPath, targetPath) {
+			return true
+		}
+		return g.Match(taskPath)
+	}
+
+	return runWith(ctx, targetPath, func(ctx context.Context) error {
 		return r.run(ctx)
 	})
 }
@@ -204,22 +207,9 @@ func (r *Runner) run(ctx context.Context) error {
 		return errors.Wrap(err, "prepare task failed")
 	}
 
-	defer func() {
-		if o := r.Value().LookupPath(r.target).LookupPath(cue.ParsePath("result")); o.Exists() {
-			_, final := logr.FromContext(ctx).Start(ctx, o.Path().String())
-			defer final.End()
-			if ok := o.LookupPath(cue.ParsePath("ok")); ok.Exists() {
-				ok, _ := CueValue(ok).Bool()
-				if ok {
-					final.WithValues("result", CueLogValue(o)).Info("success.")
-				} else {
-					final.WithValues("result", CueLogValue(o)).Error(errors.New("failed."))
-				}
-			} else {
-				final.WithValues("result", CueLogValue(o)).Info("done.")
-			}
-		}
-	}()
+	if len(r.targets) == 0 {
+		return errors.New("no tasks founded to run")
+	}
 
 	if err := r.RunTasks(ctx, WithShouldRunFunc(func(value cue.Value) bool {
 		_, ok := r.setups[formatPath(value.Path())]
@@ -244,6 +234,15 @@ func formatPath(p cue.Path) string {
 	for i, s := range p.Selectors() {
 		if i > 0 {
 			b.WriteRune('/')
+		}
+
+		if s.Type() == cue.StringLabel {
+			if strings.Contains(s.String(), "/") {
+				b.WriteString(s.String())
+				continue
+			}
+			b.WriteString(s.Unquoted())
+			continue
 		}
 		b.WriteString(s.String())
 	}
@@ -278,28 +277,30 @@ func (r *Runner) walkTasks(ctx context.Context, tasks []*flow.Task, prefix []str
 		case TaskSetup:
 			r.resolveDependencies(tasks[i], r.setups)
 		case TaskUnmarshaler:
-			stepIter, err := IterSteps(CueValue(tk.Value()))
-			if err == nil {
-				for i, step := range stepIter {
-					stepPath := append(currentPath, fmt.Sprintf("steps/%d", i))
+			if r.match(formatPath(tk.Path())) {
+				stepIter, err := IterSteps(CueValue(tk.Value()))
+				if err == nil {
+					for i, step := range stepIter {
+						stepPath := append(currentPath, fmt.Sprintf("steps/%d", i))
 
-					if i > 0 {
-						// dep pre step
-						r.targets[formatPath(step.Path())] = []string{
-							strings.Join(append(currentPath, fmt.Sprintf("steps/%d", i-1)), "/"),
+						if i > 0 {
+							// dep pre step
+							r.targets[formatPath(step.Path())] = []string{
+								strings.Join(append(currentPath, fmt.Sprintf("steps/%d", i-1)), "/"),
+							}
+
+							r.graphPaths[formatPath(step.Path())] = stepPath
 						}
 
-						r.graphPaths[formatPath(step.Path())] = stepPath
-					}
-
-					if err := r.walkTasks(ctx, resoleTasks(ctx, r, WithPrefix(step.Path())), stepPath); err != nil {
-						return err
+						if err := r.walkTasks(ctx, resoleTasks(ctx, r, WithPrefix(step.Path())), stepPath); err != nil {
+							return err
+						}
 					}
 				}
 			}
 		}
 
-		if strings.HasPrefix(formatPath(tk.Path()), formatPath(r.target)) {
+		if r.match(formatPath(tk.Path())) {
 			r.resolveDependencies(tasks[i], r.targets)
 		}
 	}
@@ -316,7 +317,7 @@ func (r *Runner) prepareTasks(ctx context.Context, tasks []*flow.Task) error {
 		return err
 	}
 
-	if r.target.String() != "actions" && len(r.targets) > 0 {
+	if len(r.targets) > 0 {
 		if os.Getenv("GRAPH") != "" {
 			fmt.Println(printGraph(r.targets, r.graphPaths))
 		}

@@ -3,7 +3,6 @@ package wd
 import (
 	"context"
 	"github.com/k0sproject/rig"
-	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
 type CanOSInfo interface {
@@ -13,7 +12,7 @@ type CanOSInfo interface {
 type OSInfo struct {
 	rig.OSVersion
 
-	Platform v1.Platform
+	Platform Platform
 
 	Home string
 }
@@ -34,7 +33,7 @@ func (w *wd) OSInfo(ctx context.Context) (*OSInfo, error) {
 	}
 
 	return &OSInfo{
-		Platform: v1.Platform{
+		Platform: Platform{
 			OS:           os,
 			Architecture: arch,
 		},

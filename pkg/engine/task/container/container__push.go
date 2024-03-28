@@ -5,14 +5,14 @@ import (
 	"dagger.io/dagger"
 	"fmt"
 	"github.com/go-courier/logr"
-	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/generic/record"
+	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 	"strings"
-	"sync"
 )
 
 func init() {
@@ -41,14 +41,14 @@ func (x *Push) Do(ctx context.Context) error {
 	}
 
 	eg := &errgroup.Group{}
-	published := &sync.Map{}
+	published := record.Map[*pkgwd.Platform, string]{}
 
 	for platform, container := range x.Images {
 		eg.Go(func() error {
 			return container.Select(ctx).Do(ctx, func(ctx context.Context, c *piperdagger.Client) error {
 				cc := container.Container(c)
 
-				p, err := v1.ParsePlatform(platform)
+				p, err := pkgwd.ParsePlatform(platform)
 				if err != nil {
 					return errors.Wrapf(err, "parse platform failed: %s", p)
 				}
@@ -78,10 +78,7 @@ func (x *Push) Do(ctx context.Context) error {
 	return piperdagger.Select(ctx, piperdagger.Scope{}).Do(ctx, func(ctx context.Context, c *piperdagger.Client) error {
 		opt := dagger.ContainerPublishOpts{}
 
-		for k, v := range published.Range {
-			platform := k.(*v1.Platform)
-			image := v.(string)
-
+		for platform, image := range published.Range {
 			cc := c.Container(dagger.ContainerOpts{Platform: dagger.Platform(platform.String())})
 			cc = RegistryAuthStoreContext.From(ctx).ApplyTo(ctx, c, cc, image, x.Auth)
 			opt.PlatformVariants = append(opt.PlatformVariants, cc.From(image))

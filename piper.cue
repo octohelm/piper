@@ -101,7 +101,8 @@ actions: ship: {
 						container.#Copy & {
 							contents: _bin.output
 							source:   "/"
-							dest:     "/"
+							include: ["piper"]
+							dest:     "/usr/local/bin"
 						},
 						container.#Set & {
 							config: {

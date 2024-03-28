@@ -2,7 +2,7 @@ package dagger
 
 import (
 	"fmt"
-	v1 "github.com/google/go-containerregistry/pkg/v1"
+	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"net/url"
 	"strings"
 )
@@ -34,7 +34,7 @@ func ParsePiperRunnerHosts(str string) ([]PiperRunnerHost, error) {
 
 		if platforms, ok := u.Query()["platform"]; ok {
 			for _, platform := range platforms {
-				p, err := v1.ParsePlatform(platform)
+				p, err := pkgwd.ParsePlatform(platform)
 				if err != nil {
 					return nil, err
 				}
@@ -51,5 +51,5 @@ func ParsePiperRunnerHosts(str string) ([]PiperRunnerHost, error) {
 type PiperRunnerHost struct {
 	Name       string
 	RunnerHost string
-	Platforms  []v1.Platform
+	Platforms  []pkgwd.Platform
 }
