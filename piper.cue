@@ -96,6 +96,7 @@ actions: ship: {
 						"wget": _
 						"curl": _
 						"make": _
+						"file": _
 					}
 					steps: [
 						container.#Copy & {

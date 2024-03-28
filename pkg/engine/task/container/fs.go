@@ -3,16 +3,17 @@ package container
 import (
 	"context"
 	"dagger.io/dagger"
+	"encoding/json"
 	"fmt"
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
+	"github.com/octohelm/piper/pkg/generic/record"
 	"github.com/opencontainers/go-digest"
 	"github.com/pkg/errors"
-	"sync"
 )
 
-var fsIDs = sync.Map{}
+var fsIDs = record.Map[string, any]{}
 
 type Fs struct {
 	Ref struct {
@@ -36,8 +37,8 @@ func (fs *Fs) Scope() piperdagger.Scope {
 }
 
 func (fs *Fs) DirectoryID() dagger.DirectoryID {
-	if k, ok := fsIDs.Load(fs.Ref.ID); ok {
-		if dc, ok := k.(fsContext); ok {
+	if value, ok := fsIDs.Load(fs.Ref.ID); ok {
+		if dc, ok := value.(fsContext); ok {
 			return dc.id
 		}
 	}
@@ -45,8 +46,8 @@ func (fs *Fs) DirectoryID() dagger.DirectoryID {
 }
 
 func (fs *Fs) Directory(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
-	if k, ok := fsIDs.Load(fs.Ref.ID); ok {
-		switch x := k.(type) {
+	if value, ok := fsIDs.Load(fs.Ref.ID); ok {
+		switch x := value.(type) {
 		case fsContext:
 			return c.LoadDirectoryFromID(x.id), nil
 		case lazyAction:
@@ -69,28 +70,41 @@ func (fs *Fs) Sync(ctx context.Context, c *dagger.Directory) error {
 		return errors.Wrap(err, "resolve fs id failed")
 	}
 
-	key := "fs://" + digest.FromString(string(id)).String()
+	scope := piperdagger.ScopeContext.From(ctx)
+	key := fmt.Sprintf("dagger-dir://%s?scope=%s", digest.FromString(string(id)), scope)
 	fsIDs.Store(key, fsContext{
 		id:    id,
-		scope: piperdagger.ScopeContext.From(ctx),
+		scope: scope,
 	})
 	fs.Ref.ID = key
 	return nil
 }
 
-func (fs *Fs) SyncLazyDirectory(ctx context.Context, do LazyDoFn) error {
-	key := "lazy+" + digest.FromString(fmt.Sprintf("%p", do)).String()
-	fsIDs.Store(key, lazyAction{
+func (fs *Fs) SyncLazyDirectory(ctx context.Context, inputs any, do LazyDoFn) error {
+	data, err := json.Marshal(inputs)
+	if err != nil {
+		return err
+	}
+
+	key := fmt.Sprintf("lazy://%s", digest.FromBytes(data))
+
+	_, loaded := fsIDs.LoadOrStore(key, lazyAction{
 		taskPath: cueflow.TaskPathContext.From(ctx),
 		do:       do,
 	})
+
+	if loaded {
+		panic(fmt.Errorf("lazy fs conflicted, %s", key))
+	}
+
 	fs.Ref.ID = key
+
 	return nil
 }
 
 type fsContext struct {
-	id    dagger.DirectoryID
 	scope piperdagger.Scope
+	id    dagger.DirectoryID
 }
 
 type LazyDoFn func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error)
