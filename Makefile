@@ -25,7 +25,7 @@ ship.multi-builder:
 		$(PIPER) do ship
 
 release:
-	$(PIPER) do release
+	GRAPH=1 TTY=0 $(PIPER) do release
 
 gen:
 	go run ./internal/cmd/tool gen ./cmd/piper

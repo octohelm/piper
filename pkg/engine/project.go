@@ -21,7 +21,6 @@ import (
 	_ "github.com/octohelm/piper/pkg/engine/task/encoding"
 	_ "github.com/octohelm/piper/pkg/engine/task/exec"
 	_ "github.com/octohelm/piper/pkg/engine/task/file"
-	_ "github.com/octohelm/piper/pkg/engine/task/flow"
 	_ "github.com/octohelm/piper/pkg/engine/task/http"
 	_ "github.com/octohelm/piper/pkg/engine/task/wd"
 )

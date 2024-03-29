@@ -35,7 +35,7 @@ func (c *flowTaskConfig) Build(optFns ...TaskOptionFunc) {
 	}
 }
 
-func isPrefix(selectors []cue.Selector, prefixSelectors []cue.Selector) bool {
+func isPrefixStrict(selectors []cue.Selector, prefixSelectors []cue.Selector) bool {
 	if len(selectors) < len(prefixSelectors) {
 		return false
 	}
@@ -46,11 +46,21 @@ func isPrefix(selectors []cue.Selector, prefixSelectors []cue.Selector) bool {
 		}
 	}
 
+	if len(selectors) > 0 {
+		last := selectors[len(selectors)-1]
+		if last.LabelType() != cue.IndexLabel {
+			// struct path equal should not prefix
+			if len(selectors) == len(prefixSelectors) {
+				return false
+			}
+		}
+	}
+
 	return true
 }
 
 func trimPrefix(selectors []cue.Selector, prefixParts []cue.Selector) []cue.Selector {
-	if isPrefix(selectors, prefixParts) {
+	if isPrefixStrict(selectors, prefixParts) {
 		return selectors[len(prefixParts):]
 	}
 	return selectors
@@ -73,7 +83,7 @@ func (c *flowTaskConfig) New(v Scope) *flow.Controller {
 		selectors := v.Path().Selectors()
 
 		if prefix := c.prefix; prefix != nil {
-			if !isPrefix(selectors, prefix.Selectors()) {
+			if !isPrefixStrict(selectors, prefix.Selectors()) {
 				return nil, nil
 			}
 		}
@@ -119,15 +129,6 @@ func runTasks(ctx context.Context, scope Scope, opts ...TaskOptionFunc) error {
 	c.Build(opts...)
 
 	taskRunnerResolver := TaskRunnerFactoryContext.From(ctx)
-
-	c.updateFunc = func(c *flow.Controller, t *flow.Task) error {
-		if t != nil {
-			// when task value changes
-			// need to put back value to root for using by child tasks
-			return scope.FillPath(t.Path(), t.Value())
-		}
-		return nil
-	}
 
 	c.taskFunc = func(t *flow.Task) error {
 		if scope.Processed(t.Path()) {

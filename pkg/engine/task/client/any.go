@@ -15,12 +15,13 @@ func (Any) CueType() []byte {
 }
 
 func (v *Any) UnmarshalJSON(data []byte) error {
+	if len(data) == 0 {
+		return nil
+	}
 	o := &anyjson.Array{}
-
 	if err := json.Unmarshal(slices.Concat([]byte("["), data, []byte("]")), o); err != nil {
 		return err
 	}
-
 	*v = Any{Value: o.Value().(anyjson.List)[0]}
 	return nil
 }

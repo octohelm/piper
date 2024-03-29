@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"sort"
+	"strings"
 
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/errors"
@@ -74,6 +75,10 @@ func (f *factory) register(tpe reflect.Type) {
 		pt.flowTask = true
 	}
 
+	if _, ok := reflect.New(tpe).Interface().(FlowControl); ok {
+		pt.flowControl = true
+	}
+
 	for _, info := range pt.decl.Fields {
 		if info.AsOutput {
 			pt.outputFields[info.Name] = info.Loc
@@ -103,7 +108,10 @@ func (s *source) WriteDecl(named *namedType) {
 
 	s.WriteString("\n")
 
-	if named.flowTask {
+	if named.flowControl {
+		_, _ = fmt.Fprintf(s, `%s: $$control: name: %q
+`, named.decl.Name, strings.ToLower(strings.Trim(named.decl.Name, "#")))
+	} else if named.flowTask {
 		_, _ = fmt.Fprintf(s, `%s: $$task: name: %q
 `, named.decl.Name, named.FullName())
 	}
@@ -192,6 +200,7 @@ func WriteFile(ctx context.Context, fs filesystem.FileSystem, filename string, d
 type namedType struct {
 	tpe          reflect.Type
 	flowTask     bool
+	flowControl  bool
 	outputFields map[string][]int
 	decl         *cueify.Decl
 }

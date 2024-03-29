@@ -52,7 +52,7 @@ func (v UnTar) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 		case "SrcFile":
 			return []string{
-				"tar filename base on the current work dest",
+				"tar filename base on the current work outDir",
 			}, true
 		case "ContentEncoding":
 			return []string{
@@ -60,7 +60,7 @@ func (v UnTar) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 		case "OutDir":
 			return []string{
-				"output dest for tar",
+				"output outDir for tar",
 			}, true
 		case "Dir":
 			return []string{
@@ -76,6 +76,6 @@ func (v UnTar) RuntimeDoc(names ...string) ([]string, bool) {
 	}
 	return []string{
 		"UnTar",
-		"un tar files into specified dest",
+		"un tar files into specified outDir",
 	}, true
 }

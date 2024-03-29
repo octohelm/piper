@@ -120,9 +120,11 @@ func (r *Do) Do(ctx context.Context) error {
 	r.Response.Status = resp.StatusCode
 
 	if contentType := resp.Header.Get("Content-Type"); strings.Contains(contentType, "json") {
-		if err := json.NewDecoder(resp.Body).Decode(&r.Response.Data); err != nil {
+		a := &client.Any{}
+		if err := json.NewDecoder(resp.Body).Decode(a); err != nil {
 			return err
 		}
+		r.Response.Data = a.Value
 	} else if strings.HasPrefix(contentType, "text/") {
 		data, err := io.ReadAll(resp.Body)
 		if err != nil {

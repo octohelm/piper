@@ -1,8 +1,11 @@
 package cueflow
 
 import (
-	"encoding/json"
+	"cuelang.org/go/cue"
+	"fmt"
 	"log/slog"
+
+	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
 )
 
 const (
@@ -23,16 +26,14 @@ type logValue struct {
 
 func (c *logValue) LogValue() slog.Value {
 	switch x := c.v.(type) {
+	case cue.Value:
+		return slog.StringValue(WrapValue(x).Source())
 	case Value:
-		data, err := CueValue(x).MarshalJSON()
-		if err != nil {
-			return slog.AnyValue(x.Source())
-		}
-		return slog.AnyValue(data)
+		return slog.StringValue(x.Source())
 	default:
-		data, err := json.Marshal(c.v)
+		data, err := encodingcue.Marshal(c.v)
 		if err != nil {
-			panic(err)
+			panic(fmt.Errorf("encoding failed: %s, %v", err, c.v))
 		}
 		return slog.AnyValue(data)
 	}

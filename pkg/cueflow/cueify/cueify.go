@@ -201,15 +201,15 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 
 			fieldSuffix := "!"
 
+			if field.AsOutput || strings.HasPrefix(field.Name, "$$") {
+				fieldSuffix = ""
+			}
+
 			if field.Optional {
 				if t.Kind() == reflect.Ptr {
 					t = t.Elem()
 				}
 				fieldSuffix = "?"
-			}
-
-			if field.AsOutput || strings.HasPrefix(field.Name, "$$") {
-				fieldSuffix = ""
 			}
 
 			if field.DefaultValue != nil {
@@ -346,7 +346,8 @@ func walkFields(st reflect.Type, each func(info *Field), parentLoc ...int) {
 			info.Embed = embed
 		}
 
-		taskTag, hasOutput := f.Tag.Lookup("output")
+		outputTag, hasOutput := f.Tag.Lookup("output")
+
 		if jsonTag == "-" && !hasOutput {
 			continue
 		}
@@ -356,12 +357,16 @@ func walkFields(st reflect.Type, each func(info *Field), parentLoc ...int) {
 		}
 
 		if hasOutput {
-			attrs := strings.SplitN(taskTag, ",", 2)
+			attrs := strings.SplitN(outputTag, ",", 2)
 
 			info.AsOutput = true
 
 			if name := attrs[0]; name != "" {
 				info.Name = name
+			}
+
+			if strings.Contains(outputTag, ",omitempty") {
+				info.Optional = true
 			}
 		}
 

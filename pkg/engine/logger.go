@@ -1,18 +1,19 @@
 package engine
 
 import (
+	"bufio"
+	"bytes"
 	"context"
 	"fmt"
-	"io"
-	"log/slog"
-	"strings"
-
 	"github.com/fatih/color"
 	"github.com/go-courier/logr"
 	"github.com/innoai-tech/infra/pkg/configuration"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/opencontainers/go-digest"
 	"github.com/vito/progrock"
+	"io"
+	"log/slog"
+	"strings"
 )
 
 // +gengo:enum
@@ -225,7 +226,13 @@ func (l *logger) printf(w io.Writer, prefix string, msg string) {
 
 				switch x := logValue.(type) {
 				case []byte:
-					_, _ = fmt.Fprint(w, color.WhiteString(" %s=%v", attr.Key, string(x)))
+					_, _ = fmt.Fprint(w, color.WhiteString(" %s=", attr.Key))
+					s := bufio.NewScanner(bytes.NewBuffer(x))
+					for s.Scan() {
+						if line := s.Text(); len(line) > 0 {
+							_, _ = fmt.Fprint(w, color.WhiteString("%s\n", line))
+						}
+					}
 				default:
 					_, _ = fmt.Fprint(w, color.WhiteString(" %s=%v", attr.Key, x))
 				}

@@ -43,11 +43,11 @@ import (
 					]
 				}
 
-				"file": {
-					if _run.ok {
-						file.#File & {
-							wd:       _run.cwd
-							filename: _filename
+				"file": file.#File & {
+					wd: _run.cwd
+					filename: {
+						if _run.$ok {
+							_filename
 						}
 					}
 				}

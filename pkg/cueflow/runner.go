@@ -40,18 +40,19 @@ type scope struct {
 }
 
 type Runner struct {
-	build    func() (Value, error)
-	root     atomic.Pointer[scope]
-	taskDone record.Map[string, any]
+	build      func() (Value, error)
+	root       atomic.Pointer[scope]
+	taskResult record.Map[string, any]
 
 	match  func(p string) bool
 	output string
 
-	setups     map[string][]string
-	targets    map[string][]string
-	graphPaths map[string][]string
-
 	mu sync.RWMutex
+
+	activeTasks map[string][]string
+	setups      map[string][]string
+	targets     map[string][]string
+	graphPaths  map[string][]string
 }
 
 func (r *Runner) printAllowedTasksTo(w io.Writer, tasks []*flow.Task) {
@@ -138,6 +139,10 @@ func (r *Runner) Value() Value {
 	return r.root.Load().Value
 }
 
+func (r *Runner) LookupResult(p cue.Path) (any, bool) {
+	return r.taskResult.Load(formatPath(p))
+}
+
 func (r *Runner) LookupPath(p cue.Path) Value {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -146,18 +151,20 @@ func (r *Runner) LookupPath(p cue.Path) Value {
 }
 
 func (r *Runner) FillPath(p cue.Path, v any) error {
-	_, ok := r.taskDone.LoadOrStore(formatPath(p), v)
+	if _, ok := v.(cue.Value); ok {
+		return errors.Errorf("invalid value for filling %s", p)
+	}
+	_, ok := r.taskResult.LoadOrStore(formatPath(p), v)
 	if !ok {
 		r.mu.Lock()
 		defer r.mu.Unlock()
-
 		r.root.Store(&scope{Value: r.root.Load().Value.FillPath(p, v)})
 	}
 	return nil
 }
 
 func (r *Runner) Processed(p cue.Path) bool {
-	_, ok := r.taskDone.Load(p.String())
+	_, ok := r.taskResult.Load(p.String())
 	return ok
 }
 
@@ -220,7 +227,7 @@ func (r *Runner) run(ctx context.Context) error {
 	}
 
 	if err := r.RunTasks(ctx, WithShouldRunFunc(func(value cue.Value) bool {
-		_, ok := r.targets[formatPath(value.Path())]
+		_, ok := r.activeTasks[formatPath(value.Path())]
 		return ok
 	})); err != nil {
 		return errors.Wrap(err, "run task failed")
@@ -278,32 +285,35 @@ func (r *Runner) walkTasks(ctx context.Context, tasks []*flow.Task, prefix []str
 		case TaskSetup:
 			r.resolveDependencies(tasks[i], r.setups)
 		case TaskUnmarshaler:
-			if r.match(formatPath(tk.Path())) {
-				stepIter, err := IterSteps(CueValue(tk.Value()))
-				if err == nil {
-					for i, step := range stepIter {
-						stepPath := append(currentPath, fmt.Sprintf("steps/%d", i))
 
-						if i > 0 {
-							// dep pre step
-							r.targets[formatPath(step.Path())] = []string{
-								strings.Join(append(currentPath, fmt.Sprintf("steps/%d", i-1)), "/"),
-							}
+			stepIter, err := IterSteps(CueValue(tk.Value()))
+			if err == nil {
+				for i, step := range stepIter {
+					stepPath := append(currentPath, fmt.Sprintf("steps/%d", i))
 
-							r.graphPaths[formatPath(step.Path())] = stepPath
+					if i > 0 {
+						stepP := formatPath(step.Path())
+
+						// dep pre step
+						r.targets[stepP] = []string{
+							strings.Join(append(currentPath, fmt.Sprintf("steps/%d", i-1)), "/"),
 						}
 
-						if err := r.walkTasks(ctx, resoleTasks(ctx, r, WithPrefix(step.Path())), stepPath); err != nil {
-							return err
-						}
+						r.graphPaths[stepP] = stepPath
 					}
+
+					if err := r.walkTasks(ctx, resoleTasks(ctx, r, WithPrefix(step.Path())), stepPath); err != nil {
+						return err
+					}
+				}
+			} else {
+				if err := r.walkTasks(ctx, resoleTasks(ctx, r, WithPrefix(tk.Path())), currentPath); err != nil {
+					return err
 				}
 			}
 		}
 
-		if r.match(formatPath(tk.Path())) {
-			r.resolveDependencies(tasks[i], r.targets)
-		}
+		r.resolveDependencies(tasks[i], r.targets)
 	}
 
 	return nil
@@ -318,9 +328,44 @@ func (r *Runner) prepareTasks(ctx context.Context, tasks []*flow.Task) error {
 		return err
 	}
 
-	if len(r.targets) > 0 {
+	r.activeTasks = map[string][]string{}
+
+	var walkActiveTask func(name string)
+	walkActiveTask = func(name string) {
+		// avoid loop
+		if _, ok := r.activeTasks[name]; ok {
+			return
+		}
+
+		if deps, ok := r.targets[name]; ok {
+			r.activeTasks[name] = deps
+			for _, dep := range deps {
+				walkActiveTask(dep)
+			}
+		}
+	}
+
+	for path, deps := range r.targets {
+		if r.match(path) {
+			walkActiveTask(path)
+			for _, dep := range deps {
+				walkActiveTask(dep)
+			}
+		}
+	}
+
+	// child tasks
+	for name, path := range r.graphPaths {
+		if len(path) > 0 {
+			if _, ok := r.activeTasks[path[0]]; ok {
+				r.activeTasks[name] = r.targets[name]
+			}
+		}
+	}
+
+	if len(r.activeTasks) > 0 {
 		if os.Getenv("GRAPH") != "" {
-			fmt.Println(printGraph(r.targets, r.graphPaths))
+			fmt.Println(printGraph(r.activeTasks, r.graphPaths))
 		}
 		return nil
 	}
@@ -330,12 +375,12 @@ func (r *Runner) prepareTasks(ctx context.Context, tasks []*flow.Task) error {
 	return errors.New(buf.String())
 }
 
-func printGraph(targets map[string][]string, graphPaths map[string][]string) (string, error) {
+func printGraph(activeTargets map[string][]string, graphPaths map[string][]string) (string, error) {
 	buffer := bytes.NewBuffer(nil)
 
 	w, err := zlib.NewWriterLevel(buffer, 9)
 	if err != nil {
-		return "", errors.Wrap(err, "fail to create the w")
+		return "", errors.Wrap(err, "fail to write")
 	}
 
 	wrap := func(name string) string {
@@ -351,7 +396,8 @@ func printGraph(targets map[string][]string, graphPaths map[string][]string) (st
 
 	_, _ = fmt.Fprintf(w, `direction: right
 `)
-	for name, deps := range targets {
+
+	for name, deps := range activeTargets {
 		for _, d := range deps {
 			_, _ = fmt.Fprintf(w, `
 %s -> %s

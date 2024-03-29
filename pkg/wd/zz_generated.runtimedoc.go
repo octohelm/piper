@@ -60,3 +60,38 @@ func (v Options) RuntimeDoc(names ...string) ([]string, bool) {
 	}
 	return []string{}, true
 }
+
+func (v Platform) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Architecture":
+			return []string{
+				"Architecture field specifies the CPU architecture, for example",
+				"`amd64` or `ppc64le`.",
+			}, true
+		case "OS":
+			return []string{
+				"OS specifies the operating system, for example `linux` or `windows`.",
+			}, true
+		case "OSVersion":
+			return []string{
+				"OSVersion is an optional field specifying the operating system",
+				"version, for example on Windows `10.0.14393.1066`.",
+			}, true
+		case "OSFeatures":
+			return []string{
+				"OSFeatures is an optional field specifying an array of strings,",
+				"each listing a required OS feature (for example on Windows `win32k`).",
+			}, true
+		case "Variant":
+			return []string{
+				"Variant is an optional field specifying a variant of the CPU, for",
+				"example `v7` to specify ARMv7 when architecture is `arm`.",
+			}, true
+
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}

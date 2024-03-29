@@ -46,7 +46,7 @@ func (v Field) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 		case "Embed":
 			return []string{}, true
-		case "Idx":
+		case "Loc":
 			return []string{}, true
 		case "Type":
 			return []string{}, true

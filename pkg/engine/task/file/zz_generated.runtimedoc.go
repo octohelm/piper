@@ -14,6 +14,36 @@ func runtimeDoc(v any, names ...string) ([]string, bool) {
 	return nil, false
 }
 
+func (v Ensure) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "Cwd":
+			return []string{
+				"current workdir",
+			}, true
+		case "Path":
+			return []string{
+				"path to file",
+			}, true
+		case "File":
+			return []string{
+				"the existed file",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"Ensure to check path exists",
+	}, true
+}
+
 func (v Exists) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
@@ -45,6 +75,8 @@ func (v Exists) RuntimeDoc(names ...string) ([]string, bool) {
 func (v File) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Checkpoint":
+			return []string{}, true
 		case "WorkDir":
 			return []string{
 				"current work dir",
@@ -54,6 +86,9 @@ func (v File) RuntimeDoc(names ...string) ([]string, bool) {
 				"filename related from current work dir",
 			}, true
 
+		}
+		if doc, ok := runtimeDoc(v.Checkpoint, names...); ok {
+			return doc, ok
 		}
 
 		return nil, false
@@ -263,6 +298,36 @@ func (v ReadFromYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
+}
+
+func (v Rel) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "Cwd":
+			return []string{
+				"current workdir",
+			}, true
+		case "SrcFile":
+			return []string{
+				"src file",
+			}, true
+		case "File":
+			return []string{
+				"the converted file",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"Rel to check path exists",
+	}, true
 }
 
 func (v StringOrFile) RuntimeDoc(names ...string) ([]string, bool) {

@@ -108,11 +108,11 @@ func (r *Run) Do(ctx context.Context) error {
 		}
 
 		err := cwd.Exec(ctx, cmd, opts...)
-
 		if err != nil {
 			if r.With.Failfast {
 				return err
 			}
+			r.Done(err)
 		} else {
 			r.Done(nil)
 		}

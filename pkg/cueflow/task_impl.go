@@ -1,7 +1,19 @@
 package cueflow
 
+import "cuelang.org/go/cue"
+
+var DepPath = cue.ParsePath("$dep")
+var OkPath = cue.ParsePath("$ok")
+var ControlPath = cue.ParsePath("$$control.name")
+
 type FlowTask interface {
 	flowTask()
+}
+
+type FlowControl interface {
+	FlowTask
+
+	flowControl()
 }
 
 // TaskSetup which task will run before all others tasks
@@ -15,12 +27,30 @@ type TaskImpl struct {
 func (TaskImpl) flowTask() {
 }
 
+var _ FlowControl = FlowControlImpl{}
+
+type FlowControlImpl struct {
+}
+
+func (FlowControlImpl) flowTask() {
+}
+func (FlowControlImpl) flowControl() {
+}
+
 type OutputValuer interface {
 	OutputValues() map[string]any
 }
 
+type CanSkip interface {
+	Skip() bool
+}
+
 type CacheDisabler interface {
 	CacheDisabled() bool
+}
+
+type Checkpoint interface {
+	AsCheckpoint() bool
 }
 
 type Successor interface {
@@ -33,5 +63,4 @@ type ResultValuer interface {
 
 type TaskFeedback interface {
 	Done(err error)
-	FillResult(values map[string]any)
 }

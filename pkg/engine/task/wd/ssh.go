@@ -70,7 +70,9 @@ func (c *SSH) Do(ctx context.Context) error {
 		return err
 	}
 
-	c.WorkDir.Ref.ID = task.WorkDirContext.From(ctx).Set(cwd)
+	c.WorkDir.Ref.ID = cwd.Addr().String()
+
+	task.WorkDirContext.From(ctx).Store(c.WorkDir.Ref.ID, cwd)
 
 	return nil
 }

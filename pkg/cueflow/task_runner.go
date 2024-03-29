@@ -2,7 +2,7 @@ package cueflow
 
 import (
 	"context"
-	"encoding/json"
+	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
 	"github.com/opencontainers/go-digest"
 	"log/slog"
 	"reflect"
@@ -53,9 +53,27 @@ func (t *taskRunner) Task() Task {
 }
 
 func (t *taskRunner) Run(ctx context.Context) (err error) {
-	ctx = TaskPathContext.Inject(ctx, t.task.Path().String())
-
 	stepRunner := t.inputTaskRunner.Interface().(StepRunner)
+
+	cv := CueValue(t.task.Value())
+	dep := cv.LookupPath(DepPath)
+	if ctrl := dep.LookupPath(ControlPath); ctrl.Exists() {
+		ctrlType, _ := ctrl.String()
+		switch ctrlType {
+		case "skip":
+			needSkip, _ := dep.LookupPath(cue.ParsePath("when")).Bool()
+			if needSkip {
+				if _, ok := stepRunner.(TaskFeedback); ok {
+					return t.fill(map[string]any{
+						"$ok": false,
+					})
+				}
+				return nil
+			}
+		}
+	}
+
+	ctx = TaskPathContext.Inject(ctx, t.task.Path().String())
 
 	l := logr.FromContext(ctx)
 
@@ -89,14 +107,17 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 		return err
 	}
 
-	// fill output for tasks at flow.*
-	if taskFeedback, ok := stepRunner.(TaskFeedback); ok {
-		taskFeedback.FillResult(output)
-	}
+	return t.fill(output)
+}
 
-	// fill output to cue
-	if err := t.task.Fill(output); err != nil {
-		return errors.Wrap(err, "fill result failed")
+func (t *taskRunner) fill(output map[string]any) error {
+	// fill output to root value
+	if err := t.task.Scope().FillPath(t.task.Path(), output); err != nil {
+		return errors.Wrap(err, "fill result values failed")
+	}
+	// fill output to trigger cue flow continue
+	if err := t.task.Fill(nil); err != nil {
+		return errors.Wrap(err, "fill task failed")
 	}
 
 	return nil
@@ -110,36 +131,42 @@ type cacheKey struct {
 }
 
 func (t *taskRunner) cachedOrDoTask(ctx context.Context, stepRunner StepRunner) (output map[string]any, err error) {
+	isCheckpoint := false
+
+	if checkpoint, ok := stepRunner.(Checkpoint); ok {
+		isCheckpoint = checkpoint.AsCheckpoint()
+	}
+
 	l := logr.FromContext(ctx)
 	hint := false
 
 	defer func() {
-		done := "done."
-		if hint {
-			done = "cached."
-		}
-
 		if err != nil {
 			l.Error(err)
-		} else {
-			keyAndValues := make([]any, 0, len(output)*2)
-			for k, v := range output {
-				keyAndValues = append(keyAndValues, k, CueLogValue(v))
-			}
-			l.WithValues(keyAndValues...).Debug(done)
+			return
 		}
+		done := "done"
+		if hint {
+			done = "cached"
+		}
+		if isCheckpoint {
+			done = "resolved"
+		}
+		l.WithValues("result", CueLogValue(output)).Debug(done)
 	}()
 
-	params, err := json.Marshal(stepRunner)
+	params, err := encodingcue.Marshal(stepRunner)
 	if err != nil {
 		return nil, err
 	}
 
 	do := sync.OnceValue(func() any {
-		l.WithValues("params", params).Debug("started.")
+		if !isCheckpoint {
+			l.WithValues("params", params).Debug("starting")
 
-		if err := stepRunner.Do(ctx); err != nil {
-			return errors.Wrapf(err, "%T do failed", stepRunner)
+			if err := stepRunner.Do(ctx); err != nil {
+				return errors.Wrapf(err, "%T do failed", stepRunner)
+			}
 		}
 
 		// done task before resolve output values
@@ -199,6 +226,15 @@ func (fields outputFields) OutputValues(rv reflect.Value) map[string]any {
 			}
 			continue
 		}
+
+		// nil value never as output value
+		if f.Kind() == reflect.Ptr {
+			if !f.IsNil() {
+				values[name] = f.Interface()
+			}
+			continue
+		}
+
 		values[name] = f.Interface()
 	}
 

@@ -1,15 +1,16 @@
 package task
 
 import (
+	"context"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/x/ptr"
 )
 
 type Task struct {
+	// task hook to make task could run after some others
+	Dep any `json:"$dep,omitempty"`
 	// task result
-	Ok *bool `json:"-" output:"ok"`
-
-	values map[string]any
+	Ok *bool `json:"-" output:"$ok,omitempty"`
 
 	cueflow.TaskImpl
 }
@@ -26,16 +27,6 @@ func (t *Task) Done(err error) {
 	if t.Ok == nil {
 		t.Ok = ptr.Ptr(err == nil)
 	}
-}
-
-func (t *Task) FillResult(v map[string]any) {
-	t.values = v
-}
-
-var _ cueflow.ResultValuer = Task{}
-
-func (t Task) ResultValue() map[string]any {
-	return t.values
 }
 
 type SetupTask struct {
@@ -69,4 +60,25 @@ var _ cueflow.CacheDisabler = &Group{}
 
 func (Group) CacheDisabled() bool {
 	return true
+}
+
+type Checkpoint struct {
+	// no need the ok
+	Task `json:"-"`
+}
+
+var _ cueflow.CacheDisabler = &Checkpoint{}
+
+func (Checkpoint) CacheDisabled() bool {
+	return true
+}
+
+var _ cueflow.Checkpoint = &Checkpoint{}
+
+func (Checkpoint) AsCheckpoint() bool {
+	return true
+}
+
+func (Checkpoint) Do(ctx context.Context) error {
+	return nil
 }

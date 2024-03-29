@@ -1,36 +1,33 @@
 package client
 
 import (
-	"context"
 	"cuelang.org/go/cue"
 	cueerrors "cuelang.org/go/cue/errors"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/pkg/errors"
 	"strings"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &ResultInterface{})
+	cueflow.RegisterTask(task.Factory, &WaitInterface{})
 }
 
-// ResultInterface of client
-type ResultInterface struct {
-	// to avoid added ok
-	task.Task
+// WaitInterface for wait task ready
+type WaitInterface struct {
+	task.Checkpoint
 
 	values map[string]any
 }
 
-func (ResultInterface) CacheDisabled() bool {
-	return true
-}
+var _ cueflow.TaskUnmarshaler = &WaitInterface{}
 
-var _ cueflow.CacheDisabler = &EnvInterface{}
-
-var _ cueflow.TaskUnmarshaler = &ResultInterface{}
-
-func (ret *ResultInterface) UnmarshalTask(t cueflow.Task) error {
+func (ret *WaitInterface) UnmarshalTask(t cueflow.Task) error {
 	v := cueflow.CueValue(t.Value())
+
+	if v.Kind() != cue.StructKind {
+		return errors.New("client.#Wait must be a struct")
+	}
 
 	i, err := v.Fields(cue.All())
 	if err != nil {
@@ -40,7 +37,14 @@ func (ret *ResultInterface) UnmarshalTask(t cueflow.Task) error {
 	ret.values = map[string]any{}
 
 	for i.Next() {
-		prop := i.Selector().Unquoted()
+		s := i.Selector()
+
+		prop := ""
+		if s.Type() == cue.StringLabel {
+			prop = s.Unquoted()
+		} else {
+			prop = s.String()
+		}
 
 		// avoid task prop and the ok
 		if strings.HasPrefix(prop, "$$") || prop == "ok" {
@@ -57,21 +61,12 @@ func (ret *ResultInterface) UnmarshalTask(t cueflow.Task) error {
 	return nil
 }
 
-var _ cueflow.OutputValuer = &ResultInterface{}
+var _ cueflow.OutputValuer = &WaitInterface{}
 
-func (ret *ResultInterface) OutputValues() map[string]any {
+func (ret *WaitInterface) OutputValues() map[string]any {
 	values := map[string]any{}
-
 	for k, v := range ret.values {
 		values[k] = v
 	}
-
-	values["ok"] = ret.Success()
-
 	return values
-}
-
-func (ret *ResultInterface) Do(ctx context.Context) error {
-	// nothing to do
-	return nil
 }

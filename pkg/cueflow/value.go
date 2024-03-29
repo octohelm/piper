@@ -75,12 +75,7 @@ func (val *value) LookupPath(p cue.Path) Value {
 }
 
 func (val *value) FillPath(p cue.Path, v any) Value {
-	switch x := v.(type) {
-	case CueValueWrapper:
-		return WrapValue(val.cueValue.FillPath(p, x.CueValue()))
-	default:
-		return WrapValue(val.cueValue.FillPath(p, x))
-	}
+	return WrapValue(val.cueValue.FillPath(p, v))
 }
 
 func IterSteps(value cue.Value) (func(yield func(idx int, item cue.Value) bool), error) {

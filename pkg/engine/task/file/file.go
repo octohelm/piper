@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/piper/pkg/engine/task"
 	"io"
 	"os"
 
@@ -11,11 +13,26 @@ import (
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 )
 
+func init() {
+	cueflow.RegisterTask(task.Factory, &ReadAsString{})
+}
+
 type File struct {
+	task.Checkpoint
+	
 	// current work dir
 	WorkDir wd.WorkDir `json:"wd"`
 	// filename related from current work dir
 	Filename string `json:"filename"`
+}
+
+var _ cueflow.OutputValuer = &File{}
+
+func (f *File) OutputValues() map[string]any {
+	return map[string]any{
+		"wd":       f.WorkDir,
+		"filename": f.Filename,
+	}
 }
 
 func (f *File) Sync(ctx context.Context, wd pkgwd.WorkDir, filename string) error {
