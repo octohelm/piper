@@ -49,10 +49,6 @@ import (
 					"apt_cache": "/var/apt/cache"
 				}
 
-				_platform: container.#Platform & {
-					"input": input
-				}
-
 				_run: container.#Run & {
 					"input": _mirror_configrated.output
 					"mounts": {
@@ -60,7 +56,7 @@ import (
 							"\(id)": container.#Mount & {
 								dest: "\(dir)"
 								contents: container.#CacheDir & {
-									"id": "\(_platform.output)/\(id)"
+									"id": "\(input.platform)/\(id)"
 								}
 							}
 						}

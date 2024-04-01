@@ -40,6 +40,6 @@ func (x *Pull) Do(ctx context.Context) error {
 
 		dc = dc.From(x.Source)
 
-		return x.Output.Sync(ctx, dc)
+		return x.Output.Sync(ctx, dc, string(requestPlatform))
 	})
 }

@@ -23,13 +23,13 @@ type Container struct {
 	Ref struct {
 		ID string `json:"id"`
 	} `json:"$$container"`
+	Rootfs   Fs     `json:"rootfs"`
+	Platform string `json:"platform"`
 }
 
 func (container *Container) Select(ctx context.Context) piperdagger.Engine {
 	scope := container.Scope()
-
 	logr.FromContext(ctx).WithValues("container", container.Ref.ID, "scope", scope).Debug("selected engine")
-
 	return piperdagger.RunnerContext.From(ctx).Select(ctx, scope)
 }
 
@@ -54,7 +54,7 @@ func (container *Container) Container(c *dagger.Client) *dagger.Container {
 	return c.Container()
 }
 
-func (container *Container) Sync(ctx context.Context, c *dagger.Container) error {
+func (container *Container) Sync(ctx context.Context, c *dagger.Container, platform string) error {
 	cc, err := c.Sync(ctx)
 	if err != nil {
 		return err
@@ -63,15 +63,25 @@ func (container *Container) Sync(ctx context.Context, c *dagger.Container) error
 	if err != nil || id == "" {
 		return errors.Wrap(err, "resolve container id failed")
 	}
-	container.set(id, piperdagger.ScopeContext.From(ctx))
+
+	if err := container.Rootfs.Sync(ctx, c.Rootfs()); err != nil {
+		return err
+	}
+
+	container.Platform = platform
+
+	container.storeContainerID(piperdagger.ScopeContext.From(ctx), id)
+
 	return nil
 }
 
-func (container *Container) set(id dagger.ContainerID, scope piperdagger.Scope) {
+func (container *Container) storeContainerID(scope piperdagger.Scope, id dagger.ContainerID) {
 	key := digest.FromString(string(id)).String()
+
 	containerIDs.Store(key, containerMeta{
 		id:    id,
 		scope: scope,
 	})
+
 	container.Ref.ID = key
 }

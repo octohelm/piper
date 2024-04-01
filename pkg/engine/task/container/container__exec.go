@@ -72,6 +72,6 @@ func (e *Exec) Do(ctx context.Context) error {
 
 		container = container.WithExec(e.Args)
 
-		return e.Output.Sync(ctx, container)
+		return e.Output.Sync(ctx, container, e.Input.Platform)
 	})
 }

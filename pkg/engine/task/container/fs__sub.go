@@ -14,15 +14,13 @@ func init() {
 type Sub struct {
 	task.Task
 
-	Input    Fs       `json:"input,omitempty"`
-	Contents Fs       `json:"contents"`
-	Source   string   `json:"source" default:"/"`
-	Include  []string `json:"include,omitempty"`
-	Exclude  []string `json:"exclude,omitempty"`
-
-	Dest string `json:"dest" default:"/"`
-
-	Output Fs `json:"-" output:"output"`
+	// source fs
+	Input   Fs       `json:"input,omitempty"`
+	Source  string   `json:"source" default:"/"`
+	Include []string `json:"include,omitempty"`
+	Exclude []string `json:"exclude,omitempty"`
+	Dest    string   `json:"dest" default:"/"`
+	Output  Fs       `json:"-" output:"output"`
 }
 
 func (x *Sub) Do(ctx context.Context) error {
@@ -31,11 +29,8 @@ func (x *Sub) Do(ctx context.Context) error {
 		if err != nil {
 			return nil, err
 		}
-		src, err := x.Contents.Directory(ctx, c)
-		if err != nil {
-			return nil, err
-		}
-		return base.WithDirectory(x.Dest, src, dagger.DirectoryWithDirectoryOpts{
+
+		return c.Directory().WithDirectory(x.Dest, base.Directory(x.Source), dagger.DirectoryWithDirectoryOpts{
 			Include: x.Include,
 			Exclude: x.Exclude,
 		}), nil

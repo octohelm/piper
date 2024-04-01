@@ -22,7 +22,9 @@ import (
 		"steps": [
 			container.#Pull & {
 				"source":   source
-				"platform": platform
+				if platform != _|_  {
+					"platform": platform
+				}
 			},
 			#InstallPackage & {
 				"input":    _

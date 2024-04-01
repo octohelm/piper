@@ -36,6 +36,6 @@ func (x *Copy) Do(ctx context.Context) error {
 		return x.Output.Sync(ctx, base.WithDirectory(x.Dest, src, dagger.ContainerWithDirectoryOpts{
 			Include: x.Include,
 			Exclude: x.Exclude,
-		}))
+		}), x.Input.Platform)
 	})
 }

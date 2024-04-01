@@ -18,7 +18,7 @@ ship.build:
 	$(PIPER) do ship build
 
 ship:
-	$(PIPER) do ship publish
+	$(PIPER) do ship push
 
 ship.multi-builder:
 	PIPER_BUILDER_HOST="tcp://arm64builder@?platform=linux/arm64,docker-image://amd64builder@?platform=linux/amd64" \

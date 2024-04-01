@@ -22,6 +22,6 @@ type Set struct {
 
 func (x *Set) Do(ctx context.Context) error {
 	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *piperdagger.Client) error {
-		return x.Output.Sync(ctx, x.Config.ApplyTo(x.Input.Container(c)))
+		return x.Output.Sync(ctx, x.Config.ApplyTo(x.Input.Container(c)), x.Input.Platform)
 	})
 }

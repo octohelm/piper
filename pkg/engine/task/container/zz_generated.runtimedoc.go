@@ -85,6 +85,8 @@ func (v Config) RuntimeDoc(names ...string) ([]string, bool) {
 func (v Container) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Platform":
+			return []string{}, true
 
 		}
 
@@ -429,28 +431,6 @@ func (v MountTemp) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
-}
-
-func (v Platform) RuntimeDoc(names ...string) ([]string, bool) {
-	if len(names) > 0 {
-		switch names[0] {
-		case "Task":
-			return []string{}, true
-		case "Input":
-			return []string{}, true
-		case "Output":
-			return []string{}, true
-
-		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
-			return doc, ok
-		}
-
-		return nil, false
-	}
-	return []string{
-		"Platform resolve platform of container",
-	}, true
 }
 
 func (v Pull) RuntimeDoc(names ...string) ([]string, bool) {

@@ -5,30 +5,26 @@ import (
 	"dagger.io/dagger"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
-	"github.com/octohelm/piper/pkg/engine/task/wd"
+	"github.com/octohelm/piper/pkg/engine/task/file"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
+	"path"
 	"path/filepath"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Source{})
+	cueflow.RegisterTask(task.Factory, &SourceFile{})
 }
 
-type Source struct {
+type SourceFile struct {
 	task.Task
 
-	// working dir
-	Cwd     wd.WorkDir `json:"cwd"`
-	Path    string     `json:"path" default:"."`
-	Include []string   `json:"include,omitempty"`
-	Exclude []string   `json:"exclude,omitempty"`
-
-	Output Fs `json:"-" output:"output"`
+	File   file.File `json:"file"`
+	Output Fs        `json:"-" output:"output"`
 }
 
-func (x *Source) Do(ctx context.Context) error {
-	w, err := x.Cwd.Get(ctx)
+func (x *SourceFile) Do(ctx context.Context) error {
+	w, err := x.File.WorkDir.Get(ctx)
 	if err != nil {
 		return errors.Errorf("%T: get cwd failed: %s", x, err)
 	}
@@ -42,14 +38,16 @@ func (x *Source) Do(ctx context.Context) error {
 		return errors.Errorf("%T: only support cwd in local host", x)
 	}
 
-	path := filepath.Join(base, x.Path)
+	srcDir := filepath.Join(base, path.Dir(x.File.Filename))
+	srcFile := x.File.Filename
 
 	// storeContainerID the meta until some builder need to use.
 	// important for multi-builder build
 	return x.Output.SyncLazyDirectory(ctx, x, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
-		return c.Host().Directory(path, dagger.HostDirectoryOpts{
-			Include: x.Include,
-			Exclude: x.Exclude,
+		return c.Host().Directory(srcDir, dagger.HostDirectoryOpts{
+			Include: []string{
+				srcFile,
+			},
 		}), nil
 	})
 }

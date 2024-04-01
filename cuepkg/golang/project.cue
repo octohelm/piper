@@ -14,11 +14,10 @@ import (
 #Project: {
 	cwd: wd.#WorkDir
 
-	main: string
+	main!: string
 	os: [...string] | *["darwin", "linux"]
 	arch: [...string] | *["amd64", "arm64"]
 	ldflags: [...string] | *["-s", "-w"]
-
 	bin: string | *path.Base(main)
 
 	_out_dir: "./target"
