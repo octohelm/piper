@@ -85,6 +85,8 @@ func (v Config) RuntimeDoc(names ...string) ([]string, bool) {
 func (v Container) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
+		case "Rootfs":
+			return []string{}, true
 		case "Platform":
 			return []string{}, true
 
@@ -178,12 +180,27 @@ func (v Dump) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 		case "OutDir":
 			return []string{}, true
+		case "With":
+			return []string{}, true
 		case "Dir":
 			return []string{}, true
 
 		}
 		if doc, ok := runtimeDoc(v.Task, names...); ok {
 			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v DumpOption) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Empty":
+			return []string{}, true
+
 		}
 
 		return nil, false
@@ -631,6 +648,26 @@ func (v Source) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
+func (v SourceFile) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "File":
+			return []string{}, true
+		case "Output":
+			return []string{}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
 func (v StepInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
@@ -652,9 +689,9 @@ func (v Sub) RuntimeDoc(names ...string) ([]string, bool) {
 		case "Task":
 			return []string{}, true
 		case "Input":
-			return []string{}, true
-		case "Contents":
-			return []string{}, true
+			return []string{
+				"source fs",
+			}, true
 		case "Source":
 			return []string{}, true
 		case "Include":

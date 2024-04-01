@@ -18,25 +18,25 @@ func init() {
 type Rel struct {
 	task.Task
 	// current workdir
-	Cwd wd.WorkDir `json:"cwd"`
+	BaseDir wd.WorkDir `json:"baseDir"`
 	// src file
-	SrcFile File `json:"srcFile"`
+	TargetFile File `json:"targetFile"`
 	// the converted file
 	File File `json:"-" output:"file"`
 }
 
 func (t *Rel) Do(ctx context.Context) error {
-	return t.Cwd.Do(ctx, func(ctx context.Context, cwd pkgwd.WorkDir) (err error) {
-		return t.SrcFile.WorkDir.Do(ctx, func(ctx context.Context, srcDir pkgwd.WorkDir) error {
-			cwdAddr := cwd.Addr()
-			srcFileAddr := srcDir.Addr()
+	return t.BaseDir.Do(ctx, func(ctx context.Context, baseDir pkgwd.WorkDir) (err error) {
+		return t.TargetFile.WorkDir.Do(ctx, func(ctx context.Context, targetDir pkgwd.WorkDir) error {
+			baseAddr := baseDir.Addr()
+			targetAddr := targetDir.Addr()
 
-			if pkgwd.SameFileSystem(cwdAddr, srcFileAddr) {
-				rel, err := filepath.Rel(cwdAddr.Path, srcFileAddr.Path)
+			if pkgwd.SameFileSystem(baseAddr, targetAddr) {
+				rel, err := filepath.Rel(baseAddr.Path, targetAddr.Path)
 				if err != nil {
 					return err
 				}
-				return t.File.Sync(ctx, cwd, filepath.Join(rel, t.SrcFile.Filename))
+				return t.File.Sync(ctx, baseDir, filepath.Join(rel, t.TargetFile.Filename))
 			}
 
 			return errors.New("not in same filesystem, please use file.#Sync first")

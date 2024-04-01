@@ -305,11 +305,11 @@ func (v Rel) RuntimeDoc(names ...string) ([]string, bool) {
 		switch names[0] {
 		case "Task":
 			return []string{}, true
-		case "Cwd":
+		case "BaseDir":
 			return []string{
 				"current workdir",
 			}, true
-		case "SrcFile":
+		case "TargetFile":
 			return []string{
 				"src file",
 			}, true

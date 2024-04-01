@@ -14,6 +14,30 @@ func runtimeDoc(v any, names ...string) ([]string, bool) {
 	return nil, false
 }
 
+func (v Dir) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Checkpoint":
+			return []string{}, true
+		case "WorkDir":
+			return []string{
+				"current work dir",
+			}, true
+		case "Path":
+			return []string{
+				"path related from current work dir",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Checkpoint, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
 func (v Local) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
@@ -54,6 +78,30 @@ func (v Platform) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
+}
+
+func (v Rel) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "BaseDir":
+			return []string{}, true
+		case "TargetDir":
+			return []string{}, true
+		case "Path":
+			return []string{}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"Rel to get related path between two dirs",
+	}, true
 }
 
 func (v Release) RuntimeDoc(names ...string) ([]string, bool) {
@@ -226,6 +274,33 @@ func (v SysInfo) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{
 		"SysInfo",
 		"get sys info of current work dir",
+	}, true
+}
+
+func (v Temp) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "ID":
+			return []string{
+				"related dir on the root of project",
+			}, true
+		case "WorkDir":
+			return []string{
+				"the tmp workdir",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"Tm",
+		"create a tmp workdir",
 	}, true
 }
 
