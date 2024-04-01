@@ -4,19 +4,26 @@ import (
 	"piper.octohelm.tech/container"
 )
 
-#ImageBase: {
-	packages: [pkgName=string]: #PackageOption
-	steps: [...container.#Step]
+#DefaultVersion: "bookworm"
+
+#DebianImage:  #ImageSource & {
+	name:  string | *"docker.io/library/debian"
+	version: string | *"\(#DefaultVersion)" // debian 12
+	source: "\(name):\(version)-slim"
+}
+
+#ImageSource: {
+	source: string
 	...
 }
 
-#Image: #ImageBase & {
-	debianversion: string | *"bookworm" // debian 12
-	source:        string | *"docker.io/library/debian:\(debianversion)-slim"
-	platform?:     string
+#Image: {
+	let _defaultSource = #DebianImage
 
-	packages: _
-	steps:    _
+	source:        string | *_defaultSource.source
+	platform?:     string
+	packages: [pkgName=string]: #PackageOption
+	steps: [...container.#Step]
 
 	_build: container.#Build & {
 		"steps": [

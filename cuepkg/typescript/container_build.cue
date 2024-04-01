@@ -1,4 +1,4 @@
-package bun
+package typescript
 
 import (
 	"path"
@@ -6,7 +6,37 @@ import (
 	"piper.octohelm.tech/wd"
 	"piper.octohelm.tech/client"
 	"piper.octohelm.tech/container"
+
+	"github.com/octohelm/piper/cuepkg/debian"
 )
+
+
+#BunImage: {
+	name: string | *"docker.io/oven/bun"
+	version: string | *"1"
+
+	source: "\(name):\(version)"
+}
+
+#NodeImage: {
+	nodeversion: string | *"21"
+
+	name: string | *"library/node"
+	version: string | *"21"
+
+	source: "\(name):\(version)"
+}
+
+
+#Image: {
+	let _default_image = #BunImage
+
+	from: string | *(_default_image.source)
+
+	debian.#Image & {
+	 	"source": "\(from)"
+	}
+}
 
 #ContainerBuild: {
 	source: container.#Source

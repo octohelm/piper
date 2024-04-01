@@ -39,7 +39,7 @@ func (x *SourceFile) Do(ctx context.Context) error {
 	}
 
 	srcDir := filepath.Join(base, path.Dir(x.File.Filename))
-	srcFile := x.File.Filename
+	srcFile := path.Base(x.File.Filename)
 
 	// storeContainerID the meta until some builder need to use.
 	// important for multi-builder build

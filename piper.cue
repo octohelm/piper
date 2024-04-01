@@ -65,8 +65,6 @@ actions: ship: containerutil.#Ship & {
 		debian.#InstallPackage & {
 			packages: {
 				"git":  _
-				"wget": _
-				"curl": _
 				"make": _
 				"file": _
 			}
@@ -88,6 +86,7 @@ actions: ship: containerutil.#Ship & {
 
 			output: _copy.output
 		},
+
 		container.#Set & {
 			config: {
 				label: "org.opencontainers.image.source": "https://github.com/octohelm/piper"
