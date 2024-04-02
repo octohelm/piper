@@ -2,48 +2,42 @@ package wd
 
 import (
 	"context"
+
 	"github.com/k0sproject/rig"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/sshutil"
 	"github.com/octohelm/piper/pkg/wd"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &SSH{})
+	cueflow.RegisterTask(task.Factory, &SSHFromConfig{})
 }
 
-// SSH
+// SSHFromConfig
 // create ssh work dir for remote executing
-type SSH struct {
+type SSHFromConfig struct {
 	task.Task
-	// ssh address
-	Address string `json:"address"`
-	// ssh hostKey
-	HostKey string `json:"hostKey,omitempty"`
-	// ssh identity file
-	IdentityFile string `json:"identityFile"`
-	// ssh port
-	Port int `json:"port,omitempty" default:"22"`
-	// ssh user
-	User string `json:"user,omitempty" default:"root"`
+
+	// path to ssh config
+	Config string `json:"config"`
+	// host key of ssh config
+	HostKey string `json:"hostKey"`
+
 	// the workdir from ssh
 	WorkDir WorkDir `json:"-" output:"dir"`
 }
 
-func (c *SSH) Do(ctx context.Context) error {
+func (c *SSHFromConfig) Do(ctx context.Context) error {
 	conn := &rig.Connection{}
-	conn.SSH = &rig.SSH{
-		Address: c.Address,
-		Port:    c.Port,
-		User:    c.User,
-		HostKey: c.HostKey,
-		KeyPath: &c.IdentityFile,
+
+	ssh, err := sshutil.Load(c.Config, c.HostKey)
+	if err != nil {
+		return err
 	}
+	conn.SSH = ssh
 
 	user := conn.SSH.User
-	if c.User != "" {
-		user = c.User
-	}
 
 	cwd, err := wd.Wrap(
 		conn,

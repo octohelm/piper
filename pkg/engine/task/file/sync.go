@@ -4,14 +4,15 @@ import (
 	"context"
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/chunk"
+	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/wd"
+	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/errors"
 	"io"
 	"log/slog"
 	"os"
-
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
-	"github.com/octohelm/piper/pkg/wd"
+	"path/filepath"
 )
 
 func init() {
@@ -22,11 +23,11 @@ func init() {
 type Sync struct {
 	task.Task
 	// source file
-	Source File `json:"source"`
+	SrcFile File `json:"srcFile"`
 	// sync option
-	With SyncOption `json:"with"`
+	With SyncOption `json:"with,omitempty"`
 	// dest fie
-	Dest File `json:"dest"`
+	OutFile File `json:"outFile"`
 	// synced file same as dest
 	File File `json:"-" output:"file"`
 }
@@ -37,32 +38,26 @@ type SyncOption struct {
 	MaxConcurrent int `json:"maxConcurrent" default:"16"`
 }
 
-var _ cueflow.WithScopeName = &Sync{}
-
-func (w *Sync) ScopeName(ctx context.Context) (string, error) {
-	return w.Dest.WorkDir.ScopeName(ctx)
-}
-
 func (t *Sync) Do(ctx context.Context) error {
-	return t.Source.WorkDir.Do(ctx, func(ctx context.Context, src wd.WorkDir) error {
-		srcFileInfo, err := src.Stat(ctx, t.Source.Filename)
+	return t.SrcFile.WorkDir.Do(ctx, func(ctx context.Context, src wd.WorkDir) error {
+		srcFileInfo, err := src.Stat(ctx, t.SrcFile.Filename)
 		if err != nil {
 			return errors.Wrapf(err, "%s: get digest failed", src)
 		}
-		srcDgst, err := src.Digest(ctx, t.Source.Filename)
+		srcDgst, err := src.Digest(ctx, t.SrcFile.Filename)
 		if err != nil {
 			return errors.Wrapf(err, "%s: get digest failed", src)
 		}
 
-		return t.Dest.WorkDir.Do(ctx, func(ctx context.Context, dst wd.WorkDir) (err error) {
-			dstDgst, _ := dst.Digest(ctx, t.Dest.Filename)
+		return t.OutFile.WorkDir.Do(ctx, func(ctx context.Context, dst wd.WorkDir) (err error) {
+			dstDgst, _ := dst.Digest(ctx, t.OutFile.Filename)
 
 			defer func() {
 				if err != nil {
 					// when err should remove file
-					_ = dst.RemoveAll(ctx, t.Dest.Filename)
+					_ = dst.RemoveAll(ctx, t.OutFile.Filename)
 				} else {
-					t.File = t.Dest
+					t.File = t.OutFile
 					t.Done(nil)
 				}
 			}()
@@ -70,6 +65,13 @@ func (t *Sync) Do(ctx context.Context) error {
 			// exists and not changed, skip
 			if dstDgst == srcDgst {
 				return nil
+			}
+
+			dir := filepath.Dir(t.OutFile.Filename)
+			if !(dir == "" || dir == "/") {
+				if err := filesystem.MkdirAll(ctx, dst, dir); err != nil {
+					return errors.Wrapf(err, "%s %s: mkdir failed", dst, dir)
+				}
 			}
 
 			total := srcFileInfo.Size()
@@ -101,7 +103,7 @@ func (t *Sync) Do(ctx context.Context) error {
 				return err
 			}
 
-			dstDgst, err = dst.Digest(ctx, t.Dest.Filename)
+			dstDgst, err = dst.Digest(ctx, t.OutFile.Filename)
 			if err != nil {
 				return err
 			}
@@ -116,9 +118,9 @@ func (t *Sync) Do(ctx context.Context) error {
 }
 
 func (t *Sync) truncateDst(ctx context.Context, dst wd.WorkDir, total int64) error {
-	dstFile, err := dst.OpenFile(ctx, t.Dest.Filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
+	dstFile, err := dst.OpenFile(ctx, t.OutFile.Filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
 	if err != nil {
-		return errors.Wrapf(err, "%s: open file failed", dst)
+		return errors.Wrapf(err, "%s %s: open dest file failed", dst, t.OutFile.Filename)
 	}
 	defer dstFile.Close()
 
@@ -133,9 +135,9 @@ func (t *Sync) truncateDst(ctx context.Context, dst wd.WorkDir, total int64) err
 }
 
 func (t *Sync) syncN(ctx context.Context, src wd.WorkDir, dst wd.WorkDir, size int64, offset int64, alt io.Writer) error {
-	srcFile, err := src.OpenFile(ctx, t.Source.Filename, os.O_RDONLY, os.ModePerm)
+	srcFile, err := src.OpenFile(ctx, t.SrcFile.Filename, os.O_RDONLY, os.ModePerm)
 	if err != nil {
-		return errors.Wrapf(err, "%s: open source file failed", src)
+		return errors.Wrapf(err, "%s  %s: open source file failed", src, t.SrcFile.Filename)
 	}
 	defer srcFile.Close()
 
@@ -143,9 +145,9 @@ func (t *Sync) syncN(ctx context.Context, src wd.WorkDir, dst wd.WorkDir, size i
 		return err
 	}
 
-	dstFile, err := dst.OpenFile(ctx, t.Dest.Filename, os.O_WRONLY, os.ModePerm)
+	dstFile, err := dst.OpenFile(ctx, t.OutFile.Filename, os.O_WRONLY, os.ModePerm)
 	if err != nil {
-		return errors.Wrapf(err, "%s: open dest file failed", src)
+		return errors.Wrapf(err, "%s %s: open dest file failed", src, t.OutFile.Filename)
 	}
 	defer dstFile.Close()
 
