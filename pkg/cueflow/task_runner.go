@@ -165,7 +165,7 @@ func (t *taskRunner) cachedOrDoTask(ctx context.Context, stepRunner StepRunner) 
 			l.WithValues("params", params).Debug("starting")
 
 			if err := stepRunner.Do(ctx); err != nil {
-				return errors.Wrapf(err, "%T do failed", stepRunner)
+				return errors.Wrapf(err, "%s", params)
 			}
 		}
 
