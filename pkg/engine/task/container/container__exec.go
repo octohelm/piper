@@ -19,10 +19,9 @@ type Exec struct {
 
 	Input Container `json:"input"`
 
-	Mounts map[string]Mount `json:"mounts"`
-
-	Env        map[string]client.SecretOrString `json:"env"`
 	Args       []string                         `json:"args"`
+	Mounts     map[string]Mount                 `json:"mounts,omitempty"`
+	Env        map[string]client.SecretOrString `json:"env,omitempty"`
 	Workdir    string                           `json:"workdir,omitempty" default:"/"`
 	Entrypoint []string                         `json:"entrypoint,omitempty"`
 	User       string                           `json:"user,omitempty" default:"root:root"`
