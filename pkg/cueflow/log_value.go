@@ -1,9 +1,10 @@
 package cueflow
 
 import (
-	"cuelang.org/go/cue"
 	"fmt"
 	"log/slog"
+
+	"cuelang.org/go/cue"
 
 	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
 )

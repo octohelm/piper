@@ -2,6 +2,8 @@ package container
 
 import (
 	"context"
+	"io/fs"
+
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -9,7 +11,6 @@ import (
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/errors"
-	"io/fs"
 )
 
 func init() {

@@ -1,8 +1,8 @@
-PIPER = go run ./cmd/piper
+PIPER = TTY=0 go run ./cmd/piper
 
 DEBUG = 0
 ifeq ($(DEBUG),1)
-	PIPER := GRAPH=1 TTY=0 $(PIPER) --log-level=debug
+	PIPER := GRAPH=1 $(PIPER) --log-level=debug
 endif
 
 tidy:

@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
 	"io"
 	"os"
+
+	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/piper/pkg/engine/task"
 
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
@@ -19,7 +20,7 @@ func init() {
 
 type File struct {
 	task.Checkpoint
-	
+
 	// current work dir
 	WorkDir wd.WorkDir `json:"wd"`
 	// filename related from current work dir

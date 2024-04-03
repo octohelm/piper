@@ -5,15 +5,16 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"log/slog"
+	"strings"
+
 	"github.com/fatih/color"
 	"github.com/go-courier/logr"
 	"github.com/innoai-tech/infra/pkg/configuration"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/opencontainers/go-digest"
 	"github.com/vito/progrock"
-	"io"
-	"log/slog"
-	"strings"
 )
 
 // +gengo:enum

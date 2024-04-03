@@ -2,10 +2,11 @@ package cueflow
 
 import (
 	"context"
+	"strings"
+
 	"github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/x/ptr"
 	"github.com/vito/progrock"
-	"strings"
 )
 
 func WrapDaggerRunner(r dagger.Runner) dagger.Runner {

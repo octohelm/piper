@@ -2,9 +2,10 @@ package dagger
 
 import (
 	"fmt"
-	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"net/url"
 	"strings"
+
+	pkgwd "github.com/octohelm/piper/pkg/wd"
 )
 
 func ParsePiperRunnerHosts(str string) ([]PiperRunnerHost, error) {

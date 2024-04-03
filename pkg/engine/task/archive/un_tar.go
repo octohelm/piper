@@ -4,12 +4,13 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"context"
+	"io"
+	"os"
+
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task/file"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"io"
-	"os"
 
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/wd"

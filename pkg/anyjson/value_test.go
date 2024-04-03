@@ -2,8 +2,9 @@ package anyjson
 
 import (
 	"encoding/json"
-	testingx "github.com/octohelm/x/testing"
 	"testing"
+
+	testingx "github.com/octohelm/x/testing"
 )
 
 var data = []byte(`

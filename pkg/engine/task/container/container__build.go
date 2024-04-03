@@ -2,9 +2,10 @@ package container
 
 import (
 	"context"
+	"slices"
+
 	"cuelang.org/go/cue"
 	"github.com/pkg/errors"
-	"slices"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"

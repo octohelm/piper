@@ -2,10 +2,11 @@ package client
 
 import (
 	"context"
-	"cuelang.org/go/cue"
 	"os"
 	"strings"
 	"sync"
+
+	"cuelang.org/go/cue"
 
 	"github.com/pkg/errors"
 

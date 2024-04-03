@@ -2,9 +2,10 @@ package container
 
 import (
 	"context"
-	"dagger.io/dagger"
 	"encoding/json"
 	"fmt"
+
+	"dagger.io/dagger"
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"

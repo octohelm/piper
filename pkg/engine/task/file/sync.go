@@ -2,6 +2,11 @@ package file
 
 import (
 	"context"
+	"io"
+	"log/slog"
+	"os"
+	"path/filepath"
+
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/chunk"
 	"github.com/octohelm/piper/pkg/cueflow"
@@ -9,10 +14,6 @@ import (
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/errors"
-	"io"
-	"log/slog"
-	"os"
-	"path/filepath"
 )
 
 func init() {

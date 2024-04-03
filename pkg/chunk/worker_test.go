@@ -1,10 +1,11 @@
 package chunk
 
 import (
-	testingx "github.com/octohelm/x/testing"
 	"sort"
 	"sync"
 	"testing"
+
+	testingx "github.com/octohelm/x/testing"
 )
 
 func TestWorker(t *testing.T) {

@@ -2,13 +2,14 @@ package container
 
 import (
 	"context"
+	"path/filepath"
+
 	"dagger.io/dagger"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
-	"path/filepath"
 )
 
 func init() {

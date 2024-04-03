@@ -3,17 +3,18 @@ package dagger
 import (
 	"context"
 	"fmt"
+	"math/rand"
+	"os"
+	"runtime"
+	"runtime/debug"
+	"sync"
+
 	"github.com/dagger/dagger/engine"
 	"github.com/dagger/dagger/engine/client"
 	contextx "github.com/octohelm/x/context"
 	"github.com/vito/progrock"
 	"github.com/vito/progrock/console"
 	"golang.org/x/sync/errgroup"
-	"math/rand"
-	"os"
-	"runtime"
-	"runtime/debug"
-	"sync"
 )
 
 type EngineOptionFunc = func(x *options)

@@ -2,6 +2,9 @@ package container
 
 import (
 	"context"
+	"os"
+	"path/filepath"
+
 	"dagger.io/dagger"
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
@@ -10,8 +13,6 @@ import (
 	"github.com/octohelm/piper/pkg/ociutil"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
-	"os"
-	"path/filepath"
 )
 
 func init() {

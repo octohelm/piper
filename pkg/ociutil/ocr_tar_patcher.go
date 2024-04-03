@@ -4,8 +4,9 @@ import (
 	"archive/tar"
 	"bytes"
 	"encoding/json"
-	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"io"
+
+	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
 type ManifestPatcher struct {

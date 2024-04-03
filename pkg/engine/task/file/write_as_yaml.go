@@ -2,6 +2,9 @@ package file
 
 import (
 	"context"
+	"os"
+	"path"
+
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
@@ -9,8 +12,6 @@ import (
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
-	"os"
-	"path"
 )
 
 func init() {

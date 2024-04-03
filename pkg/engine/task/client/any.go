@@ -2,8 +2,9 @@ package client
 
 import (
 	"encoding/json"
-	"github.com/octohelm/piper/pkg/anyjson"
 	"slices"
+
+	"github.com/octohelm/piper/pkg/anyjson"
 )
 
 type Any struct {

@@ -2,8 +2,9 @@ package container
 
 import (
 	"context"
-	"github.com/go-courier/logr"
 	"sync"
+
+	"github.com/go-courier/logr"
 
 	"dagger.io/dagger"
 	"github.com/opencontainers/go-digest"

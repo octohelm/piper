@@ -2,11 +2,12 @@ package cuepkg
 
 import (
 	"context"
-	"github.com/octohelm/cuekit/pkg/mod/modmem"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/octohelm/cuekit/pkg/mod/modmem"
 
 	"github.com/pkg/errors"
 

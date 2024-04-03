@@ -2,8 +2,10 @@ package container
 
 import (
 	"context"
-	"dagger.io/dagger"
 	"fmt"
+	"strings"
+
+	"dagger.io/dagger"
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
@@ -12,7 +14,6 @@ import (
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
-	"strings"
 )
 
 func init() {

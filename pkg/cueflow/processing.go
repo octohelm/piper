@@ -8,6 +8,7 @@ import (
 
 type ProcessReader interface {
 	io.Reader
+
 	Process(ctx context.Context) <-chan Progress
 }
 

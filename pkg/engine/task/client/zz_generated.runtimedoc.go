@@ -209,6 +209,11 @@ func (v WaitInterface) RuntimeDoc(names ...string) ([]string, bool) {
 		switch names[0] {
 		case "Checkpoint":
 			return []string{}, true
+		case "Ok":
+			return []string{
+				"as assertion, one $ok is false",
+				"all task should break",
+			}, true
 
 		}
 		if doc, ok := runtimeDoc(v.Checkpoint, names...); ok {

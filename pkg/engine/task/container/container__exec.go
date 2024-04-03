@@ -2,8 +2,9 @@ package container
 
 import (
 	"context"
-	"dagger.io/dagger"
 	"time"
+
+	"dagger.io/dagger"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"

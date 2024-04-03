@@ -2,11 +2,12 @@ package container
 
 import (
 	"context"
-	"dagger.io/dagger"
 	"encoding/json"
-	"github.com/octohelm/piper/pkg/engine/task/client"
 	"reflect"
 	"strings"
+
+	"dagger.io/dagger"
+	"github.com/octohelm/piper/pkg/engine/task/client"
 )
 
 type Mounter interface {

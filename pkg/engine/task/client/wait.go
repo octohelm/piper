@@ -1,12 +1,13 @@
 package client
 
 import (
+	"strings"
+
 	"cuelang.org/go/cue"
 	cueerrors "cuelang.org/go/cue/errors"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/pkg/errors"
-	"strings"
 )
 
 func init() {

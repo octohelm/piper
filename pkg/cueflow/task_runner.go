@@ -2,11 +2,12 @@ package cueflow
 
 import (
 	"context"
-	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
-	"github.com/opencontainers/go-digest"
 	"log/slog"
 	"reflect"
 	"sync"
+
+	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
+	"github.com/opencontainers/go-digest"
 
 	"cuelang.org/go/cue"
 	"github.com/go-courier/logr"
@@ -115,11 +116,6 @@ func (t *taskRunner) fill(output map[string]any) error {
 	if err := t.task.Scope().FillPath(t.task.Path(), output); err != nil {
 		return errors.Wrap(err, "fill result values failed")
 	}
-	// fill output to trigger cue flow continue
-	if err := t.task.Fill(nil); err != nil {
-		return errors.Wrap(err, "fill task failed")
-	}
-
 	return nil
 }
 

@@ -3,10 +3,11 @@ package container
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
-	"strings"
 )
 
 func init() {
