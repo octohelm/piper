@@ -26,7 +26,7 @@ func (ret *WaitInterface) UnmarshalTask(t cueflow.Task) error {
 	v := cueflow.CueValue(t.Value())
 
 	if v.Kind() != cue.StructKind {
-		return errors.New("client.#Wait must be a struct")
+		return errors.Errorf("client.#Wait must be a struct, but got %s", t.Value().Source())
 	}
 
 	i, err := v.Fields(cue.All())

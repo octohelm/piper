@@ -8,12 +8,12 @@ import (
 )
 
 type ImageConfig struct {
-	WorkingDir string            `json:"workdir" default:""`
+	WorkingDir string            `json:"workdir,omitempty"`
 	Env        map[string]string `json:"env,omitempty"`
 	Labels     map[string]string `json:"label,omitempty"`
 	Entrypoint []string          `json:"entrypoint,omitempty"`
 	Cmd        []string          `json:"cmd,omitempty"`
-	User       string            `json:"user" default:""`
+	User       string            `json:"user,omitempty"`
 }
 
 func ResolveImageConfig(ctx context.Context, c *Client, id dagger.ContainerID) (ImageConfig, error) {
