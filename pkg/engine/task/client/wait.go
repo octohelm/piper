@@ -17,6 +17,10 @@ func init() {
 type WaitInterface struct {
 	task.Checkpoint
 
+	// as assertion, one $ok is false
+	// all task should break
+	Ok bool `json:"$ok" default:"true"`
+
 	values map[string]any
 }
 
@@ -47,8 +51,19 @@ func (ret *WaitInterface) UnmarshalTask(t cueflow.Task) error {
 		}
 
 		// avoid task prop and the ok
-		if strings.HasPrefix(prop, "$$") || prop == "ok" {
+		if strings.HasPrefix(prop, "$$") {
 			continue
+		}
+
+		if prop == "$ok" {
+			ok, err := i.Value().Bool()
+			if err != nil {
+				return err
+			}
+
+			if !ok {
+				return errors.Errorf("task continue, cause got %s", t.Value().Source())
+			}
 		}
 
 		a := &Any{}

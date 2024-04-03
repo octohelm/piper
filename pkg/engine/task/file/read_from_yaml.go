@@ -25,7 +25,7 @@ type ReadFromYAML struct {
 	// file
 	File File `json:"file"`
 	// options
-	With ReadFromYAMLOption `json:"with"`
+	With ReadFromYAMLOption `json:"with,omitempty"`
 	// data
 	Data client.Any `json:"-" output:"data"`
 }
