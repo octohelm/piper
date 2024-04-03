@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"cuelang.org/go/cue"
-	"cuelang.org/go/tools/flow"
 	contextx "github.com/octohelm/x/context"
 )
 
@@ -16,46 +15,44 @@ var TaskPathContext = contextx.New[string](contextx.WithDefaultsFunc(func() stri
 var TaskPath = cue.ParsePath("$$task.name")
 
 type Task interface {
+	Scope() Scope
+
 	Name() string
 	Path() cue.Path
 	Deps() []cue.Path
-	Scope() Scope
 	Value() Value
 	Decode(inputs any) error
-	Fill(values map[string]any) error
 }
 
 type TaskUnmarshaler interface {
 	UnmarshalTask(t Task) error
 }
 
-func WrapTask(t *flow.Task, scope Scope) Task {
-	name, _ := t.Value().LookupPath(TaskPath).String()
+func NewTask(scope Scope, path cue.Path, deps ...cue.Path) Task {
+	v := CueValue(scope.LookupPath(path))
+	name, _ := v.LookupPath(TaskPath).String()
 
 	return &task{
 		name:  name,
+		path:  path,
 		scope: scope,
-		task:  t,
+		deps:  deps,
 	}
 }
 
 type task struct {
 	name  string
 	scope Scope
-	task  *flow.Task
+	path  cue.Path
+	deps  []cue.Path
 }
 
-func (t *task) Deps() (paths []cue.Path) {
-	deps := t.task.Dependencies()
-	paths = make([]cue.Path, len(deps))
-	for i := range deps {
-		paths[i] = deps[i].Path()
-	}
-	return nil
+func (t *task) Deps() []cue.Path {
+	return t.deps
 }
 
 func (t *task) Path() cue.Path {
-	return t.task.Path()
+	return t.path
 }
 
 func (t *task) Scope() Scope {
@@ -82,9 +79,5 @@ func (t *task) Name() string {
 
 func (t *task) Value() Value {
 	// always pick value from root
-	return t.scope.LookupPath(t.task.Path())
-}
-
-func (t *task) Fill(values map[string]any) error {
-	return t.task.Fill(values)
+	return t.scope.LookupPath(t.Path())
 }

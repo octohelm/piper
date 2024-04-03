@@ -4,8 +4,6 @@ go 1.22
 
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240311062028-c6a26b3e2c8f
 
-replace cuelang.org/go => github.com/morlay/cue v0.8.1-0.20240319082713-06f7982ccef1
-
 require (
 	cuelang.org/go v0.8.0
 	dagger.io/dagger v0.10.3

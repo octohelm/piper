@@ -130,28 +130,35 @@ func runTasks(ctx context.Context, scope Scope, opts ...TaskOptionFunc) error {
 
 	taskRunnerResolver := TaskRunnerFactoryContext.From(ctx)
 
-	c.taskFunc = func(t *flow.Task) error {
-		if scope.Processed(t.Path()) {
+	cr := &controller{
+		runTask: func(ctx context.Context, n Node) error {
+			if scope.Processed(n.Path()) {
+				return nil
+			}
+
+			tk := NewTask(scope, n.Path(), n.Deps()...)
+
+			tr, err := taskRunnerResolver.ResolveTaskRunner(tk)
+			if err != nil {
+				return errors.Wrap(err, "resolve task failed")
+			}
+
+			if err := tr.Run(ctx); err != nil {
+				return cueerrors.Wrapf(err, tk.Value().Pos(), "%s run failed", tk.Name())
+			}
+
 			return nil
-		}
+		},
+	}
 
-		tk := WrapTask(t, scope)
+	ctrl := c.New(scope)
 
-		tr, err := taskRunnerResolver.ResolveTaskRunner(tk)
+	for _, tt := range ctrl.Tasks() {
+		_, err := cr.nodeFromTask(tt)
 		if err != nil {
-			return errors.Wrap(err, "resolve task failed")
+			return err
 		}
-
-		if err := tr.Run(ctx); err != nil {
-			return cueerrors.Wrapf(err, tk.Value().Pos(), "%s run failed", tk.Name())
-		}
-
-		return nil
 	}
 
-	if err := c.New(scope).Run(ctx); err != nil {
-		return err
-	}
-
-	return nil
+	return cr.Run(ctx)
 }

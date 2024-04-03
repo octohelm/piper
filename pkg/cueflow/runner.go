@@ -140,6 +140,9 @@ func (r *Runner) Value() Value {
 }
 
 func (r *Runner) LookupResult(p cue.Path) (any, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	return r.taskResult.Load(formatPath(p))
 }
 
@@ -151,21 +154,26 @@ func (r *Runner) LookupPath(p cue.Path) Value {
 }
 
 func (r *Runner) FillPath(p cue.Path, v any) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	if _, ok := v.(cue.Value); ok {
 		return errors.Errorf("invalid value for filling %s", p)
 	}
+
 	_, ok := r.taskResult.LoadOrStore(formatPath(p), v)
 	if !ok {
-		r.mu.Lock()
-		defer r.mu.Unlock()
 		r.root.Store(&scope{Value: r.root.Load().Value.FillPath(p, v)})
 	}
 	return nil
 }
 
 func (r *Runner) Processed(p cue.Path) bool {
-	_, ok := r.taskResult.Load(p.String())
-	return ok
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	_, processed := r.taskResult.Load(formatPath(p))
+	return processed
 }
 
 func (r *Runner) RunTasks(ctx context.Context, optFns ...TaskOptionFunc) error {
@@ -261,9 +269,7 @@ func formatPath(p cue.Path) string {
 func (r *Runner) walkTasks(ctx context.Context, tasks []*flow.Task, prefix []string) error {
 	taskRunnerFactory := TaskRunnerFactoryContext.From(ctx)
 
-	for i := range tasks {
-		tk := WrapTask(tasks[i], r)
-
+	for i, tk := range tasks {
 		taskPath := formatPath(tk.Path())
 
 		prefixFullPath := strings.Join(prefix, "/")
@@ -276,7 +282,7 @@ func (r *Runner) walkTasks(ctx context.Context, tasks []*flow.Task, prefix []str
 
 		r.graphPaths[taskPath] = currentPath
 
-		t, err := taskRunnerFactory.ResolveTaskRunner(tk)
+		t, err := taskRunnerFactory.ResolveTaskRunner(NewTask(r, tk.Path()))
 		if err != nil {
 			return cueerrors.Wrapf(err, tk.Value().Pos(), "resolve task failed")
 		}
@@ -286,7 +292,7 @@ func (r *Runner) walkTasks(ctx context.Context, tasks []*flow.Task, prefix []str
 			r.resolveDependencies(tasks[i], r.setups)
 		case TaskUnmarshaler:
 
-			stepIter, err := IterSteps(CueValue(tk.Value()))
+			stepIter, err := IterSteps(tk.Value())
 			if err == nil {
 				for i, step := range stepIter {
 					stepPath := append(currentPath, fmt.Sprintf("steps/%d", i))
