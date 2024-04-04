@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        target: [ ship, release ]
+        target: [ ship, release, ship.distroless ]
 
     env:
       GOEXPERIMENT: rangefunc

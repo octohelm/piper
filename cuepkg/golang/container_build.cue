@@ -14,15 +14,15 @@ import (
 
 #GolangImage: {
 	version!: string
-	name: string | *"docker.io/library/golang"
-	source: "docker.io/library/golang:\(version)-\(debian.#DefaultVersion)"
+	name:     string | *"docker.io/library/golang"
+	source:   "docker.io/library/golang:\(version)-\(debian.#DefaultVersion)"
 }
 
 #Image: {
 	from!: string
 
 	debian.#Image & {
-	 	"source": "\(from)"
+		"source": "\(from)"
 	}
 }
 
@@ -50,23 +50,23 @@ import (
 	mounts: [Name=string]: container.#Mount
 
 	env: {
-		GOPROXY: _goenv.GOPROXY
+		GOPROXY:   _goenv.GOPROXY
 		GOPRIVATE: _goenv.GOPRIVATE
-		GOSUMDB: _goenv.GOSUMDB
+		GOSUMDB:   _goenv.GOSUMDB
 	}
 
 	_default_image: #GolangImage & {
-			version: "\(_info.output.goversion)"
+		version: "\(_info.output.goversion)"
 	}
 
-  // build image
+	// build image
 	image: #Image & {
 		from: _ | *_default_image.source
 	}
 
 	build: {
 		workdir: string | *"/go/src"
-		prepare: client.#StringOrSlice | *"go mod download -x",
+		prepare: client.#StringOrSlice | *"go mod download -x"
 
 		_cache: {
 			go_mod_cache:   "/go/pkg/mod"
@@ -76,7 +76,7 @@ import (
 		_cached_mounts: {
 			for _n, _p in _cache {
 				"\(_p)": container.#Mount & {
-					dest:     _p
+					dest: _p
 					contents: container.#CacheDir & {
 						id: "\(_n)"
 					}
@@ -94,11 +94,11 @@ import (
 				if prepare != _|_ {
 					container.#Run & {
 						"workdir": "\(workdir)"
-						"mounts": _cached_mounts
+						"mounts":  _cached_mounts
 						"run":     prepare
-						"env": env
+						"env":     env
 					}
-				}
+				},
 			]
 		}
 
@@ -107,14 +107,14 @@ import (
 				_outDir: "./target"
 
 				_build: container.#Run & {
-					"input": _load_source.output
+					"input":   _load_source.output
 					"workdir": "\(workdir)"
 					"run":     "go build -ldflags=\"\(strings.Join(ldflags, " "))\" -o \(_outDir)/\(bin) \(main)"
 					"env": {
-							env,
-							CGO_ENABLED: "0"
-							GOOS: "\(_os)",
-							GOARCH: "\(_arch)",
+						env
+						CGO_ENABLED: "0"
+						GOOS:        "\(_os)"
+						GOARCH:      "\(_arch)"
 					}
 					"mounts": {
 						mounts
@@ -123,9 +123,9 @@ import (
 				}
 
 				_dist: container.#Sub & {
-					input: _build.output.rootfs
+					input:  _build.output.rootfs
 					source: "\(path.Join([workdir, _outDir]))"
-					dest: "/"
+					dest:   "/"
 				}
 
 				output: _dist.output
@@ -139,20 +139,20 @@ import (
 		for _os in goos for _arch in goarch {
 			"\(_os)/\(_arch)": {
 				_outDir: wd.#Sub & {
-					"cwd": source.cwd,
+					"cwd": source.cwd
 					"path": path.Join([outDir, "\(bin)_\(_os)_\(_arch)"])
 				}
 
 				_dump: container.#Dump & {
 					input: build["\(_os)/\(_arch)"].output
 					with: {
-						empty: true,
+						empty: true
 					}
-					outDir:  _outDir.dir
+					outDir: _outDir.dir
 				}
 
 				"file": file.#File & {
-					wd: _dump.dir
+					wd:       _dump.dir
 					filename: bin
 				}
 			}

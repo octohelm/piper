@@ -10,9 +10,8 @@ import (
 	"github.com/octohelm/piper/cuepkg/debian"
 )
 
-
 #BunImage: {
-	name: string | *"docker.io/oven/bun"
+	name:    string | *"docker.io/oven/bun"
 	version: string | *"1"
 
 	source: "\(name):\(version)"
@@ -21,12 +20,11 @@ import (
 #NodeImage: {
 	nodeversion: string | *"21"
 
-	name: string | *"library/node"
+	name:    string | *"library/node"
 	version: string | *"21"
 
 	source: "\(name):\(version)"
 }
-
 
 #Image: {
 	let _default_image = #BunImage
@@ -34,7 +32,7 @@ import (
 	from: string | *(_default_image.source)
 
 	debian.#Image & {
-	 	"source": "\(from)"
+		"source": "\(from)"
 	}
 }
 
@@ -45,7 +43,7 @@ import (
 
 	build: {
 		workdir: "/app"
-		run!: client.#StringOrSlice
+		run!:    client.#StringOrSlice
 
 		env: [Key=string]:     string | container.#Secret
 		mounts: [Name=string]: container.#Mount
@@ -76,9 +74,9 @@ import (
 		}
 
 		_dist: container.#Sub & {
-			input: _run.output.rootfs
+			input:  _run.output.rootfs
 			source: "\(path.Join([workdir, outDir]))"
-			dest: "/"
+			dest:   "/"
 		}
 
 		output: _dist.output
@@ -88,16 +86,16 @@ import (
 		outDir: string | *"target/bun"
 
 		_outDir: wd.#Sub & {
-			"cwd": source.cwd,
+			"cwd":  source.cwd
 			"path": outDir
 		}
 
 		_dump: container.#Dump & {
 			input: build.output
 			with: {
-				empty: true,
+				empty: true
 			}
-			outDir:  _outDir.dir
+			outDir: _outDir.dir
 		}
 
 		dir: _dump.dir

@@ -8,6 +8,7 @@ import (
 	"github.com/octohelm/piper/cuepkg/github"
 	"github.com/octohelm/piper/cuepkg/golang"
 	"github.com/octohelm/piper/cuepkg/debian"
+	"github.com/octohelm/piper/cuepkg/distroless"
 	"github.com/octohelm/piper/cuepkg/containerutil"
 )
 
@@ -20,9 +21,9 @@ ver: client.#RevInfo & {
 }
 
 actions: go: golang.#Project & {
-	cwd:  hosts.local.dir
-	module: _
-	main: "./cmd/piper"
+	cwd:     hosts.local.dir
+	module:  _
+	main:    "./cmd/piper"
 	version: ver.version
 	goos: [
 		"darwin",
@@ -60,7 +61,12 @@ actions: release: {
 	}
 }
 
-actions: ship: containerutil.#Ship & {
+actions: ship: "distroless": distroless.#Ship & {
+	name: "ghcr.io/octohelm/distroless"
+	tag:  "static-debian-12"
+}
+
+actions: ship: "piper": containerutil.#Ship & {
 	name: "ghcr.io/octohelm/piper"
 	tag:  "\(ver.version)"
 

@@ -18,7 +18,10 @@ ship.build:
 	$(PIPER) do ship build
 
 ship:
-	$(PIPER) do ship push
+	$(PIPER) do ship piper push
+
+ship.distroless:
+	$(PIPER) do ship distroless push
 
 ship.multi-builder:
 	PIPER_BUILDER_HOST="tcp://arm64builder@?platform=linux/arm64,docker-image://amd64builder@?platform=linux/amd64" \
@@ -35,3 +38,6 @@ dep.update:
 
 install:
 	go install ./cmd/piper
+
+debug.distroless:
+	$(PIPER) do ship distroless export linux/arm64

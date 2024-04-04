@@ -2,10 +2,9 @@ package internal
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"os"
 	"sync"
-
-	"golang.org/x/sync/errgroup"
 
 	"cuelang.org/go/cue"
 	"cuelang.org/go/tools/flow"
@@ -86,7 +85,7 @@ func (x *Controller) Run(ctx context.Context) error {
 		}
 	}
 
-	eg, c := errgroup.WithContext(ctx)
+	eg, c := WithContext(ctx)
 	for p, rank := range x.ranks {
 		// trigger the final task
 		if rank == 1 {
@@ -97,7 +96,14 @@ func (x *Controller) Run(ctx context.Context) error {
 		}
 	}
 
-	return eg.Wait()
+	if err := eg.Wait(); err != nil {
+		// ignore cancel
+		if errors.Is(err, context.Canceled) {
+			return nil
+		}
+		return err
+	}
+	return nil
 }
 
 func (x *Controller) nodeFromTask(t *flow.Task) *node {
