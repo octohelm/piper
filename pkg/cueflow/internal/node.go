@@ -2,11 +2,9 @@ package internal
 
 import (
 	"context"
-	"fmt"
-
 	"cuelang.org/go/cue"
+	"fmt"
 	"github.com/pkg/errors"
-	"golang.org/x/sync/errgroup"
 )
 
 type Node interface {
@@ -102,7 +100,7 @@ func (n *node) Run(ctx context.Context) error {
 	}
 
 	if len(n.deps) > 0 {
-		eg, c := errgroup.WithContext(ctx)
+		eg, c := WithContext(ctx)
 
 		for _, d := range n.deps {
 			eg.Go(func() error {
@@ -111,6 +109,10 @@ func (n *node) Run(ctx context.Context) error {
 		}
 
 		if err := eg.Wait(); err != nil {
+			// ignore cancel
+			if errors.Is(err, context.Canceled) {
+				return nil
+			}
 			return err
 		}
 	}
