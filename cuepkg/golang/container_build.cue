@@ -2,7 +2,6 @@ package golang
 
 import (
 	"strings"
-	"regexp"
 	"path"
 
 	"piper.octohelm.tech/client"
@@ -27,12 +26,13 @@ import (
 	}
 }
 
-#ContainerBuild: {
+#ContainerBuild: #ProjectBase & {
 	source: container.#Source
 
 	_info: #GoInfo & {
 		gomod: wd: source.cwd
 	}
+	module: _info.output.module
 
 	_goenv: client.#Env & {
 		GOPROXY:   string | *""
@@ -40,25 +40,20 @@ import (
 		GOSUMDB:   string | *""
 	}
 
-	main!: string
-  version!: string
+	main:    _
+	goos:    _
+	goarch:  _
+	env:     _
+	ldflags: _
+	bin:     _
 
-	module: _info.output.module
-	goos: [...string] | *["darwin", "linux"]
-	goarch: [...string] | *["amd64", "arm64"]
-  env: [Name=string]: string | client.#Secret
 	mounts: [Name=string]: container.#Mount
-
-	ldflags: [...string] | *["-s", "-w"]
 
 	env: {
 		GOPROXY: _goenv.GOPROXY
 		GOPRIVATE: _goenv.GOPRIVATE
 		GOSUMDB: _goenv.GOSUMDB
 	}
-
-  // binary name
-  bin: string | *path.Base(main)
 
 	_default_image: #GolangImage & {
 			version: "\(_info.output.goversion)"
@@ -164,20 +159,3 @@ import (
 		}
 	}
 }
-
-#GoInfo: {
-	gomod: file.#File & {
-		filename:  "go.mod"
-	}
-
-	_read: file.#ReadAsString & {
-		"file": gomod
-	}
-
-	output: client.#Wait & {
-		module: regexp.FindSubmatch(#"module (.+)\n"#, _read.contents)[1]
-		goversion: regexp.FindSubmatch(#"\ngo (.+)\n?"#, _read.contents)[1]
-	}
-
-}
-

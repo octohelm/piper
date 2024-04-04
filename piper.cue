@@ -21,20 +21,25 @@ ver: client.#RevInfo & {
 
 actions: go: golang.#Project & {
 	cwd:  hosts.local.dir
+	module: _
 	main: "./cmd/piper"
-	os: [
+	version: ver.version
+	goos: [
 		"darwin",
 		"linux",
 		"windows",
 	]
-	arch: [
+	goarch: [
 		"amd64",
 		"arm64",
 	]
 	ldflags: [
 		"-s", "-w",
-		"-X", "github.com/octohelm/piper/internal/version.version=\(ver.version)",
+		"-X", "\(module)/internal/version.version=\(version)",
 	]
+	env: {
+		GOEXPERIMENT: "rangefunc"
+	}
 }
 
 actions: release: {
