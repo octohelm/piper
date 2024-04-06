@@ -6,7 +6,7 @@ replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240311062028
 
 require (
 	cuelang.org/go v0.8.1
-	dagger.io/dagger v0.10.3
+	dagger.io/dagger v0.11.0
 	github.com/dagger/dagger v0.10.3
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.16.0
