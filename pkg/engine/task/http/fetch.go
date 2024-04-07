@@ -10,6 +10,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/octohelm/piper/pkg/otel"
+
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -62,12 +64,12 @@ func (r *Fetch) Do(ctx context.Context) (e error) {
 		if size > 0 {
 			pw := cueflow.NewProcessWriter(size)
 
-			_, l := logr.FromContext(ctx).Start(ctx, "downloading", slog.Int64(cueflow.LogAttrProgressTotal, size))
+			_, l := logr.FromContext(ctx).Start(ctx, "downloading", slog.Int64(otel.LogAttrProgressTotal, size))
 			defer l.End()
 
 			go func() {
 				for p := range pw.Process(ctx) {
-					l.WithValues(slog.Int64(cueflow.LogAttrProgressCurrent, p.Current)).Info("")
+					l.WithValues(slog.Int64(otel.LogAttrProgressCurrent, p.Current)).Info("")
 				}
 			}()
 

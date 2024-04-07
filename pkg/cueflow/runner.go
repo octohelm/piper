@@ -13,15 +13,22 @@ import (
 	"sync/atomic"
 	"text/tabwriter"
 
+	"github.com/octohelm/piper/internal/logger"
+
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/ast"
 	cueerrors "cuelang.org/go/cue/errors"
+	"github.com/dagger/dagger/telemetry"
+	"github.com/dagger/dagger/telemetry/sdklog"
 	"github.com/gobwas/glob"
-	"github.com/mattn/go-isatty"
 	"github.com/pkg/errors"
-	"github.com/vito/progrock"
-	"github.com/vito/progrock/console"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
+	"go.opentelemetry.io/otel/trace"
 
+	"github.com/octohelm/piper/internal/version"
 	"github.com/octohelm/piper/pkg/cueflow/internal"
 	"github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
@@ -326,18 +333,7 @@ var isTTY = sync.OnceValue(func() bool {
 	if os.Getenv("TTY") == "0" {
 		return false
 	}
-
-	// ugly to make as non-tty for Run of intellij
-	if os.Getenv("_INTELLIJ_FORCE_PREPEND_PATH") != "" {
-		return false
-	}
-
-	for _, f := range []*os.File{os.Stdin, os.Stdout, os.Stderr} {
-		if isatty.IsTerminal(f.Fd()) {
-			return true
-		}
-	}
-	return false
+	return true
 })
 
 var debugEnabled = false
@@ -349,44 +345,50 @@ func init() {
 }
 
 func runWith(ctx context.Context, name string, fn func(ctx context.Context) error) error {
-	if isTTY() {
-		tape := progrock.NewTape()
-		tape.ShowInternal(debugEnabled)
-		tape.ShowAllOutput(true)
-		tape.VerboseEdges(true)
+	frontend := logger.New()
+	defer frontend.Shutdown(ctx)
 
-		rec := progrock.NewRecorder(WrapProgrockWriter(tape))
+	frontend.Plain = !isTTY()
+	frontend.Silent = false
 
-		defer func() {
-			_ = rec.Close()
+	if debugEnabled {
+		frontend.Verbosity = 3
+	}
 
-			if e := recover(); e != nil {
-				fmt.Printf("%#v", e)
-			}
-		}()
-
-		return progrock.DefaultUI().Run(ctx, tape, func(ctx context.Context, client progrock.UIClient) error {
-			client.SetStatusInfo(progrock.StatusInfo{
-				Name:  "Action",
-				Value: name,
-				Order: 1,
-			})
-			r, err := dagger.NewRunner(dagger.WithProgrockWriter(WrapProgrockWriter(tape)))
-			if err != nil {
-				return err
-			}
-			daggerRunner := WrapDaggerRunner(r)
-			ctx = dagger.RunnerContext.Inject(ctx, daggerRunner)
-			return fn(progrock.ToContext(ctx, rec))
+	return frontend.Run(ctx, func(ctx context.Context) (rerr error) {
+		ctx = telemetry.Init(ctx, telemetry.Config{
+			Detect: true,
+			Resource: resource.NewWithAttributes(
+				semconv.SchemaURL,
+				semconv.ServiceName("piper"),
+				semconv.ServiceVersion(version.Version()),
+			),
+			LiveTraceExporters: []sdktrace.SpanExporter{frontend},
+			LiveLogExporters:   []sdklog.LogExporter{frontend},
 		})
-	}
+		defer telemetry.Close()
 
-	w := WrapProgrockWriter(console.NewWriter(os.Stdout, console.ShowInternal(debugEnabled)))
-	r, err := dagger.NewRunner(dagger.WithProgrockWriter(WrapProgrockWriter(w)))
-	if err != nil {
-		return err
-	}
-	daggerRunner := WrapDaggerRunner(r)
-	ctx = dagger.RunnerContext.Inject(ctx, daggerRunner)
-	return fn(progrock.ToContext(ctx, progrock.NewRecorder(w)))
+		daggerRunner, err := dagger.NewRunner(
+			dagger.WithLogExporter(frontend),
+			dagger.WithSpanExporter(frontend),
+		)
+		if err != nil {
+			return err
+		}
+
+		tracer := Tracer()
+
+		ctx = logger.TracerContext.Inject(ctx, tracer)
+
+		c, span := tracer.Start(ctx, name)
+		defer telemetry.End(span, func() error { return rerr })
+		frontend.SetPrimary(span.SpanContext().SpanID())
+
+		return fn(dagger.RunnerContext.Inject(c, daggerRunner))
+	})
+
+}
+
+func Tracer() trace.Tracer {
+	return otel.Tracer("piper.octohelm.tech/cli")
 }

@@ -1,8 +1,8 @@
-PIPER = TTY=0 go run ./cmd/piper
+PIPER = go run ./cmd/piper
 
 DEBUG = 0
 ifeq ($(DEBUG),1)
-	PIPER := GRAPH=1 $(PIPER) --log-level=debug
+	PIPER := TTY=0 $(PIPER) --log-level=debug
 endif
 
 tidy:
@@ -28,7 +28,7 @@ ship.multi-builder:
 		$(PIPER) do ship
 
 release:
-	GRAPH=1 TTY=0 $(PIPER) do release
+	$(PIPER) do release
 
 gen:
 	go run ./internal/cmd/tool gen ./cmd/piper

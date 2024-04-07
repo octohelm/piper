@@ -2,8 +2,9 @@ package container
 
 import (
 	"context"
-	"dagger.io/dagger"
 	"slices"
+
+	"dagger.io/dagger"
 
 	"cuelang.org/go/cue"
 	"github.com/pkg/errors"

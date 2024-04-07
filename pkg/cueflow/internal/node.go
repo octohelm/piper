@@ -2,8 +2,9 @@ package internal
 
 import (
 	"context"
-	"cuelang.org/go/cue"
 	"fmt"
+
+	"cuelang.org/go/cue"
 	"github.com/pkg/errors"
 )
 

@@ -52,10 +52,10 @@ func (fs *Fs) Directory(ctx context.Context, c *dagger.Client) (*dagger.Director
 		case fsContext:
 			return c.LoadDirectoryFromID(x.id), nil
 		case lazyAction:
-			return x.do(
-				cueflow.TaskPathContext.Inject(ctx, x.taskPath),
-				c.Pipeline(x.taskPath),
-			)
+			nctx, l := logr.FromContext(ctx).Start(ctx, x.taskPath)
+			defer l.End()
+
+			return x.do(nctx, c)
 		}
 	}
 	return nil, errors.Errorf("fs is not found: %s", fs.Ref.ID)

@@ -7,11 +7,10 @@ import (
 	"io"
 	"strings"
 
-	"github.com/octohelm/piper/pkg/engine/task/wd"
-	pkgwd "github.com/octohelm/piper/pkg/wd"
-
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/piper/pkg/engine/task/wd"
+	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/x/ptr"
 	"github.com/pkg/errors"
 
@@ -145,8 +144,9 @@ func (f *forward) NewWriter() io.WriteCloser {
 	r, w := io.Pipe()
 
 	go func() {
-		s := bufio.NewScanner(r)
+		defer r.Close()
 
+		s := bufio.NewScanner(r)
 		for s.Scan() {
 			if f.stderr {
 				f.l.Warn(errors.New(s.Text()))

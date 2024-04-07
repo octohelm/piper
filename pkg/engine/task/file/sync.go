@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/octohelm/piper/pkg/otel"
+
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/chunk"
 	"github.com/octohelm/piper/pkg/cueflow"
@@ -82,12 +84,12 @@ func (t *Sync) Do(ctx context.Context) error {
 			}
 
 			pw := cueflow.NewProcessWriter(total)
-			_, l := logr.FromContext(ctx).Start(ctx, "syncing", slog.Int64(cueflow.LogAttrProgressTotal, total))
+			_, l := logr.FromContext(ctx).Start(ctx, "syncing", slog.Int64(otel.LogAttrProgressTotal, total))
 			defer l.End()
 
 			go func() {
 				for p := range pw.Process(ctx) {
-					l.WithValues(slog.Int64(cueflow.LogAttrProgressCurrent, p.Current)).Info("")
+					l.WithValues(slog.Int64(otel.LogAttrProgressCurrent, p.Current)).Info("")
 				}
 			}()
 

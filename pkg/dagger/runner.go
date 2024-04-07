@@ -9,27 +9,28 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/dagger/dagger/telemetry/sdklog"
+	"go.opentelemetry.io/otel/sdk/trace"
+
 	"github.com/dagger/dagger/engine"
 	"github.com/dagger/dagger/engine/client"
 	contextx "github.com/octohelm/x/context"
-	"github.com/vito/progrock"
-	"github.com/vito/progrock/console"
 	"golang.org/x/sync/errgroup"
 )
 
+func WithLogExporter(exporter sdklog.LogExporter) EngineOptionFunc {
+	return func(x *options) {
+		x.EngineLogs = exporter
+	}
+}
+
+func WithSpanExporter(exporter trace.SpanExporter) EngineOptionFunc {
+	return func(x *options) {
+		x.EngineTrace = exporter
+	}
+}
+
 type EngineOptionFunc = func(x *options)
-
-func WithProgrockWriter(writer progrock.Writer) EngineOptionFunc {
-	return func(x *options) {
-		x.ProgrockWriter = writer
-	}
-}
-
-func WithRunnerHost(runnerHost *PiperRunnerHost) EngineOptionFunc {
-	return func(x *options) {
-		x.AddHost(runnerHost)
-	}
-}
 
 type options struct {
 	client.Params
@@ -45,13 +46,6 @@ func (o *options) Build(optFns ...EngineOptionFunc) {
 	if o.Hosts.Default == nil {
 		o.AddHost(RunnerHost())
 	}
-
-	if o.ProgrockWriter == nil {
-		o.ProgrockWriter = console.NewWriter(
-			os.Stdout,
-			console.ShowInternal(true),
-		)
-	}
 }
 
 var engineVersion = func() string {
@@ -65,7 +59,7 @@ var engineVersion = func() string {
 		}
 	}
 	if engine.Version == "" {
-		return "v0.10.2"
+		return "v0.11.0"
 	}
 	return engine.Version
 }()
@@ -125,6 +119,7 @@ func (r *runner) Select(ctx context.Context, scope Scope) Engine {
 	if v, ok := r.engines.Load(scope.ID); ok {
 		return v.(Engine)
 	}
+
 	e := NewEngine(scope, r.ClientParams(&scope))
 	r.engines.Store(scope.ID, e)
 	return e

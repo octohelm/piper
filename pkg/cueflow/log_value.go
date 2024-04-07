@@ -9,14 +9,6 @@ import (
 	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
 )
 
-const (
-	LogAttrScope           = "$scope"
-	LogAttrName            = "$name"
-	LogAttrDep             = "$dep"
-	LogAttrProgressTotal   = "$progress.total"
-	LogAttrProgressCurrent = "$progress.current"
-)
-
 func CueLogValue(v any) slog.LogValuer {
 	return &logValue{v: v}
 }

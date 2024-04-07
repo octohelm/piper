@@ -2,9 +2,12 @@ package cueflow
 
 import (
 	"context"
-	"log/slog"
+	"fmt"
 	"reflect"
 	"sync"
+
+	"github.com/fatih/color"
+	"github.com/octohelm/piper/pkg/otel"
 
 	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
 	"github.com/opencontainers/go-digest"
@@ -78,6 +81,9 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 
 	l := logr.FromContext(ctx)
 
+	ctx, l = l.Start(ctx, fmt.Sprintf("%s %s", t.task.Path().String(), color.WhiteString(t.task.Name())))
+	defer l.End()
+
 	if err := t.task.Decode(stepRunner); err != nil {
 		return errors.Wrapf(err, "decode failed")
 	}
@@ -87,21 +93,8 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 		if err != nil {
 			return err
 		}
-		l = l.WithValues(LogAttrScope, scopeName)
+		l = l.WithValues(otel.LogAttrScope, scopeName)
 	}
-
-	logAttrs := []any{
-		slog.String(LogAttrName, t.task.Name()),
-	}
-
-	for _, d := range t.task.Deps() {
-		logAttrs = append(logAttrs,
-			slog.String(LogAttrDep, d.String()),
-		)
-	}
-
-	ctx, l = l.Start(ctx, t.task.Path().String(), logAttrs...)
-	defer l.End()
 
 	output, err := t.cachedOrDoTask(ctx, stepRunner)
 	if err != nil {
