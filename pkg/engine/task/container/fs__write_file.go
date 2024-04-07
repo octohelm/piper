@@ -2,7 +2,6 @@ package container
 
 import (
 	"context"
-
 	"dagger.io/dagger"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -29,6 +28,7 @@ func (x *WriteFile) Do(ctx context.Context) error {
 		if err != nil {
 			return nil, err
 		}
+
 		return d.WithNewFile(x.Path, x.Contents, dagger.DirectoryWithNewFileOpts{
 			Permissions: x.Permissions,
 		}), nil

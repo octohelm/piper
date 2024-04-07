@@ -41,18 +41,11 @@ func (container *Container) Scope() piperdagger.Scope {
 	return piperdagger.Scope{}
 }
 
-func (container *Container) ContainerID() dagger.ContainerID {
+func (container *Container) Container(ctx context.Context, c *dagger.Client) (*dagger.Container, error) {
 	if k, ok := containerIDs.Load(container.Ref.ID); ok {
-		return k.(containerMeta).id
+		return c.LoadContainerFromID(k.(containerMeta).id), nil
 	}
-	return ""
-}
-
-func (container *Container) Container(c *dagger.Client) *dagger.Container {
-	if id := container.ContainerID(); id != "" {
-		return c.LoadContainerFromID(id)
-	}
-	return c.Container()
+	return nil, errors.Errorf("missing container %s", container.Ref.ID)
 }
 
 func (container *Container) Sync(ctx context.Context, c *dagger.Container, platform string) error {

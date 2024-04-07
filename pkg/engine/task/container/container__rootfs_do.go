@@ -31,15 +31,22 @@ type RootfsDo struct {
 }
 
 func (x *RootfsDo) Do(ctx context.Context) error {
-	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
-		cc := x.Input.Container(c)
+	tt := x.T()
 
-		step := &RootfsDoStepInterface{}
-		if err := step.Output.Sync(ctx, cc.Rootfs()); err != nil {
+	v := tt.Value().LookupPath(cue.ParsePath("input"))
+
+	if err := v.Decode(&x.Input); err != nil {
+		return err
+	}
+
+	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
+		cc, err := x.Input.Container(ctx, c)
+		if err != nil {
 			return err
 		}
 
-		tt := x.T()
+		step := &RootfsDoStepInterface{}
+		step.Output = x.Input.Rootfs
 
 		stepIter, err := cueflow.IterSteps(cueflow.CueValue(tt.Value()))
 		if err != nil {

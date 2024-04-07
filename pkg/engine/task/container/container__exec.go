@@ -33,7 +33,10 @@ type Exec struct {
 
 func (e *Exec) Do(ctx context.Context) error {
 	return e.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
-		container := e.Input.Container(c)
+		container, err := e.Input.Container(ctx, c)
+		if err != nil {
+			return err
+		}
 
 		if len(e.Entrypoint) > 0 {
 			container = container.WithEntrypoint(e.Entrypoint)

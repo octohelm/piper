@@ -23,7 +23,10 @@ type Dir struct {
 
 func (x *Dir) Do(ctx context.Context) error {
 	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *piperdagger.Client) error {
-		inputContainer := x.Input.Container(c)
+		inputContainer, err := x.Input.Container(ctx, c)
+		if err != nil {
+			return err
+		}
 
 		return x.Output.Sync(ctx, inputContainer.Rootfs().Directory(x.Path))
 	})

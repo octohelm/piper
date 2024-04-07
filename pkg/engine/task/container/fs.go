@@ -58,7 +58,7 @@ func (fs *Fs) Directory(ctx context.Context, c *dagger.Client) (*dagger.Director
 			)
 		}
 	}
-	return c.Directory(), nil
+	return nil, errors.Errorf("fs is not found: %s", fs.Ref.ID)
 }
 
 func (fs *Fs) Sync(ctx context.Context, c *dagger.Directory) error {

@@ -44,7 +44,10 @@ func (x *Export) Do(ctx context.Context) error {
 			return errors.Errorf("%T: only support cwd in local host", x)
 		}
 
-		cc := x.Input.Container(c)
+		cc, err := x.Input.Container(ctx, c)
+		if err != nil {
+			return err
+		}
 
 		destTar := filepath.Join(base, x.OutFile.Filename)
 

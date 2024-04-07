@@ -22,7 +22,7 @@ package distroless
 		"etc/ssl/certs/",
 	]
 	exclude: [
-		"etc/ca-certificates/update.d",
+		"etc/ca-certificates",
 		"usr/sbin/update-ca-certificates",
 		"usr/share/man",
 	]

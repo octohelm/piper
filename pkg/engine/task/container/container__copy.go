@@ -29,7 +29,11 @@ type Copy struct {
 
 func (x *Copy) Do(ctx context.Context) error {
 	return x.Input.Select(ctx).Do(ctx, func(ctx context.Context, c *dagger.Client) error {
-		base := x.Input.Container(c)
+		base, err := x.Input.Container(ctx, c)
+		if err != nil {
+			return err
+		}
+
 		src, err := x.Contents.Directory(ctx, c)
 		if err != nil {
 			return err

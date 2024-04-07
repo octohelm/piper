@@ -47,15 +47,15 @@ func (x *Dump) Do(ctx context.Context) error {
 
 		if x.With.Empty {
 			if err := filesystem.WalkDir(ctx, dest, ".", func(path string, d fs.DirEntry, err error) error {
-				if path != "." {
+				// skip root
+				if path == "." {
 					return nil
 				}
 
-				if d.IsDir() {
-					return filesystem.SkipAll
+				if err := dest.RemoveAll(ctx, path); err != nil {
+					return errors.Wrapf(err, "remove failed %s", path)
 				}
-
-				return dest.RemoveAll(ctx, path)
+				return filesystem.SkipAll
 			}); err != nil {
 				return errors.Wrap(err, "empty outDir failed")
 			}

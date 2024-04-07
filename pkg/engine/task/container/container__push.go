@@ -47,7 +47,10 @@ func (x *Push) Do(ctx context.Context) error {
 	for platform, container := range x.Images {
 		eg.Go(func() error {
 			return container.Select(ctx).Do(ctx, func(ctx context.Context, c *piperdagger.Client) error {
-				cc := container.Container(c)
+				cc, err := container.Container(ctx, c)
+				if err != nil {
+					return err
+				}
 
 				p, err := pkgwd.ParsePlatform(platform)
 				if err != nil {
