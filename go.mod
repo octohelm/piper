@@ -18,6 +18,7 @@ require (
 	github.com/innoai-tech/infra v0.0.0-20240330032009-05a5fcd576ed
 	github.com/k0sproject/rig v0.15.2-0.20231219072317-afaa2d5ee397
 	github.com/kevinburke/ssh_config v1.2.0
+	github.com/muesli/termenv v0.15.2
 	github.com/octohelm/cuekit v0.0.0-20240406055715-c54955c5d177
 	github.com/octohelm/gengo v0.0.0-20240227021734-f42e02623187
 	github.com/octohelm/storage v0.0.0-20240311031904-722fae0a0075
@@ -28,6 +29,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.6
+	github.com/vito/progrock v0.10.2-0.20240221152222-63c8df30db8d
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/sdk v1.25.0
 	go.opentelemetry.io/otel/trace v1.24.0
@@ -134,7 +136,6 @@ require (
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
-	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/onsi/gomega v1.31.1 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
@@ -157,7 +158,6 @@ require (
 	github.com/vbatts/tar-split v0.11.5 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.11 // indirect
 	github.com/vito/midterm v0.1.5-0.20240307214207-d0271a7ca452 // indirect
-	github.com/vito/progrock v0.10.2-0.20240221152222-63c8df30db8d // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	github.com/zmb3/spotify/v2 v2.3.1 // indirect
