@@ -48,23 +48,24 @@ func (o *options) Build(optFns ...EngineOptionFunc) {
 	}
 }
 
-var engineVersion = func() string {
+var engineVersion = sync.OnceValue(func() string {
 	bi, ok := debug.ReadBuildInfo()
 	if ok {
 		for _, dep := range bi.Deps {
 			if dep.Path == "github.com/dagger/dagger" {
-				engine.Version = dep.Version
-				return engine.Version
+				return dep.Version
 			}
 		}
 	}
-	if engine.Version == "" {
-		return "v0.11.0"
-	}
-	return engine.Version
-}()
+	return "v0.11.0"
+})
 
-var DefaultRunnerHost = fmt.Sprintf("docker-image://ghcr.io/dagger/engine:%s", engineVersion)
+func init() {
+	// ugly to set engine.Version
+	engine.Version = engineVersion()
+}
+
+var DefaultRunnerHost = fmt.Sprintf("docker-image://ghcr.io/dagger/engine:%s", engineVersion())
 
 func RunnerHost() *PiperRunnerHost {
 	return &PiperRunnerHost{

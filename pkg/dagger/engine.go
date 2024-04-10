@@ -74,7 +74,7 @@ func (e *engineImpl) Do(ctx context.Context, do func(ctx context.Context, client
 		return err
 	}
 
-	c, err := dagger.Connect(ctx, dagger.WithConn(engineConn))
+	c, err := dagger.Connect(ctx, dagger.WithConn(engineConn), dagger.WithSkipCompatibilityCheck())
 	if err != nil {
 		return err
 	}
