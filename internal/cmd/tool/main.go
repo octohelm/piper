@@ -2,10 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/innoai-tech/infra/pkg/otel"
 	"os"
 
-	"github.com/go-courier/logr"
-	"github.com/go-courier/logr/slog"
 	"github.com/innoai-tech/infra/devpkg/gengo"
 	"github.com/innoai-tech/infra/pkg/cli"
 
@@ -17,16 +16,19 @@ import (
 var App = cli.NewApp("gengo", "dev")
 
 func init() {
-	cli.AddTo(App, &struct {
+	c := &struct {
 		cli.C `name:"gen"`
+		otel.Otel
 		gengo.Gengo
-	}{})
+	}{}
+
+	c.LogLevel = otel.DebugLevel
+
+	cli.AddTo(App, c)
 }
 
 func main() {
-	ctx := logr.WithLogger(context.Background(), slog.Logger(slog.Default()))
-
-	if err := cli.Execute(ctx, App, os.Args[1:]); err != nil {
+	if err := cli.Execute(context.Background(), App, os.Args[1:]); err != nil {
 		panic(err)
 	}
 }

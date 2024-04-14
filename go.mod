@@ -4,7 +4,12 @@ go 1.22
 
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240311062028-c6a26b3e2c8f
 
-replace go.opentelemetry.io/otel/sdk => go.opentelemetry.io/otel/sdk v1.24.0
+replace (
+	go.opentelemetry.io/otel => go.opentelemetry.io/otel v1.24.0
+	go.opentelemetry.io/otel/log => go.opentelemetry.io/otel/log v0.0.1-alpha
+	go.opentelemetry.io/otel/sdk => go.opentelemetry.io/otel/sdk v1.24.0
+	go.opentelemetry.io/otel/trace => go.opentelemetry.io/otel/trace v1.24.0
+)
 
 require (
 	cuelang.org/go v0.8.1
@@ -15,24 +20,24 @@ require (
 	github.com/go-courier/logr v0.3.0
 	github.com/go-json-experiment/json v0.0.0-20231102232822-2e55bd4e08b0
 	github.com/gobwas/glob v0.2.3
-	github.com/innoai-tech/infra v0.0.0-20240330032009-05a5fcd576ed
+	github.com/innoai-tech/infra v0.0.0-20240410114417-f7239ccc577d
 	github.com/k0sproject/rig v0.15.2-0.20231219072317-afaa2d5ee397
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/muesli/termenv v0.15.2
 	github.com/octohelm/cuekit v0.0.0-20240406055715-c54955c5d177
-	github.com/octohelm/gengo v0.0.0-20240227021734-f42e02623187
+	github.com/octohelm/gengo v0.0.0-20240409082121-aeffa5400f19
 	github.com/octohelm/storage v0.0.0-20240311031904-722fae0a0075
 	github.com/octohelm/unifs v0.0.0-20240306103420-0aa38195fb0a
 	github.com/octohelm/x v0.0.0-20240219080259-91528f21e203
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.0
-	github.com/pelletier/go-toml/v2 v2.2.0
+	github.com/pelletier/go-toml/v2 v2.2.1
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.6
 	github.com/vito/progrock v0.10.2-0.20240221152222-63c8df30db8d
-	go.opentelemetry.io/otel v1.24.0
+	go.opentelemetry.io/otel v1.25.0
 	go.opentelemetry.io/otel/sdk v1.25.0
-	go.opentelemetry.io/otel/trace v1.24.0
+	go.opentelemetry.io/otel/trace v1.25.0
 	golang.org/x/crypto v0.22.0
 	golang.org/x/net v0.24.0
 	golang.org/x/sync v0.7.0
@@ -55,9 +60,11 @@ require (
 	github.com/adrg/xdg v0.4.0 // indirect
 	github.com/alessio/shellescape v1.4.2 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
+	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bodgit/ntlmssp v0.0.0-20231128222409-0a45a2447e7c // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/charmbracelet/bubbles v0.18.0 // indirect
 	github.com/charmbracelet/bubbletea v0.25.0 // indirect
 	github.com/charmbracelet/lipgloss v0.9.1 // indirect
@@ -98,6 +105,7 @@ require (
 	github.com/google/go-containerregistry v0.19.0 // indirect
 	github.com/google/go-github/v59 v59.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/pprof v0.0.0-20240227163752-401108e1b7e7 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
@@ -139,6 +147,10 @@ require (
 	github.com/onsi/gomega v1.31.1 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
+	github.com/prometheus/client_golang v1.19.0 // indirect
+	github.com/prometheus/client_model v0.6.1 // indirect
+	github.com/prometheus/common v0.52.2 // indirect
+	github.com/prometheus/procfs v0.13.0 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20240116145035-ef3ab179eed6 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
@@ -164,26 +176,29 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.46.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.24.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.24.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.25.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.25.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.25.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.24.0 // indirect
-	go.opentelemetry.io/otel/log v0.0.1-alpha // indirect
-	go.opentelemetry.io/otel/metric v1.24.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.24.0 // indirect
-	go.opentelemetry.io/proto/otlp v1.1.0 // indirect
+	go.opentelemetry.io/otel/exporters/prometheus v0.47.0 // indirect
+	go.opentelemetry.io/otel/log v0.1.0-alpha // indirect
+	go.opentelemetry.io/otel/metric v1.25.0 // indirect
+	go.opentelemetry.io/otel/sdk/log v0.0.0-20240409082250-b9752eb5dc19 // indirect
+	go.opentelemetry.io/otel/sdk/metric v1.25.0 // indirect
+	go.opentelemetry.io/proto/otlp v1.2.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
+	golang.org/x/exp v0.0.0-20240404231335-c0f41cb1a7a0 // indirect
 	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/oauth2 v0.19.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/term v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	golang.org/x/tools v0.19.0 // indirect
-	google.golang.org/genproto v0.0.0-20240123012728-ef4313101c80 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240325203815-454cdb8f5daa // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240325203815-454cdb8f5daa // indirect
-	google.golang.org/grpc v1.62.1 // indirect
+	golang.org/x/tools v0.20.0 // indirect
+	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240401170217-c3f982113cda // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240401170217-c3f982113cda // indirect
+	google.golang.org/grpc v1.63.2 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
