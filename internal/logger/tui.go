@@ -2,12 +2,9 @@ package logger
 
 import (
 	"context"
-	"sync"
-	"time"
 
 	"github.com/dagger/dagger/dagql/idtui"
 	"github.com/dagger/dagger/telemetry/sdklog"
-	"github.com/muesli/termenv"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"golang.org/x/sync/errgroup"
 )
@@ -58,21 +55,4 @@ func (t *TUI) ExportLogs(ctx context.Context, logs []*sdklog.LogData) error {
 		return t.streamingExporter.ExportLogs(ctx, logs)
 	}
 	return t.Frontend.ExportLogs(ctx, logs)
-}
-
-type streamingExporter struct {
-	spanNames sync.Map
-
-	// incr idx for spanID
-	idx                 int64
-	batchPrinterGetters sync.Map
-	batchPrinterWg      sync.WaitGroup
-
-	output   *termenv.Output
-	outputMu sync.RWMutex
-
-	frameTicker *time.Ticker
-
-	done     chan struct{}
-	doneOnce sync.Once
 }

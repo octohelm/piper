@@ -31,6 +31,23 @@ func newStreamingExporter() *streamingExporter {
 	}
 }
 
+type streamingExporter struct {
+	spanNames sync.Map
+
+	// incr idx for spanID
+	idx                 int64
+	batchPrinterGetters sync.Map
+	batchPrinterWg      sync.WaitGroup
+
+	output   *termenv.Output
+	outputMu sync.RWMutex
+
+	frameTicker *time.Ticker
+
+	done     chan struct{}
+	doneOnce sync.Once
+}
+
 func (t *streamingExporter) Shutdown(ctx context.Context) error {
 	t.doneOnce.Do(func() {
 		t.frameTicker.Stop()

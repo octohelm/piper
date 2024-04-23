@@ -336,11 +336,11 @@ var isTTY = sync.OnceValue(func() bool {
 	return true
 })
 
-var debugEnabled = false
+var daggerDebugEnabled = false
 
 func init() {
-	if os.Getenv("DEBUG") != "" {
-		debugEnabled = true
+	if os.Getenv("DAGGER_DEBUG") != "" {
+		daggerDebugEnabled = true
 	}
 }
 
@@ -351,7 +351,7 @@ func runWith(ctx context.Context, name string, fn func(ctx context.Context) erro
 	frontend.Plain = !isTTY()
 	frontend.Silent = false
 
-	if debugEnabled {
+	if daggerDebugEnabled {
 		frontend.Verbosity = 3
 	}
 
