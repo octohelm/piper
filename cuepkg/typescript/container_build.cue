@@ -69,6 +69,7 @@ import (
 					}
 				}
 			}
+			"env": env
 			"workdir": "\(workdir)"
 			"run":     run
 		}

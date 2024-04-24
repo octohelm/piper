@@ -26,7 +26,7 @@ require (
 	github.com/k0sproject/rig v0.15.2-0.20231219072317-afaa2d5ee397
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/muesli/termenv v0.15.2
-	github.com/octohelm/cuekit v0.0.0-20240406055715-c54955c5d177
+	github.com/octohelm/cuekit v0.0.0-20240424021256-e7df8d743066
 	github.com/octohelm/gengo v0.0.0-20240409082121-aeffa5400f19
 	github.com/octohelm/storage v0.0.0-20240311031904-722fae0a0075
 	github.com/octohelm/unifs v0.0.0-20240422104052-b27cca57f9bd
