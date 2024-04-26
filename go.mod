@@ -14,7 +14,7 @@ replace (
 )
 
 require (
-	cuelang.org/go v0.8.1
+	cuelang.org/go v0.8.2
 	dagger.io/dagger v0.11.1
 	github.com/dagger/dagger v0.11.1
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
