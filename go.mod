@@ -15,7 +15,7 @@ replace (
 
 require (
 	cuelang.org/go v0.8.1
-	dagger.io/dagger v0.11.1
+	dagger.io/dagger v0.11.2
 	github.com/dagger/dagger v0.11.1
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.16.0
