@@ -20,8 +20,10 @@ func init() {
 type SourceFile struct {
 	task.Task
 
-	File   file.File `json:"file"`
-	Output Fs        `json:"-" output:"output"`
+	File file.File `json:"file"`
+	Dest string    `json:"dest,omitempty"`
+
+	Output Fs `json:"-" output:"output"`
 }
 
 func (x *SourceFile) Do(ctx context.Context) error {
@@ -45,10 +47,14 @@ func (x *SourceFile) Do(ctx context.Context) error {
 	// storeContainerID the meta until some builder need to use.
 	// important for multi-builder build
 	return x.Output.SyncLazyDirectory(ctx, x, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
-		return c.Host().Directory(srcDir, dagger.HostDirectoryOpts{
+		src := c.Host().Directory(srcDir, dagger.HostDirectoryOpts{
 			Include: []string{
 				srcFile,
 			},
-		}), nil
+		})
+		if x.Dest != "" {
+			return c.Directory().WithFile(x.Dest, src.File(srcFile)), nil
+		}
+		return c.Directory().WithFile("/"+srcFile, src.File(srcFile)), nil
 	})
 }
