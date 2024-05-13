@@ -18,7 +18,7 @@ require (
 	dagger.io/dagger v0.11.4
 	github.com/dagger/dagger v0.11.4
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.17.0
 	github.com/go-courier/logr v0.3.0
 	github.com/gobwas/glob v0.2.3
 	github.com/innoai-tech/infra v0.0.0-20240508041032-12069adfe35c
