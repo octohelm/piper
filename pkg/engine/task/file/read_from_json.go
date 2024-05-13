@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/octohelm/piper/pkg/anyjson"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
+	"github.com/octohelm/x/anyjson"
 )
 
 func init() {
@@ -34,13 +34,13 @@ func (t *ReadFromJSON) Do(ctx context.Context) error {
 		}
 		defer f.Close()
 
-		o := anyjson.Map{}
-		if err := json.NewDecoder(f).Decode(&o); err != nil {
+		o := &anyjson.Object{}
+		if err := json.NewDecoder(f).Decode(o); err != nil {
 			return err
 		}
 
 		// ignore null value
-		v := anyjson.Transform(ctx, anyjson.From(o), func(v anyjson.Valuer, keyPath ...any) anyjson.Valuer {
+		v := anyjson.Transform(ctx, o, func(v anyjson.Valuer, keyPath ...any) anyjson.Valuer {
 			if _, ok := v.(*anyjson.Null); ok {
 				return nil
 			}

@@ -6,7 +6,7 @@ import (
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 
-	"github.com/octohelm/piper/pkg/anyjson"
+	"github.com/octohelm/x/anyjson"
 )
 
 func init() {
@@ -26,7 +26,11 @@ type Merge struct {
 func (e *Merge) Do(ctx context.Context) error {
 	var o anyjson.Valuer
 	for _, input := range e.Inputs {
-		o = anyjson.Merge(o, anyjson.From(input.Value))
+		v, err := anyjson.FromValue(input.Value)
+		if err != nil {
+			return err
+		}
+		o = anyjson.Merge(o, v)
 	}
 	e.Output.Value = o.Value()
 	return nil

@@ -39,5 +39,8 @@ dep.update:
 install:
 	go install ./cmd/piper
 
+test:
+	go test -v -failfast ./...
+
 debug.distroless:
 	$(PIPER) do ship distroless export linux/arm64

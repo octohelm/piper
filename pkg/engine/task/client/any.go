@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"slices"
 
-	"github.com/octohelm/piper/pkg/anyjson"
+	"github.com/octohelm/x/anyjson"
 )
 
 type Any struct {

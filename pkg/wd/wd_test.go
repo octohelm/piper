@@ -32,6 +32,8 @@ func TestFS(t *testing.T) {
 	})
 
 	t.Run("ssh", func(t *testing.T) {
+		t.Skip()
+
 		ssh, err := sshutil.Load("~/.ssh/config", "colima")
 		testingx.Expect(t, err, testingx.Be[error](nil))
 

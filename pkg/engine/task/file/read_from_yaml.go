@@ -5,13 +5,13 @@ import (
 	"io"
 	"os"
 
-	"github.com/octohelm/piper/pkg/anyjson"
-	"github.com/octohelm/piper/pkg/engine/task/client"
-
 	"gopkg.in/yaml.v3"
+
+	"github.com/octohelm/x/anyjson"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
 )
 
@@ -49,9 +49,9 @@ func (t *ReadFromYAML) Do(ctx context.Context) error {
 		d := yaml.NewDecoder(f)
 
 		for {
-			o := anyjson.Map{}
+			o := &anyjson.Obj{}
 
-			err := d.Decode(&o)
+			err := d.Decode(o)
 			if err == io.EOF {
 				break
 			}
@@ -59,8 +59,13 @@ func (t *ReadFromYAML) Do(ctx context.Context) error {
 				return err
 			}
 
+			obj, err := anyjson.FromValue(o)
+			if err != nil {
+				return err
+			}
+
 			// ignore null value
-			v := anyjson.Transform(ctx, anyjson.From(o), func(v anyjson.Valuer, keyPath ...any) anyjson.Valuer {
+			v := anyjson.Transform(ctx, obj, func(v anyjson.Valuer, keyPath ...any) anyjson.Valuer {
 				if _, ok := v.(*anyjson.Null); ok {
 					return nil
 				}

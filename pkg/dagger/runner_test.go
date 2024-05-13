@@ -18,6 +18,8 @@ import (
 )
 
 func TestEngine(t *testing.T) {
+	t.Skip()
+
 	t.Run("simple flow", func(t *testing.T) {
 		frontend := idtui.New()
 

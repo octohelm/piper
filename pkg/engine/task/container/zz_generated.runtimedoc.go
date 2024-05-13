@@ -718,6 +718,8 @@ func (v SourceFile) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 		case "File":
 			return []string{}, true
+		case "Dest":
+			return []string{}, true
 		case "Output":
 			return []string{}, true
 
