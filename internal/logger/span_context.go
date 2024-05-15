@@ -3,23 +3,24 @@ package logger
 import (
 	"context"
 	"fmt"
-	"io"
 	"log/slog"
 	"time"
 
-	"github.com/octohelm/piper/pkg/otel"
-
 	"github.com/dagger/dagger/telemetry"
+	"github.com/octohelm/piper/pkg/otel"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/trace"
 )
 
+const LogAttrSpanName = "$$spanName"
+
 type spanContext struct {
+	ctx       context.Context
 	span      trace.Span
 	name      string
 	startedAt time.Time
-	stdout    io.Writer
-	stderr    io.Writer
+	log       log.Logger
 }
 
 func start(ctx context.Context, spanName string, keyAndValues ...any) (context.Context, []slog.Attr, *spanContext) {
@@ -32,14 +33,12 @@ func start(ctx context.Context, spanName string, keyAndValues ...any) (context.C
 	t := TracerContext.From(ctx)
 
 	c, span := t.Start(ctx, spanCtx.name, trace.WithTimestamp(spanCtx.startedAt), trace.WithAttributes(getProgressAttrs(attrs)...))
+
 	spanCtx.span = span
+	spanCtx.ctx = c
+	spanCtx.log = telemetry.Logger(spanName)
 
-	finalCtx, stdout, stderr := telemetry.WithStdioToOtel(c, spanName)
-
-	spanCtx.stdout = stdout
-	spanCtx.stderr = stderr
-
-	return finalCtx, attrs, spanCtx
+	return c, attrs, spanCtx
 }
 
 func getProgressAttrs(attrs []slog.Attr) []attribute.KeyValue {
@@ -47,18 +46,17 @@ func getProgressAttrs(attrs []slog.Attr) []attribute.KeyValue {
 
 	for _, attr := range attrs {
 		switch attr.Key {
-		case otel.LogAttrProgressTotal:
-			finalAttrs = append(
-				finalAttrs,
-				attribute.Int64(telemetry.ProgressTotalAttr, attr.Value.Int64()),
-			)
 		case otel.LogAttrProgressCurrent:
 			finalAttrs = append(
 				finalAttrs,
 				attribute.Int64(telemetry.ProgressCurrentAttr, attr.Value.Int64()),
 			)
+		case otel.LogAttrProgressTotal:
+			finalAttrs = append(
+				finalAttrs,
+				attribute.Int64(telemetry.ProgressTotalAttr, attr.Value.Int64()),
+			)
 		}
-
 	}
 
 	return finalAttrs
@@ -109,7 +107,6 @@ func logAttrsFromKeyAndValues(keysAndValues ...any) []slog.Attr {
 			fmt.Printf("bad attr %#v", x)
 			i++
 		}
-
 	}
 
 	return attrs

@@ -28,8 +28,8 @@ import (
 		query: [Name=string]: string | [...string]
 
 		_default_header: {
-			"Accept":               "application/vnd.github+json"
-			"Authorization":        "Bearer \(_token.value)"
+			Accept:                 "application/vnd.github+json"
+			Authorization:          "Bearer \(_token.value)"
 			"X-GitHub-Api-Version": "2022-11-28"
 		}
 

@@ -133,7 +133,6 @@ func (x *Controller) loadOrInit(p cue.Path) *node {
 	created := &node{path: p, Controller: x}
 	x.nodes[p.String()] = created
 	return created
-
 }
 
 func (c *Controller) init(v cue.Value) {

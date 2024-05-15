@@ -25,6 +25,10 @@ type CustomCueType interface {
 	CueType() []byte
 }
 
+type CustomCueTypeWithImport interface {
+	CueTypeImport() (importPath string, alias string)
+}
+
 func WithPkgPathReplaceFunc(replace func(pkgPath string) string) OptionFunc {
 	return func(s *scanner) {
 		s.pkgPathReplace = replace
@@ -129,6 +133,11 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 
 	switch x := reflect.New(tpe).Interface().(type) {
 	case CustomCueType:
+		if withImport, ok := x.(CustomCueTypeWithImport); ok {
+			importPath, alias := withImport.CueTypeImport()
+			s.imports[importPath] = alias
+		}
+
 		return x.CueType()
 	case encoding.TextMarshaler:
 		return []byte("string")

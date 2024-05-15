@@ -20,7 +20,7 @@ import (
 	}
 
 	_debian: debian.#Image & {
-		"source":   _debian_image.source
+		source:     _debian_image.source
 		"platform": platform
 		"packages": packages
 	}
@@ -52,7 +52,7 @@ import (
 	}
 
 	_copy_files: container.#Sub & {
-		"input": _debian.output.rootfs
+		input: _debian.output.rootfs
 		"include": [
 			for p in _pkg_path for f in p.files {
 				strings.TrimPrefix(f, "/")

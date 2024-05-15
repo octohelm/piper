@@ -12,8 +12,7 @@ func init() {
 	}
 }
 
-type discord struct {
-}
+type discord struct{}
 
 func (discord) Tracef(s string, i ...interface{}) {
 }

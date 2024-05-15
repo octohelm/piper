@@ -82,5 +82,4 @@ func (x *RootfsDo) Do(ctx context.Context) error {
 
 		return x.Output.Sync(ctx, cc.WithRootfs(finalRootfs), x.Input.Platform)
 	})
-
 }

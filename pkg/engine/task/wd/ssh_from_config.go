@@ -43,7 +43,6 @@ func (c *SSHFromConfig) Do(ctx context.Context) error {
 		conn,
 		wd.WithUser(user),
 	)
-
 	if err != nil {
 		return err
 	}

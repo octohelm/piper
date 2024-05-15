@@ -44,7 +44,7 @@ import (
 						GOOS:        _os
 						GOARCH:      _arch
 					}
-					"cmd": [
+					cmd: [
 						"go", "build",
 						"-ldflags", strconv.Quote(strings.Join(ldflags, " ")),
 						"-o", _filename,
@@ -70,7 +70,7 @@ import (
 				_out_file: build["\(_os)/\(_arch)"].file
 
 				_dir: wd.#Sub & {
-					"cwd":  _out_file.wd
+					cwd:    _out_file.wd
 					"path": path.Dir(_out_file.filename)
 				}
 
@@ -96,7 +96,6 @@ import (
 	ldflags: [...string] | *["-s", "-w"]
 	env: [Name=string]: string | client.#Secret
 	bin: string | *path.Base(main)
-
 	...
 }
 
@@ -106,7 +105,7 @@ import (
 	}
 
 	_read: file.#ReadAsString & {
-		"file": gomod
+		file: gomod
 	}
 
 	output: client.#Wait & {

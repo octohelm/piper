@@ -34,25 +34,25 @@ import (
 #EtcGroup: #WriteEntryFile & {
 	path: "/etc/group"
 	entries: #GroupEntries & {
-		"root": _
-		"nobody": gid:  #NOBODY
-		"tty": gid:     5
-		"staff": gid:   50
-		"nonroot": gid: #NONROOT
+		root: _
+		nobody: gid:  #NOBODY
+		tty: gid:     5
+		staff: gid:   50
+		nonroot: gid: #NONROOT
 	}
 }
 
 #EtcPasswd: #WriteEntryFile & {
 	path: "/etc/passwd"
 	entries: #PasswdEntries & {
-		"root": _
-		"nobody": {
+		root: _
+		nobody: {
 			username: "nobody"
 			uid:      #NOBODY
 			gid:      #NOBODY
 			home:     "/nonexistent"
 		}
-		"nonroot": {
+		nonroot: {
 			username: "nonroot"
 			uid:      #NONROOT
 			gid:      #NONROOT
@@ -73,7 +73,7 @@ import (
 	_write: container.#WriteFile & {
 		"input": input
 		"path":  path
-		"contents": strings.Join([
+		contents: strings.Join([
 			for e in entries {
 				e.entry
 			},

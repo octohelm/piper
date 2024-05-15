@@ -22,7 +22,7 @@ import (
 	from!: string
 
 	debian.#Image & {
-		"source": "\(from)"
+		source: "\(from)"
 	}
 }
 
@@ -87,15 +87,15 @@ import (
 		_load_source: container.#Build & {
 			steps: [
 				container.#Copy & {
-					"input":    image.output
-					"contents": source.output
-					"dest":     "\(workdir)"
+					input:    image.output
+					contents: source.output
+					dest:     "\(workdir)"
 				},
 				if prepare != _|_ {
 					container.#Run & {
 						"workdir": "\(workdir)"
-						"mounts":  _cached_mounts
-						"run":     prepare
+						mounts:    _cached_mounts
+						run:       prepare
 						"env":     env
 					}
 				},
@@ -107,9 +107,9 @@ import (
 				_outDir: "./target"
 
 				_build: container.#Run & {
-					"input":   _load_source.output
+					input:     _load_source.output
 					"workdir": "\(workdir)"
-					"run":     "go build -ldflags=\"\(strings.Join(ldflags, " "))\" -o \(_outDir)/\(bin) \(main)"
+					run:       "go build -ldflags=\"\(strings.Join(ldflags, " "))\" -o \(_outDir)/\(bin) \(main)"
 					"env": {
 						env
 						CGO_ENABLED: "0"
@@ -139,15 +139,13 @@ import (
 		for _os in goos for _arch in goarch {
 			"\(_os)/\(_arch)": {
 				_outDir: wd.#Sub & {
-					"cwd": source.cwd
+					cwd: source.cwd
 					"path": path.Join([outDir, "\(bin)_\(_os)_\(_arch)"])
 				}
 
 				_dump: container.#Dump & {
 					input: build["\(_os)/\(_arch)"].output
-					with: {
-						empty: true
-					}
+					with: empty: true
 					outDir: _outDir.dir
 				}
 

@@ -2,9 +2,11 @@ package cueflow
 
 import "cuelang.org/go/cue"
 
-var DepPath = cue.ParsePath("$dep")
-var OkPath = cue.ParsePath("$ok")
-var ControlPath = cue.ParsePath("$$control.name")
+var (
+	DepPath     = cue.ParsePath("$dep")
+	OkPath      = cue.ParsePath("$ok")
+	ControlPath = cue.ParsePath("$$control.name")
+)
 
 type FlowTask interface {
 	flowTask()
@@ -21,19 +23,18 @@ type TaskSetup interface {
 	Setup() bool
 }
 
-type TaskImpl struct {
-}
+type TaskImpl struct{}
 
 func (TaskImpl) flowTask() {
 }
 
 var _ FlowControl = FlowControlImpl{}
 
-type FlowControlImpl struct {
-}
+type FlowControlImpl struct{}
 
 func (FlowControlImpl) flowTask() {
 }
+
 func (FlowControlImpl) flowControl() {
 }
 

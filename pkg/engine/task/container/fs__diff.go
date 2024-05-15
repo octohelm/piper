@@ -32,6 +32,5 @@ func (x *Diff) Do(ctx context.Context) error {
 			return err
 		}
 		return x.Output.Sync(ctx, lower.Diff(upper))
-
 	})
 }

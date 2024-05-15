@@ -2,10 +2,9 @@ package file
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"path"
-
-	"encoding/json"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"

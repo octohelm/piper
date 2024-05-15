@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/innoai-tech/infra/pkg/otel"
 	"os"
+
+	"github.com/innoai-tech/infra/pkg/otel"
 
 	"github.com/innoai-tech/infra/devpkg/gengo"
 	"github.com/innoai-tech/infra/pkg/cli"

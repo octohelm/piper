@@ -1,8 +1,10 @@
 package otel
 
+import "github.com/dagger/dagger/telemetry"
+
 const (
 	LogAttrScope = "$scope"
 
-	LogAttrProgressTotal   = "$progress.total"
-	LogAttrProgressCurrent = "$progress.current"
+	LogAttrProgressCurrent = telemetry.ProgressCurrentAttr
+	LogAttrProgressTotal   = telemetry.ProgressTotalAttr
 )

@@ -48,11 +48,9 @@ import (
 				]
 			},
 			container.#Set & {
-				config: {
-					env: {
-						"PATH":          "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-						"SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt"
-					}
+				config: env: {
+					PATH:          "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+					SSL_CERT_FILE: "/etc/ssl/certs/ca-certificates.crt"
 				}
 			},
 		]

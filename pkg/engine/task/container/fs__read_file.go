@@ -33,6 +33,5 @@ func (x *ReadFile) Do(ctx context.Context) error {
 		}
 		x.Contents = contents
 		return nil
-
 	})
 }

@@ -11,8 +11,10 @@ import (
 	contextx "github.com/octohelm/x/context"
 )
 
-type Client = dagger.Client
-type Platform = dagger.Platform
+type (
+	Client   = dagger.Client
+	Platform = dagger.Platform
+)
 
 type Params = engineclient.Params
 

@@ -2,6 +2,7 @@ package container
 
 import (
 	"context"
+	"iter"
 	"strings"
 	"sync"
 
@@ -41,7 +42,14 @@ var RegistryAuthStoreContext = contextx.New[RegistryAuthStore](
 
 type RegistryAuthStore interface {
 	Store(address string, auth *Auth)
+	RegistryAuths(ctx context.Context) iter.Seq[RegistryAuth]
 	ApplyTo(ctx context.Context, c *dagger.Client, container *dagger.Container, address string, localAuths ...*Auth) *dagger.Container
+}
+
+type RegistryAuth struct {
+	Address  string
+	Username string
+	Password string
 }
 
 func NewRegistryAuthStore() RegistryAuthStore {
@@ -50,6 +58,24 @@ func NewRegistryAuthStore() RegistryAuthStore {
 
 type registryAuthStore struct {
 	m sync.Map
+}
+
+func (r *registryAuthStore) RegistryAuths(ctx context.Context) iter.Seq[RegistryAuth] {
+	return func(yield func(RegistryAuth) bool) {
+		for key, value := range r.m.Range {
+			address := key.(string)
+			a := value.(*Auth)
+
+			if password, ok := a.Secret.Value(ctx); ok {
+				if !yield(RegistryAuth{
+					Address:  address,
+					Username: a.Username,
+					Password: password.Value,
+				}) {
+				}
+			}
+		}
+	}
 }
 
 func (r *registryAuthStore) Store(address string, auth *Auth) {

@@ -22,6 +22,7 @@ import (
 	_ "github.com/octohelm/piper/pkg/engine/task/exec"
 	_ "github.com/octohelm/piper/pkg/engine/task/file"
 	_ "github.com/octohelm/piper/pkg/engine/task/http"
+	_ "github.com/octohelm/piper/pkg/engine/task/kubepkg"
 	_ "github.com/octohelm/piper/pkg/engine/task/wd"
 )
 
@@ -156,6 +157,7 @@ type client struct {
 func (c *client) SourceDir(ctx context.Context) (wd.WorkDir, error) {
 	return c.sourceDir()
 }
+
 func (c *client) CacheDir(ctx context.Context, typ string) (wd.WorkDir, error) {
 	w, err := c.cacheDir()
 	if err != nil {

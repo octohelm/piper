@@ -5,9 +5,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"log/slog"
 	"time"
+
+	"github.com/octohelm/piper/pkg/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/log"
 
 	"github.com/fatih/color"
 	"github.com/go-courier/logr"
@@ -23,23 +26,24 @@ type Logger struct {
 
 func (l *Logger) WithValues(keyAndValues ...any) logr.Logger {
 	return &Logger{
-		attrs:       logAttrsFromKeyAndValues(keyAndValues...),
 		Enabled:     l.Enabled,
 		spanContext: l.spanContext,
+		attrs:       append(l.attrs, logAttrsFromKeyAndValues(keyAndValues...)...),
 	}
 }
 
 func (l *Logger) Start(ctx context.Context, name string, keyAndValues ...any) (context.Context, logr.Logger) {
 	sc := l.spanContext
 	if sc == nil {
-		sc = &spanContext{}
+		sc = &spanContext{
+			ctx: ctx,
+		}
 	}
 
 	c, attrs, spanCtx := start(ctx, name, keyAndValues...)
 
 	lgr := &Logger{
-		Enabled: l.Enabled,
-
+		Enabled:     l.Enabled,
 		attrs:       append(l.attrs, attrs...),
 		spanContext: spanCtx,
 	}
@@ -51,7 +55,6 @@ func (l *Logger) End() {
 	if l.spanContext == nil {
 		return
 	}
-
 	l.spanContext.span.End(trace.WithTimestamp(time.Now()))
 }
 
@@ -82,13 +85,15 @@ func (l *Logger) info(level logr.Level, msg fmt.Stringer) {
 
 	msgStr := msg.String()
 
+	keyValues := getProgressAttrs(l.attrs)
+
 	l.spanContext.span.AddEvent(
 		msgStr,
 		trace.WithTimestamp(time.Now()),
-		trace.WithAttributes(getProgressAttrs(l.attrs)...),
+		trace.WithAttributes(keyValues...),
 	)
 
-	l.printf(l.spanContext.stdout, msgStr)
+	l.printf(l.spanContext.log, msgStr, keyValues)
 }
 
 func (l *Logger) error(level logr.Level, err error) {
@@ -105,27 +110,42 @@ func (l *Logger) error(level logr.Level, err error) {
 	}
 
 	errMsg := err.Error()
+	keyValues := getProgressAttrs(l.attrs)
 
 	span := l.spanContext.span
-	span.RecordError(err, trace.WithAttributes(getProgressAttrs(l.attrs)...))
+	span.RecordError(err, trace.WithAttributes(keyValues...))
 	span.SetStatus(codes.Error, errMsg)
 
-	l.printf(l.spanContext.stderr, errMsg)
+	l.printf(l.spanContext.log, errMsg, keyValues)
 }
 
-func (l *Logger) printf(w io.Writer, msg string) {
+func (l *Logger) printf(ll log.Logger, msg string, attrs []attribute.KeyValue) {
 	if msg == "" {
 		return
 	}
 
+	rec := log.Record{}
+	rec.SetTimestamp(time.Now())
+	rec.AddAttributes(log.String(LogAttrSpanName, l.spanContext.name))
+
+	for _, attr := range attrs {
+		rec.AddAttributes(log.KeyValue{Key: string(attr.Key), Value: log.Int64Value(attr.Value.AsInt64())})
+	}
+
 	buf := bytes.NewBuffer(nil)
 	defer func() {
-		_, _ = io.Copy(w, buf)
+		rec.SetBody(log.StringValue(buf.String()))
+		ll.Emit(l.spanContext.ctx, rec)
 	}()
 
 	buf.WriteString(msg)
 
 	for _, attr := range l.attrs {
+		switch attr.Key {
+		case otel.LogAttrProgressCurrent, otel.LogAttrProgressTotal:
+			continue
+		}
+
 		switch x := attr.Value.Any().(type) {
 		case string:
 			_, _ = fmt.Fprintf(buf, color.WhiteString(" %s=%q", attr.Key, attr.Value))

@@ -85,7 +85,6 @@ func (t *Tar) Do(ctx context.Context) error {
 				_, err = io.Copy(tw, f)
 				return err
 			})
-
 			if err != nil {
 				return err
 			}

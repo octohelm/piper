@@ -130,7 +130,6 @@ import (
 `)
 
 		for e := range SortedIter(context.Background(), s.imports) {
-
 			_, _ = fmt.Fprintf(b, `%s %q
 `, e.Value, e.Key)
 		}

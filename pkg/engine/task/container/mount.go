@@ -41,7 +41,6 @@ func (m *Mount) UnmarshalJSON(data []byte) error {
 				return nil
 			}
 		}
-
 	}
 
 	return nil
@@ -61,11 +60,13 @@ func (Mount) OneOf() []any {
 	}
 }
 
-var _ Mounter = &MountCacheDir{}
-var _ Mounter = &MountTemp{}
-var _ Mounter = &MountFs{}
-var _ Mounter = &MountSecret{}
-var _ Mounter = &MountFile{}
+var (
+	_ Mounter = &MountCacheDir{}
+	_ Mounter = &MountTemp{}
+	_ Mounter = &MountFs{}
+	_ Mounter = &MountSecret{}
+	_ Mounter = &MountFile{}
+)
 
 type MountCacheDir struct {
 	Type     string   `json:"type" enum:"cache"`
@@ -91,8 +92,7 @@ type MountTemp struct {
 	Contents TempDir `json:"contents"`
 }
 
-type TempDir struct {
-}
+type TempDir struct{}
 
 func (t MountTemp) MountTo(ctx context.Context, c *dagger.Client, container *dagger.Container) (*dagger.Container, error) {
 	return container.WithMountedTemp(t.Dest), nil

@@ -32,7 +32,7 @@ import (
 	from: string | *(_default_image.source)
 
 	debian.#Image & {
-		"source": "\(from)"
+		source: "\(from)"
 	}
 }
 
@@ -51,13 +51,13 @@ import (
 		outDir: string | *"."
 
 		_load_source: container.#Copy & {
-			"input":    image.output
-			"contents": source.output
-			"dest":     "\(workdir)"
+			input:    image.output
+			contents: source.output
+			dest:     "\(workdir)"
 		}
 
 		_run: container.#Run & {
-			"input": _load_source.output
+			input: _load_source.output
 			"mounts": {
 				mounts
 
@@ -69,7 +69,7 @@ import (
 					}
 				}
 			}
-			"env": env
+			"env":     env
 			"workdir": "\(workdir)"
 			"run":     run
 		}
@@ -87,15 +87,13 @@ import (
 		outDir: string | *"target/bun"
 
 		_outDir: wd.#Sub & {
-			"cwd":  source.cwd
-			"path": outDir
+			cwd:  source.cwd
+			path: outDir
 		}
 
 		_dump: container.#Dump & {
 			input: build.output
-			with: {
-				empty: true
-			}
+			with: empty: true
 			outDir: _outDir.dir
 		}
 

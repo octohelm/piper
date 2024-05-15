@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -13,13 +12,14 @@ import (
 	"sync/atomic"
 	"text/tabwriter"
 
+	"github.com/dagger/dagger/telemetry/sdklog"
+
 	"github.com/octohelm/piper/internal/logger"
 
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/ast"
 	cueerrors "cuelang.org/go/cue/errors"
 	"github.com/dagger/dagger/telemetry"
-	"github.com/dagger/dagger/telemetry/sdklog"
 	"github.com/gobwas/glob"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
@@ -329,31 +329,8 @@ func (r *Runner) scanActiveTarget() {
 	}
 }
 
-var isTTY = sync.OnceValue(func() bool {
-	if os.Getenv("TTY") == "0" {
-		return false
-	}
-	return true
-})
-
-var daggerDebugEnabled = false
-
-func init() {
-	if os.Getenv("DAGGER_DEBUG") != "" {
-		daggerDebugEnabled = true
-	}
-}
-
 func runWith(ctx context.Context, name string, fn func(ctx context.Context) error) error {
 	frontend := logger.New()
-	defer frontend.Shutdown(ctx)
-
-	frontend.Plain = !isTTY()
-	frontend.Silent = false
-
-	if daggerDebugEnabled {
-		frontend.Verbosity = 3
-	}
 
 	return frontend.Run(ctx, func(ctx context.Context) (rerr error) {
 		ctx = telemetry.Init(ctx, telemetry.Config{
@@ -363,9 +340,10 @@ func runWith(ctx context.Context, name string, fn func(ctx context.Context) erro
 				semconv.ServiceName("piper"),
 				semconv.ServiceVersion(version.Version()),
 			),
-			LiveTraceExporters: []sdktrace.SpanExporter{frontend},
 			LiveLogExporters:   []sdklog.LogExporter{frontend},
+			LiveTraceExporters: []sdktrace.SpanExporter{frontend},
 		})
+
 		defer telemetry.Close()
 
 		daggerRunner, err := dagger.NewRunner(
@@ -382,11 +360,9 @@ func runWith(ctx context.Context, name string, fn func(ctx context.Context) erro
 
 		c, span := tracer.Start(ctx, name)
 		defer telemetry.End(span, func() error { return rerr })
-		frontend.SetPrimary(span.SpanContext().SpanID())
 
 		return fn(dagger.RunnerContext.Inject(c, daggerRunner))
 	})
-
 }
 
 func Tracer() trace.Tracer {

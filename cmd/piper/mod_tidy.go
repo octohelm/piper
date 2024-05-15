@@ -17,8 +17,7 @@ type Tidy struct {
 	TidyRun
 }
 
-type TidyRun struct {
-}
+type TidyRun struct{}
 
 func (r *TidyRun) Run(ctx context.Context) error {
 	cwd, err := os.Getwd()

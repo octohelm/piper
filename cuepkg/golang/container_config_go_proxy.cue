@@ -35,8 +35,8 @@ import (
 
 	_config: #ConfigGoPrivate & {
 		"input": input
-		"host":  _env.CI_SERVER_HOST
-		"auth": {
+		host:    _env.CI_SERVER_HOST
+		auth: {
 			username: _env.CI_JOB_USER
 			secret:   _env.CI_JOB_TOKEN
 		}

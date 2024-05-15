@@ -102,7 +102,6 @@ func (w *Worker) Do(action func(c Chunk) error) {
 
 		go func() {
 			for w.next() {
-
 			}
 		}()
 	})

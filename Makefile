@@ -1,4 +1,4 @@
-PIPER = TTY=0 GRAPH=1 go run ./cmd/piper
+PIPER = TTY=0 go run ./cmd/piper
 
 DEBUG = 0
 ifeq ($(DEBUG),1)
@@ -27,6 +27,9 @@ ship.multi-builder:
 	PIPER_BUILDER_HOST="tcp://arm64builder@?platform=linux/arm64,docker-image://amd64builder@?platform=linux/amd64" \
 		$(PIPER) do ship
 
+fmt:
+	gofumpt -w -l .
+
 release:
 	$(PIPER) do release
 
@@ -44,3 +47,9 @@ test:
 
 debug.distroless:
 	$(PIPER) do ship distroless export linux/arm64
+
+debug.kubepkg:
+	$(PIPER) do pkg
+
+debug.kubepkg.ocitar:
+	$(PIPER) do pkg ocitar

@@ -16,8 +16,8 @@ import (
 			"\(_platform)": container.#Build & {
 				"steps": [
 					container.#Pull & {
-						"source":   from
-						"platform": _platform
+						source:   from
+						platform: _platform
 					},
 					for step in steps {
 						step

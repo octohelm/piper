@@ -27,10 +27,8 @@ import (
 
 				_mirror_configrated: container.#Run & {
 					"input": input
-					"env": {
-						LINUX_MIRROR: _client_env.LINUX_MIRROR
-					}
-					"run": """
+					env: LINUX_MIRROR: _client_env.LINUX_MIRROR
+					run: """
 						if [ "${LINUX_MIRROR}" != "" ]; then
 								if [ -f "/etc/apt/sources.list" ]; then
 										sed -i "s@http://deb.debian.org@${LINUX_MIRROR}@g" /etc/apt/sources.list
@@ -45,13 +43,13 @@ import (
 				}
 
 				_dirs: {
-					"varlog":    "/var/log"
-					"apt_cache": "/var/apt/cache"
+					varlog:    "/var/log"
+					apt_cache: "/var/apt/cache"
 				}
 
 				_run: container.#Run & {
 					"input": _mirror_configrated.output
-					"mounts": {
+					mounts: {
 						for id, dir in _dirs {
 							"\(id)": container.#Mount & {
 								dest: "\(dir)"
@@ -61,7 +59,7 @@ import (
 							}
 						}
 					}
-					"run": [
+					run: [
 						"apt-get update -y",
 						for _pkgName, _opt in packages {
 							[

@@ -2,21 +2,15 @@ package distroless
 
 // https://packages.debian.org/bookworm/amd64/base-files/filelist
 #BaseFiles: #Extract & {
-	packages: {
-		"base-files": _
-	}
+	packages: "base-files": _
 }
 
 #Netbase: #Extract & {
-	packages: {
-		"netbase": _
-	}
+	packages: netbase: _
 }
 
 #CaCertificates: #Extract & {
-	packages: {
-		"ca-certificates": _
-	}
+	packages: "ca-certificates": _
 	include: [
 		// openssl deps
 		"etc/ssl/certs/",
@@ -29,7 +23,5 @@ package distroless
 }
 
 #Tzdata: #Extract & {
-	packages: {
-		"tzdata": _
-	}
+	packages: tzdata: _
 }

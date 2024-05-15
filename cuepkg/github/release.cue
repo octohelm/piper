@@ -38,17 +38,13 @@ import (
 
 			_create_release: _client.#Do & {
 				$dep: client.#Skip & {when: _get_release.$ok}
-
-				"method": "POST"
-				"url":    "\(#GithubAPI.core)/repos/\(owner)/\(repo)/releases"
-				"header": {
-					"Content-Type": "application/json"
-				}
-
-				"body": json.Marshal({
-					"tag_name":   name
+				method: "POST"
+				url:    "\(#GithubAPI.core)/repos/\(owner)/\(repo)/releases"
+				header: "Content-Type": "application/json"
+				body: json.Marshal({
+					tag_name:     name
 					"name":       name
-					"body":       notes
+					body:         notes
 					"prerelease": prerelease
 					"draft":      draft
 				})
@@ -92,22 +88,17 @@ import (
 						$dep: client.#Skip & {
 							when: (_list_assets.asset_ids[assetName] == _|_)
 						}
-						"method": "DELETE"
-						"url":    "\(#GithubAPI.core)/repos/\(owner)/\(repo)/releases/assets/\(_list_assets.asset_ids[assetName])"
+						method: "DELETE"
+						url:    "\(#GithubAPI.core)/repos/\(owner)/\(repo)/releases/assets/\(_list_assets.asset_ids[assetName])"
 					}
 
 					_upload: _client.#Do & {
-						$dep: _delete_old_if_exists.$ok
-
-						"method": "POST"
-						"url":    "\(#GithubAPI.uploads)/repos/\(owner)/\(repo)/releases/\(_get_or_create_release.release_id)/assets"
-						"header": {
-							"Content-Type": "application/octet-stream"
-						}
-						"query": {
-							"name": "\(assetName)"
-						}
-						"body": f
+						$dep:   _delete_old_if_exists.$ok
+						method: "POST"
+						url:    "\(#GithubAPI.uploads)/repos/\(owner)/\(repo)/releases/\(_get_or_create_release.release_id)/assets"
+						header: "Content-Type": "application/octet-stream"
+						query: name: "\(assetName)"
+						body: f
 					}
 
 					$ok: _upload.$ok

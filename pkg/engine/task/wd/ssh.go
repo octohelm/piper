@@ -50,7 +50,6 @@ func (c *SSH) Do(ctx context.Context) error {
 		conn,
 		wd.WithUser(user),
 	)
-
 	if err != nil {
 		return err
 	}

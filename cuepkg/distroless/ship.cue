@@ -26,7 +26,7 @@ import (
 	export: {
 		for _platform in platforms {
 			"\(_platform)": container.#Dump & {
-				input:  build["\(_platform)"].output.rootfs
+				input: build["\(_platform)"].output.rootfs
 				with: empty: true
 				outDir: _tmp.dir
 			}
