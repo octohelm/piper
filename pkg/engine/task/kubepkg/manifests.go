@@ -3,6 +3,11 @@ package kubepkg
 import (
 	"context"
 
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/octohelm/kubepkgspec/pkg/object"
+	"github.com/octohelm/kubepkgspec/pkg/workload"
+	"github.com/pkg/errors"
+
 	kubepkgv1alpha1 "github.com/octohelm/kubepkgspec/pkg/apis/kubepkg/v1alpha1"
 	"github.com/octohelm/kubepkgspec/pkg/kubepkg"
 	"github.com/octohelm/kubepkgspec/pkg/manifest"
@@ -22,6 +27,10 @@ type Manifests struct {
 
 	// KubePkg spec
 	KubePkg KubePkg `json:"kubepkg"`
+	// Rename for image repo name
+	// go template rule
+	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
+	Rename Rename `json:"rename,omitempty"`
 	// recursively extract KubePkg in sub manifests
 	Recursive bool `json:"recursive,omitempty"`
 	// Manifests of k8s resources
@@ -33,7 +42,25 @@ func (r *Manifests) Do(ctx context.Context) error {
 
 	manifests, err := manifest.SortedExtract(&kpkg, kubepkg.WithRecursive(r.Recursive))
 	if err != nil {
-		return err
+		return errors.Wrap(err, "extract manifests failed")
+	}
+
+	if renamer := r.Rename.renamer; renamer != nil {
+		images := workload.Images(func(yield func(object.Object) bool) {
+			for _, m := range manifests {
+				if !yield(m) {
+					return
+				}
+			}
+		})
+
+		for img := range images {
+			repo, err := name.NewRepository(img.Name)
+			if err != nil {
+				return err
+			}
+			img.Name = renamer.Rename(repo)
+		}
 	}
 
 	r.Manifests = make([]client.Any, len(manifests))

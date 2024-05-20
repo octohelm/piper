@@ -134,6 +134,11 @@ func (ui *exporter) export(ctx context.Context, logData *sdklog.LogData) error {
 	rec := ui.taskRecorderGetterOf(logData.SpanID, name, total)()
 
 	if current > 0 {
+		if total > 0 {
+			rec.Progress(current, total)
+			return nil
+		}
+
 		rec.Current(current)
 		return nil
 	}

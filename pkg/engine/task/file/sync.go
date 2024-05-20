@@ -89,7 +89,7 @@ func (t *Sync) Do(ctx context.Context) error {
 
 			go func() {
 				for p := range pw.Process(ctx) {
-					l.WithValues(slog.Int64(otel.LogAttrProgressCurrent, p.Current)).Info("")
+					l.WithValues(slog.Int64(otel.LogAttrProgressCurrent, p.Current)).Info("sync")
 				}
 			}()
 

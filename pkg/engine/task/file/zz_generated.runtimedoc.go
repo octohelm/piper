@@ -485,6 +485,10 @@ func (v WriteAsYAML) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"output file",
 			}, true
+		case "With":
+			return []string{
+				"options",
+			}, true
 		case "Data":
 			return []string{
 				"data could convert to yaml",
@@ -504,4 +508,18 @@ func (v WriteAsYAML) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{
 		"WriteAsYAML read and parse yaml",
 	}, true
+}
+
+func (v WriteAsYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "AsStream":
+			return []string{
+				"write as stream",
+			}, true
+		}
+
+		return nil, false
+	}
+	return []string{}, true
 }

@@ -24,10 +24,17 @@ type WriteAsYAML struct {
 
 	// output file
 	OutFile File `json:"outFile"`
+	// options
+	With WriteAsYAMLOption `json:"with,omitempty"`
 	// data could convert to yaml
 	Data client.Any `json:"data"`
 	// writen file
 	File File `json:"-" output:"file"`
+}
+
+type WriteAsYAMLOption struct {
+	// write as stream
+	AsStream bool `json:"asStream,omitempty"`
 }
 
 func (t *WriteAsYAML) Do(ctx context.Context) error {
@@ -42,13 +49,29 @@ func (t *WriteAsYAML) Do(ctx context.Context) error {
 		}
 		defer f.Close()
 
-		data, err := yaml.Marshal(t.Data.Value)
-		if err != nil {
-			return errors.Wrap(err, "marshal to yaml failed")
-		}
+		enc := yaml.NewEncoder(f)
 
-		if _, err := f.Write(data); err != nil {
-			return errors.Wrap(err, "write data failed")
+		switch x := t.Data.Value.(type) {
+		case []any:
+			if t.With.AsStream {
+				for _, item := range x {
+					//_, err := fmt.Fprintln(f, "---")
+					//if err != nil {
+					//	return errors.Wrap(err, "marshal to yaml failed")
+					//}
+					if err := enc.Encode(item); err != nil {
+						return errors.Wrap(err, "marshal to yaml failed")
+					}
+				}
+			} else {
+				if err := enc.Encode(x); err != nil {
+					return errors.Wrap(err, "marshal to yaml failed")
+				}
+			}
+		default:
+			if err := enc.Encode(x); err != nil {
+				return errors.Wrap(err, "marshal to yaml failed")
+			}
 		}
 
 		return t.File.SyncWith(ctx, t.OutFile)

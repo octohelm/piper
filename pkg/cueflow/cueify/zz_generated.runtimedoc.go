@@ -14,6 +14,10 @@ func runtimeDoc(v any, names ...string) ([]string, bool) {
 	return nil, false
 }
 
+func (CueWriterOption) RuntimeDoc(names ...string) ([]string, bool) {
+	return []string{}, true
+}
+
 func (v Decl) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {

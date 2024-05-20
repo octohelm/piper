@@ -8,8 +8,9 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/octohelm/piper/pkg/otel"
 	"go.opentelemetry.io/otel/attribute"
+
+	"github.com/octohelm/piper/pkg/otel"
 	"go.opentelemetry.io/otel/log"
 
 	"github.com/fatih/color"

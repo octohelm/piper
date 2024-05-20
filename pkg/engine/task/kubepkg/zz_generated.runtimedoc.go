@@ -14,6 +14,60 @@ func runtimeDoc(v any, names ...string) ([]string, bool) {
 	return nil, false
 }
 
+func (v Apply) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "Kubeconfig":
+			return []string{
+				"Kubeconfig path",
+			}, true
+		case "Manifests":
+			return []string{
+				"Manifests of k8s resources",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"Apply to kubernetes",
+	}, true
+}
+
+func (v Cueify) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "KubePkg":
+			return []string{
+				"KubePkg spec",
+			}, true
+		case "PkgName":
+			return []string{
+				"pkg name",
+			}, true
+		case "OutDir":
+			return []string{
+				"OutDir for cue files",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
 func (v KubePkg) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
@@ -48,9 +102,9 @@ func (v Manifests) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"KubePkg spec",
 			}, true
-		case "All":
+		case "Recursive":
 			return []string{
-				"All extract KubePkg in sub manifests",
+				"recursively extract KubePkg in sub manifests",
 			}, true
 		case "Manifests":
 			return []string{
@@ -87,6 +141,26 @@ func (v OciTar) RuntimeDoc(names ...string) ([]string, bool) {
 				"OutFile of OciTar",
 			}, true
 		case "File":
+			return []string{
+				"File of tar created",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(v.Task, names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v PushOciTar) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Task":
+			return []string{}, true
+		case "SrcFile":
 			return []string{}, true
 
 		}
