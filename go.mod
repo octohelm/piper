@@ -26,7 +26,7 @@ require (
 	github.com/innoai-tech/infra v0.0.0-20240523040540-feecd286e824
 	github.com/k0sproject/rig v0.18.2
 	github.com/kevinburke/ssh_config v1.2.0
-	github.com/octohelm/crkit v0.0.0-20240529065354-6b1d7ae78d54
+	github.com/octohelm/crkit v0.0.0-20240529094907-e4e05776f231
 	github.com/octohelm/cuekit v0.0.0-20240521042914-3f4a1dd4538d
 	github.com/octohelm/gengo v0.0.0-20240510051519-974fb897453b
 	github.com/octohelm/kubekit v0.0.0-20240508035712-15cb61729772

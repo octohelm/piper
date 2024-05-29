@@ -38,6 +38,9 @@ type OciTar struct {
 	// Platforms of oci tar, if empty it will based on KubePkg
 	Platforms []string `json:"platforms,omitempty"`
 
+	// WithAnnotations pick annotations of KubePkg as image annotations
+	WithAnnotations []string `json:"withAnnotations,omitempty"`
+
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
@@ -99,9 +102,10 @@ func (t *OciTar) Do(ctx context.Context) error {
 	})(remote.DefaultTransport)
 
 	packer := &kubepkg.Packer{
-		Cache:     cache.NewFilesystemCache(cacheDir),
-		Renamer:   t.Rename.renamer,
-		Platforms: t.Platforms,
+		Cache:           cache.NewFilesystemCache(cacheDir),
+		Renamer:         t.Rename.renamer,
+		WithAnnotations: t.WithAnnotations,
+		Platforms:       t.Platforms,
 		CreatePuller: func(ref name.Reference, options ...remote.Option) (*remote.Puller, error) {
 			for auth := range registryAuthStore.RegistryAuths(ctx) {
 				if ref.Context().RegistryStr() == auth.Address {
