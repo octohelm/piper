@@ -86,15 +86,26 @@ func (ui *exporter) ExportSpans(ctx context.Context, spans []sdktrace.ReadOnlySp
 		ui.spans.Store(span.SpanContext().SpanID(), span)
 
 		total := int64(0)
+		internal := false
 
 		for _, attr := range span.Attributes() {
 			switch attr.Key {
 			case telemetry.ProgressTotalAttr:
 				total = attr.Value.AsInt64()
+			case "net.peer.name":
+				internal = true
+			case telemetry.UIEncapsulatedAttr, telemetry.UIInternalAttr:
+				internal = true
+			case telemetry.DagCallAttr, telemetry.DagDigestAttr, telemetry.DagInputsAttr, telemetry.LLBDigestsAttr:
+				internal = true
+			default:
 			}
 		}
 
-		rec := ui.taskRecorderGetterOf(span.SpanContext().SpanID(), span.Name(), total)()
+		rec := ui.taskRecorderGetterOf(span.SpanContext().SpanID(), span.Name(), total, internal)()
+		if rec == nil {
+			continue
+		}
 
 		ui.complete(rec, span)
 	}
@@ -131,7 +142,10 @@ func (ui *exporter) export(ctx context.Context, logData *sdklog.LogData) error {
 		}
 	}
 
-	rec := ui.taskRecorderGetterOf(logData.SpanID, name, total)()
+	rec := ui.taskRecorderGetterOf(logData.SpanID, name, total, false)()
+	if rec == nil {
+		return nil
+	}
 
 	if current > 0 {
 		if total > 0 {
@@ -157,12 +171,16 @@ func (ui *exporter) export(ctx context.Context, logData *sdklog.LogData) error {
 
 type TaskRecorderGetter = func() *progrock.TaskRecorder
 
-func (ui *exporter) taskRecorderGetterOf(spanID trace.SpanID, name string, total int64) TaskRecorderGetter {
+func (ui *exporter) taskRecorderGetterOf(spanID trace.SpanID, name string, total int64, internal bool) TaskRecorderGetter {
 	if v, ok := ui.spans.Load(spanID); ok {
 		name = v.(sdktrace.ReadOnlySpan).Name()
 	}
 
 	v, _ := ui.taskRecorderGetters.LoadOrStore(spanID, sync.OnceValue(func() (r *progrock.TaskRecorder) {
+		if internal {
+			return nil
+		}
+
 		defer func() {
 			r.Start()
 		}()
