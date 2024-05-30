@@ -5,6 +5,8 @@ ifeq ($(DEBUG),1)
 	PIPER := $(PIPER) --log-level=debug
 endif
 
+export PIPER_BUILDER_HOST =
+
 tidy:
 	$(PIPER) mod tidy
 

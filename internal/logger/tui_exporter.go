@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/dagger/dagger/telemetry"
@@ -99,6 +100,15 @@ func (ui *exporter) ExportSpans(ctx context.Context, spans []sdktrace.ReadOnlySp
 			case telemetry.DagCallAttr, telemetry.DagDigestAttr, telemetry.DagInputsAttr, telemetry.LLBDigestsAttr:
 				internal = true
 			default:
+			}
+		}
+
+		for _, internalSpanPrefix := range []string{
+			"moby.buildkit.v1.",
+			"moby.filesync.v1.",
+		} {
+			if strings.HasPrefix(span.Name(), internalSpanPrefix) {
+				internal = true
 			}
 		}
 

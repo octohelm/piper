@@ -23,7 +23,7 @@ func TestEngine(t *testing.T) {
 	t.Run("simple flow", func(t *testing.T) {
 		frontend := idtui.New()
 
-		_ = frontend.Run(context.Background(), func(ctx context.Context) (rerr error) {
+		_ = frontend.Run(context.Background(), idtui.FrontendOpts{}, func(ctx context.Context) (rerr error) {
 			ctx = telemetry.Init(ctx, telemetry.Config{
 				Detect:             true,
 				LiveTraceExporters: []sdktrace.SpanExporter{frontend},
