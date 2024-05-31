@@ -4,7 +4,7 @@ go 1.22.3
 
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240513025329-73e398b6963a
 
-// cause by github.com/dagger/dagger v0.11.5
+// cause by github.com/dagger/dagger v0.11.6
 replace (
 	github.com/dagger/dagger/engine/distconsts => ./internal/dagger/engine/distconsts
 	go.opentelemetry.io/otel/log => go.opentelemetry.io/otel/log v0.0.1-alpha
@@ -16,8 +16,8 @@ replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbf
 
 require (
 	cuelang.org/go v0.8.2
-	dagger.io/dagger v0.11.5
-	github.com/dagger/dagger v0.11.5
+	dagger.io/dagger v0.11.6
+	github.com/dagger/dagger v0.11.6
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.17.0
 	github.com/go-courier/logr v0.3.0
@@ -89,7 +89,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.1.1 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.4 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.11.4 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.11.5 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect

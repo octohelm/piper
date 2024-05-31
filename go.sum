@@ -38,8 +38,8 @@ cuelabs.dev/go/oci/ociregistry v0.0.0-20240412105620-eedc705cef15 h1:W1yhnRytFwr
 cuelabs.dev/go/oci/ociregistry v0.0.0-20240412105620-eedc705cef15/go.mod h1:pK23AUVXuNzzTpfMCA06sxZGeVQ/75FdVtW249de9Uo=
 cuelang.org/go v0.8.2 h1:vWfHI1kQlBvwkna7ktAqXjV5LUEAgU6vyMlJjvZZaDw=
 cuelang.org/go v0.8.2/go.mod h1:CoDbYolfMms4BhWUlhD+t5ORnihR7wvjcfgyO9lL5FI=
-dagger.io/dagger v0.11.5 h1:MGU40jWuG7LHU+Jq9zCFaIe3gEAuTVx2zRNulL4hEyw=
-dagger.io/dagger v0.11.5/go.mod h1:7JewnFDOKZdJNQbQsPvjemONAn6v3ihuTL1bxBSQG8g=
+dagger.io/dagger v0.11.6 h1:aGmMpPETphE091FQ4U4LRxYLxbvLZd5Icm/V1Vv8IOQ=
+dagger.io/dagger v0.11.6/go.mod h1:7JewnFDOKZdJNQbQsPvjemONAn6v3ihuTL1bxBSQG8g=
 dario.cat/mergo v1.0.0 h1:AGCNq9Evsj31mOgNPcLyXc+4PNABt905YmuqPYYpBWk=
 dario.cat/mergo v1.0.0/go.mod h1:uNxQE+84aUszobStD9th8a29P2fMDhsBdgRYvZOxGmk=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
@@ -146,8 +146,8 @@ github.com/creasty/defaults v1.7.0 h1:eNdqZvc5B509z18lD8yc212CAqJNvfT1Jq6L8WowdB
 github.com/creasty/defaults v1.7.0/go.mod h1:iGzKe6pbEHnpMPtfDXZEr0NVxWnPTjb1bbDy08fPzYM=
 github.com/cyphar/filepath-securejoin v0.2.4 h1:Ugdm7cg7i6ZK6x3xDF1oEu1nfkyfH53EtKeQYTC3kyg=
 github.com/cyphar/filepath-securejoin v0.2.4/go.mod h1:aPGpWjXOXUn2NCNjFvBE6aRxGGx79pTxQpKOJNYHHl4=
-github.com/dagger/dagger v0.11.5 h1:tRQv9qvH3QJwTrthb/PBcy64AG8PsOv4cpp4eGzM7gs=
-github.com/dagger/dagger v0.11.5/go.mod h1:UerMOphFwv27UEt5lSTqKZz2NdDXBXkuPJO8twVSQDk=
+github.com/dagger/dagger v0.11.6 h1:aSIHNBTQjw/4r0bNC7kJA3jOYpWI9C5lsu2l2JPWrRk=
+github.com/dagger/dagger v0.11.6/go.mod h1:VpuOVScbGuD66amyFm4UtFP8PMv0BLvaJdVbhpBsRTQ=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
