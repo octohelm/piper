@@ -15,7 +15,7 @@ replace (
 replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbfmt v0.0.0-20240116145035-ef3ab179eed6
 
 require (
-	cuelang.org/go v0.8.2
+	cuelang.org/go v0.9.0
 	dagger.io/dagger v0.11.6
 	github.com/dagger/dagger v0.11.6
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
