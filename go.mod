@@ -11,11 +11,11 @@ replace (
 	go.opentelemetry.io/otel/trace => go.opentelemetry.io/otel/trace v1.26.0
 )
 
-// cause by cuelang.org/go v0.8.2
-replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbfmt v0.0.0-20240116145035-ef3ab179eed6
+// locked by cuelang.org/go v0.9.0
+replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbfmt v0.0.0-20230328191034-3462fbc510c0
 
 require (
-	cuelang.org/go v0.8.2
+	cuelang.org/go v0.9.0
 	dagger.io/dagger v0.11.6
 	github.com/dagger/dagger v0.11.6
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -23,17 +23,17 @@ require (
 	github.com/go-courier/logr v0.3.0
 	github.com/gobwas/glob v0.2.3
 	github.com/google/go-containerregistry v0.19.1
-	github.com/innoai-tech/infra v0.0.0-20240523040540-feecd286e824
+	github.com/innoai-tech/infra v0.0.0-20240609094326-908b868aba99
 	github.com/k0sproject/rig v0.18.2
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/octohelm/crkit v0.0.0-20240529094907-e4e05776f231
-	github.com/octohelm/cuekit v0.0.0-20240521042914-3f4a1dd4538d
+	github.com/octohelm/cuekit v0.0.0-20240610074644-0a72a4989f70
 	github.com/octohelm/gengo v0.0.0-20240510051519-974fb897453b
 	github.com/octohelm/kubekit v0.0.0-20240508035712-15cb61729772
 	github.com/octohelm/kubepkgspec v0.0.0-20240521102121-31a405691640
-	github.com/octohelm/storage v0.0.0-20240516030302-1ac2cc1ea347
+	github.com/octohelm/storage v0.0.0-20240528041916-02fb0aa1d9be
 	github.com/octohelm/unifs v0.0.0-20240516025710-c4ec41df5557
-	github.com/octohelm/x v0.0.0-20240513022938-1bd86d96adef
+	github.com/octohelm/x v0.0.0-20240605041540-fc38d676effd
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.0
 	github.com/pelletier/go-toml/v2 v2.2.2
@@ -44,10 +44,10 @@ require (
 	go.opentelemetry.io/otel/log v0.3.0
 	go.opentelemetry.io/otel/sdk v1.27.0
 	go.opentelemetry.io/otel/trace v1.27.0
-	golang.org/x/crypto v0.23.0
-	golang.org/x/net v0.25.0
+	golang.org/x/crypto v0.24.0
+	golang.org/x/net v0.26.0
 	golang.org/x/sync v0.7.0
-	golang.org/x/tools v0.21.0
+	golang.org/x/tools v0.22.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.30.1
 	sigs.k8s.io/controller-runtime v0.18.3
@@ -172,14 +172,14 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/octohelm/courier v0.0.0-20240516021431-5cf7af6666a1 // indirect
+	github.com/octohelm/courier v0.0.0-20240527074539-a9eb7212792b // indirect
 	github.com/onsi/gomega v1.33.1 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/prometheus/client_golang v1.19.1 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.53.0 // indirect
-	github.com/prometheus/procfs v0.15.0 // indirect
+	github.com/prometheus/common v0.54.0 // indirect
+	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20240416193709-1e18ef0a7fdc // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
@@ -215,16 +215,16 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.27.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.2.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20240525044651-4c93da0ed11d // indirect
-	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/oauth2 v0.20.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/term v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/exp v0.0.0-20240531132922-fd00a4e0eefc // indirect
+	golang.org/x/mod v0.18.0 // indirect
+	golang.org/x/oauth2 v0.21.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/term v0.21.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240521202816-d264139d666e // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240521202816-d264139d666e // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
 	google.golang.org/grpc v1.64.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
