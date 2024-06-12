@@ -1,6 +1,6 @@
 module github.com/octohelm/piper
 
-go 1.22.3
+go 1.22.4
 
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240513025329-73e398b6963a
 
