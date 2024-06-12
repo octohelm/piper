@@ -57,8 +57,8 @@ func (x *Push) Do(ctx context.Context) error {
 					return errors.Wrapf(err, "parse platform failed: %s", p)
 				}
 
-				// push without tag
-				image := strings.Split(x.Dest, ":")[0]
+				// push without tag tmp
+				image := fmt.Sprintf("%s:tmp", strings.Split(x.Dest, ":")[0])
 
 				logr.FromContext(ctx).WithValues("platform", p).Info(fmt.Sprintf("publishing %s", image))
 

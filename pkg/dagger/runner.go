@@ -186,7 +186,7 @@ func (h *Hosts) ClientParams(name string) client.Params {
 			}
 		}
 	}
-
+	
 	return client.Params{RunnerHost: h.Default.RunnerHost}
 }
 
