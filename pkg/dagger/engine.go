@@ -27,14 +27,18 @@ type Scope struct {
 	ID       string
 }
 
-type Engine interface {
+type EngineWithScope interface {
+	Engine
 	Scope() Scope
+}
+
+type Engine interface {
 	Shutdown(ctx context.Context) error
 	Do(ctx context.Context, do func(ctx context.Context, client *Client) error) error
 }
 
-func NewEngine(scope Scope, params Params) Engine {
-	return &engineImpl{scope: scope, params: params}
+func NewEngine(params Params) Engine {
+	return &engineImpl{params: params}
 }
 
 type engineImpl struct {

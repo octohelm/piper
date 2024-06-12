@@ -94,7 +94,7 @@ func NewRunner(optFns ...EngineOptionFunc) (Runner, error) {
 }
 
 type Runner interface {
-	Select(ctx context.Context, scope Scope) Engine
+	Select(ctx context.Context, scope Scope) EngineWithScope
 	Shutdown(ctx context.Context) error
 }
 
@@ -104,26 +104,33 @@ type runner struct {
 	engines sync.Map
 }
 
-func (r *runner) ClientParams(scope *Scope) client.Params {
-	runnerHost := r.GetHost(scope.Platform)
-	p := r.Params
-	p.RunnerHost = runnerHost.RunnerHost
-	scope.ID = runnerHost.Name
-	return p
+func (r *runner) ClientParams(host string) client.Params {
+	return r.Hosts.ClientParams(host)
 }
 
-func (r *runner) Select(ctx context.Context, scope Scope) Engine {
+func (r *runner) Select(ctx context.Context, scope Scope) EngineWithScope {
 	if scope.Platform == "" {
 		scope.Platform = Platform(fmt.Sprintf("linux/%s", runtime.GOARCH))
 	}
-
-	if v, ok := r.engines.Load(scope.ID); ok {
-		return v.(Engine)
+	if scope.ID == "" {
+		scope.ID = r.GetHost(scope.Platform).Name
 	}
+	getEngine, _ := r.engines.LoadOrStore(scope.ID, sync.OnceValue(func() Engine {
+		return NewEngine(r.ClientParams(scope.ID))
+	}))
+	return &engineWithScope{
+		Engine: getEngine.(func() Engine)(),
+		scope:  scope,
+	}
+}
 
-	e := NewEngine(scope, r.ClientParams(&scope))
-	r.engines.Store(scope.ID, e)
-	return e
+type engineWithScope struct {
+	Engine
+	scope Scope
+}
+
+func (e *engineWithScope) Scope() Scope {
+	return e.scope
 }
 
 func (r *runner) Shutdown(ctx context.Context) error {
@@ -171,6 +178,18 @@ func (h *Hosts) AddHost(runnerHost *PiperRunnerHost) {
 	}
 }
 
-func Select(ctx context.Context, scope Scope) Engine {
+func (h *Hosts) ClientParams(name string) client.Params {
+	for _, hh := range h.Platformed {
+		for _, p := range hh {
+			if p.Name == name {
+				return client.Params{RunnerHost: p.RunnerHost}
+			}
+		}
+	}
+
+	return client.Params{RunnerHost: h.Default.RunnerHost}
+}
+
+func Select(ctx context.Context, scope Scope) EngineWithScope {
 	return RunnerContext.From(ctx).Select(ctx, scope)
 }
