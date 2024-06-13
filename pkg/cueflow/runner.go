@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/octohelm/cuekit/pkg/mod/module"
 	"io"
 	"sort"
 	"strconv"
@@ -34,7 +35,7 @@ import (
 	"github.com/octohelm/piper/pkg/generic/record"
 )
 
-func NewRunner(build func() (Value, error)) *Runner {
+func NewRunner(build func() (Value, *module.Module, error)) *Runner {
 	return &Runner{
 		build: build,
 	}
@@ -45,8 +46,9 @@ type scope struct {
 }
 
 type Runner struct {
-	build      func() (Value, error)
+	build      func() (Value, *module.Module, error)
 	root       atomic.Pointer[scope]
+	module     atomic.Pointer[module.Module]
 	taskResult record.Map[string, any]
 
 	match  func(p string) bool
@@ -57,6 +59,10 @@ type Runner struct {
 	setups        map[string][]string
 	targets       map[string][]string
 	activeTargets map[string][]string
+}
+
+func (r *Runner) Module() *module.Module {
+	return r.module.Load()
 }
 
 func (r *Runner) Value() Value {
@@ -171,10 +177,11 @@ func (r *Runner) run(ctx context.Context) error {
 }
 
 func (r *Runner) init() error {
-	rootValue, err := r.build()
+	rootValue, mod, err := r.build()
 	if err != nil {
 		return err
 	}
+	r.module.Store(mod)
 	r.root.Store(&scope{Value: rootValue})
 	return nil
 }

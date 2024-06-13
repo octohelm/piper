@@ -2,6 +2,7 @@ package engine
 
 import (
 	"context"
+	"github.com/octohelm/cuekit/pkg/mod/module"
 	"os"
 	"path"
 	"path/filepath"
@@ -92,18 +93,18 @@ type project struct {
 }
 
 func (p *project) Run(ctx context.Context, action ...string) error {
-	runner := cueflow.NewRunner(func() (cueflow.Value, error) {
+	runner := cueflow.NewRunner(func() (cueflow.Value, *module.Module, error) {
 		buildConfig, err := cuecontext.NewConfig(cuecontext.WithRoot(p.opt.cwd))
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
-		val, err := cuecontext.Build(buildConfig, p.opt.entry)
+		val, err := cuecontext.Build(buildConfig.Config, p.opt.entry)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
-		return cueflow.WrapValue(val), nil
+		return cueflow.WrapValue(val), buildConfig.Module, nil
 	})
 
 	ctx = cueflow.TaskRunnerFactoryContext.Inject(ctx, task.Factory)
