@@ -22,7 +22,7 @@ require (
 	github.com/fatih/color v1.17.0
 	github.com/go-courier/logr v0.3.0
 	github.com/gobwas/glob v0.2.3
-	github.com/google/go-containerregistry v0.19.1
+	github.com/google/go-containerregistry v0.19.2
 	github.com/innoai-tech/infra v0.0.0-20240609094326-908b868aba99
 	github.com/k0sproject/rig v0.18.2
 	github.com/kevinburke/ssh_config v1.2.0
