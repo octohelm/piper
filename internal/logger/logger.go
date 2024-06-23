@@ -8,14 +8,12 @@ import (
 	"log/slog"
 	"time"
 
-	"go.opentelemetry.io/otel/attribute"
-
-	"github.com/octohelm/piper/pkg/otel"
-	"go.opentelemetry.io/otel/log"
-
 	"github.com/fatih/color"
 	"github.com/go-courier/logr"
+	"github.com/octohelm/piper/pkg/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/trace"
 )
 

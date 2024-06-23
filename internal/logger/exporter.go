@@ -3,12 +3,12 @@ package logger
 import (
 	"context"
 
-	"github.com/dagger/dagger/telemetry/sdklog"
+	sdklog "go.opentelemetry.io/otel/sdk/log"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 type Exporter interface {
-	sdklog.LogExporter
+	sdklog.Exporter
 	sdktrace.SpanExporter
 
 	Run(context.Context, func(ctx context.Context) error) error

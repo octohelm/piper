@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/octohelm/cuekit/pkg/mod/module"
 	"io"
 	"sort"
 	"strconv"
@@ -13,23 +12,24 @@ import (
 	"sync/atomic"
 	"text/tabwriter"
 
-	"github.com/dagger/dagger/telemetry/sdklog"
+	"dagger.io/dagger/telemetry"
 
-	"github.com/octohelm/piper/internal/logger"
+	"github.com/octohelm/piper/internal/version"
+	sdklog "go.opentelemetry.io/otel/sdk/log"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
 
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/ast"
 	cueerrors "cuelang.org/go/cue/errors"
-	"github.com/dagger/dagger/telemetry"
 	"github.com/gobwas/glob"
+	"github.com/octohelm/cuekit/pkg/mod/module"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/sdk/resource"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/octohelm/piper/internal/version"
+	"github.com/octohelm/piper/internal/logger"
 	"github.com/octohelm/piper/pkg/cueflow/internal"
 	"github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
@@ -340,6 +340,8 @@ func runWith(ctx context.Context, name string, fn func(ctx context.Context) erro
 	frontend := logger.New()
 
 	return frontend.Run(ctx, func(ctx context.Context) (rerr error) {
+		defer telemetry.Close()
+
 		ctx = telemetry.Init(ctx, telemetry.Config{
 			Detect: true,
 			Resource: resource.NewWithAttributes(
@@ -347,11 +349,9 @@ func runWith(ctx context.Context, name string, fn func(ctx context.Context) erro
 				semconv.ServiceName("piper"),
 				semconv.ServiceVersion(version.Version()),
 			),
-			LiveLogExporters:   []sdklog.LogExporter{frontend},
+			LiveLogExporters:   []sdklog.Exporter{frontend},
 			LiveTraceExporters: []sdktrace.SpanExporter{frontend},
 		})
-
-		defer telemetry.Close()
 
 		daggerRunner, err := dagger.NewRunner(
 			dagger.WithLogExporter(frontend),

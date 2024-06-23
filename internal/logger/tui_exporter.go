@@ -10,8 +10,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dagger/dagger/telemetry"
-	"github.com/dagger/dagger/telemetry/sdklog"
+	"dagger.io/dagger/telemetry"
+
+	sdklog "go.opentelemetry.io/otel/sdk/log"
+
 	"github.com/opencontainers/go-digest"
 	"github.com/vito/progrock"
 	"github.com/vito/progrock/console"
@@ -48,6 +50,10 @@ type exporter struct {
 	*progrock.Recorder
 }
 
+func (ui *exporter) ForceFlush(ctx context.Context) error {
+	return nil
+}
+
 func (ui *exporter) Shutdown(ctx context.Context) error {
 	ui.once.Do(func() {
 		_ = ui.Recorder.Close()
@@ -73,8 +79,8 @@ func (ui *exporter) Run(ctx context.Context, run func(ctx context.Context) (rerr
 	return run(progrock.ToContext(ctx, ui.Recorder))
 }
 
-func (ui *exporter) ExportLogs(ctx context.Context, logs []*sdklog.LogData) error {
-	for _, l := range logs {
+func (ui *exporter) Export(ctx context.Context, records []sdklog.Record) error {
+	for _, l := range records {
 		if err := ui.export(ctx, l); err != nil {
 			return err
 		}
@@ -136,7 +142,7 @@ func (ui *exporter) complete(rec *progrock.TaskRecorder, span sdktrace.ReadOnlyS
 	}
 }
 
-func (ui *exporter) export(ctx context.Context, logData *sdklog.LogData) error {
+func (ui *exporter) export(ctx context.Context, logData sdklog.Record) error {
 	name := ""
 	total := int64(0)
 	current := int64(0)
@@ -152,7 +158,7 @@ func (ui *exporter) export(ctx context.Context, logData *sdklog.LogData) error {
 		}
 	}
 
-	rec := ui.taskRecorderGetterOf(logData.SpanID, name, total, false)()
+	rec := ui.taskRecorderGetterOf(logData.SpanID(), name, total, false)()
 	if rec == nil {
 		return nil
 	}

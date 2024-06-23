@@ -7,13 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagger/dagger/dagql/idtui"
-
 	"dagger.io/dagger"
-	"github.com/dagger/dagger/telemetry"
-	"github.com/dagger/dagger/telemetry/sdklog"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-
+	"dagger.io/dagger/telemetry"
+	"github.com/dagger/dagger/dagql/idtui"
 	testingx "github.com/octohelm/x/testing"
 )
 
@@ -24,11 +20,6 @@ func TestEngine(t *testing.T) {
 		frontend := idtui.New()
 
 		_ = frontend.Run(context.Background(), idtui.FrontendOpts{}, func(ctx context.Context) (rerr error) {
-			ctx = telemetry.Init(ctx, telemetry.Config{
-				Detect:             true,
-				LiveTraceExporters: []sdktrace.SpanExporter{frontend},
-				LiveLogExporters:   []sdklog.LogExporter{frontend},
-			})
 			defer telemetry.Close()
 
 			r, err := NewRunner()

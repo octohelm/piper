@@ -2,12 +2,13 @@ package engine
 
 import (
 	"context"
-	"github.com/octohelm/cuekit/pkg/mod/module"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"github.com/octohelm/cuekit/pkg/mod/module"
 
 	"github.com/k0sproject/rig"
 	"github.com/octohelm/cuekit/pkg/cuecontext"

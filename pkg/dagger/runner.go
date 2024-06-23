@@ -9,16 +9,15 @@ import (
 	"runtime/debug"
 	"sync"
 
-	"github.com/dagger/dagger/telemetry/sdklog"
-	"go.opentelemetry.io/otel/sdk/trace"
-
 	"github.com/dagger/dagger/engine"
 	"github.com/dagger/dagger/engine/client"
 	contextx "github.com/octohelm/x/context"
+	sdklog "go.opentelemetry.io/otel/sdk/log"
+	"go.opentelemetry.io/otel/sdk/trace"
 	"golang.org/x/sync/errgroup"
 )
 
-func WithLogExporter(exporter sdklog.LogExporter) EngineOptionFunc {
+func WithLogExporter(exporter sdklog.Exporter) EngineOptionFunc {
 	return func(x *options) {
 		x.EngineLogs = exporter
 	}
@@ -57,7 +56,7 @@ var engineVersion = sync.OnceValue(func() string {
 			}
 		}
 	}
-	return "v0.11.0"
+	return "v0.11.8"
 })
 
 func init() {
@@ -133,6 +132,10 @@ func (e *engineWithScope) Scope() Scope {
 	return e.scope
 }
 
+func (e *engineWithScope) Do(ctx context.Context, do func(ctx context.Context, client *Client) error) error {
+	return e.Engine.Do(ScopeContext.Inject(ctx, e.Scope()), do)
+}
+
 func (r *runner) Shutdown(ctx context.Context) error {
 	eg := &errgroup.Group{}
 
@@ -186,7 +189,7 @@ func (h *Hosts) ClientParams(name string) client.Params {
 			}
 		}
 	}
-	
+
 	return client.Params{RunnerHost: h.Default.RunnerHost}
 }
 
