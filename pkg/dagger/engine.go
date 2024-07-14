@@ -4,9 +4,9 @@ import (
 	"context"
 	"sync"
 
+	"dagger.io/dagger"
 	"github.com/moby/buildkit/identity"
 
-	"dagger.io/dagger"
 	engineclient "github.com/dagger/dagger/engine/client"
 	contextx "github.com/octohelm/x/context"
 )
@@ -67,7 +67,6 @@ func (e *engineImpl) client(ctx context.Context) (*dagger.Client, error) {
 		e.daggerClient, err = dagger.Connect(
 			c,
 			dagger.WithConn(engineclient.EngineConn(engineClient)),
-			dagger.WithSkipCompatibilityCheck(),
 		)
 
 		return e.daggerClient, err

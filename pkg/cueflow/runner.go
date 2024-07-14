@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"io"
 	"sort"
 	"strconv"
@@ -15,7 +16,6 @@ import (
 	"dagger.io/dagger/telemetry"
 
 	"github.com/octohelm/piper/internal/version"
-	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
@@ -349,8 +349,9 @@ func runWith(ctx context.Context, name string, fn func(ctx context.Context) erro
 				semconv.ServiceName("piper"),
 				semconv.ServiceVersion(version.Version()),
 			),
-			LiveLogExporters:   []sdklog.Exporter{frontend},
-			LiveTraceExporters: []sdktrace.SpanExporter{frontend},
+			LiveTraceExporters:    []sdktrace.SpanExporter{frontend},
+			BatchedTraceExporters: []sdktrace.SpanExporter{frontend},
+			LiveLogExporters:      []sdklog.Exporter{frontend},
 		})
 
 		daggerRunner, err := dagger.NewRunner(

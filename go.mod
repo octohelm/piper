@@ -4,10 +4,10 @@ go 1.22.5
 
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240623041817-7631442da716
 
-// cause by github.com/dagger/dagger v0.11.9
+// cause by github.com/dagger/dagger v0.12.0
 replace (
 	github.com/dagger/dagger/engine/distconsts => ./internal/dagger/engine/distconsts
-	github.com/moby/buildkit => github.com/moby/buildkit v0.14.0
+	github.com/moby/buildkit => github.com/moby/buildkit v0.14.1-0.20240702183136-981d4fcf403d
 )
 
 // locked by cuelang.org/go v0.9.2
@@ -15,8 +15,8 @@ replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbf
 
 require (
 	cuelang.org/go v0.9.2
-	dagger.io/dagger v0.11.9
-	github.com/dagger/dagger v0.11.9
+	dagger.io/dagger v0.12.0
+	github.com/dagger/dagger v0.12.0
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.17.0
 	github.com/go-courier/logr v0.3.0
@@ -25,7 +25,7 @@ require (
 	github.com/innoai-tech/infra v0.0.0-20240628125259-5dad47544c26
 	github.com/k0sproject/rig v0.18.4
 	github.com/kevinburke/ssh_config v1.2.0
-	github.com/moby/buildkit v0.14.0
+	github.com/moby/buildkit v0.14.1-0.20240702183136-981d4fcf403d
 	github.com/octohelm/crkit v0.0.0-20240613040650-36bc2ee9fb51
 	github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a
 	github.com/octohelm/gengo v0.0.0-20240622092313-cc61f99ecd84
@@ -65,7 +65,7 @@ require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/Microsoft/hcsshim v0.12.4 // indirect
 	github.com/ProtonMail/go-crypto v1.0.0 // indirect
-	github.com/a-h/templ v0.2.707 // indirect
+	github.com/a-h/templ v0.2.731 // indirect
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
 	github.com/adrg/xdg v0.5.0 // indirect
 	github.com/alessio/shellescape v1.4.2 // indirect
@@ -97,7 +97,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.2.0 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.5 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.11.8 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.11.9 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
@@ -203,6 +203,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tidwall/transform v0.0.0-20201103190739-32f242e2dbde // indirect
 	github.com/tonistiigi/fsutil v0.0.0-20240424095704-91a3fc46842c // indirect
+	github.com/tonistiigi/go-csvvalue v0.0.0-20240619222358-bb8dd5cba3c2 // indirect
 	github.com/tonistiigi/units v0.0.0-20180711220420-6950e57a87ea // indirect
 	github.com/tonistiigi/vt100 v0.0.0-20240514184818-90bafcd6abab // indirect
 	github.com/vbatts/tar-split v0.11.5 // indirect

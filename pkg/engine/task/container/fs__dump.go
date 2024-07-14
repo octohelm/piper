@@ -66,12 +66,12 @@ func (x *Dump) Do(ctx context.Context) error {
 			return err
 		}
 
-		ok, err := d.Export(ctx, realpath)
+		response, err := d.Export(ctx, realpath)
 		if err != nil {
 			return err
 		}
 
-		if ok {
+		if len(response) > 0 {
 			return x.Dir.Sync(ctx, dest)
 		}
 

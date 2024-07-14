@@ -164,8 +164,7 @@ type MountFile struct {
 
 func (m MountFile) MountTo(ctx context.Context, c *dagger.Client, container *dagger.Container) (*dagger.Container, error) {
 	f := c.Container().
-		WithNewFile("/tmp", dagger.ContainerWithNewFileOpts{
-			Contents:    m.Contents,
+		WithNewFile("/tmp", m.Contents, dagger.ContainerWithNewFileOpts{
 			Permissions: m.Permissions,
 		}).
 		File("/tmp")

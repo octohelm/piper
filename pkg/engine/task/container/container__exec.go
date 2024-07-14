@@ -38,7 +38,13 @@ func (e *Exec) Do(ctx context.Context) error {
 			return err
 		}
 
+		execOptions := make([]dagger.ContainerWithExecOpts, 0)
+
 		if len(e.Entrypoint) > 0 {
+			execOptions = append(execOptions, dagger.ContainerWithExecOpts{
+				UseEntrypoint: true,
+			})
+
 			container = container.WithEntrypoint(e.Entrypoint)
 		}
 
@@ -73,8 +79,12 @@ func (e *Exec) Do(ctx context.Context) error {
 			container = container.WithEnvVariable("__RUN_STARTED_AT", time.Now().String())
 		}
 
-		container = container.WithExec(e.Args)
+		container = container.WithExec(e.Args, execOptions...)
 
-		return e.Output.Sync(ctx, container, e.Input.Platform)
+		if err := e.Output.Sync(ctx, container, e.Input.Platform); err != nil {
+			return err
+		}
+
+		return nil
 	})
 }

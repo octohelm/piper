@@ -57,7 +57,7 @@ func (x *Export) Do(ctx context.Context) error {
 			dest = destTar + ".wip"
 		}
 
-		ok, err := cc.Export(ctx, dest, dagger.ContainerExportOpts{
+		resp, err := cc.Export(ctx, dest, dagger.ContainerExportOpts{
 			MediaTypes: dagger.Ocimediatypes,
 		})
 		if err != nil {
@@ -94,7 +94,7 @@ func (x *Export) Do(ctx context.Context) error {
 			}
 		}
 
-		if ok {
+		if len(resp) > 0 {
 			return x.File.SyncWith(ctx, x.OutFile)
 		}
 

@@ -103,7 +103,7 @@ func (ui *exporter) ExportSpans(ctx context.Context, spans []sdktrace.ReadOnlySp
 				internal = true
 			case telemetry.UIEncapsulatedAttr, telemetry.UIInternalAttr:
 				internal = true
-			case telemetry.DagCallAttr, telemetry.DagDigestAttr, telemetry.DagInputsAttr, telemetry.LLBDigestsAttr:
+			case telemetry.DagCallAttr, telemetry.DagDigestAttr, telemetry.DagInputsAttr, telemetry.DagOutputAttr:
 				internal = true
 			default:
 			}
@@ -118,7 +118,7 @@ func (ui *exporter) ExportSpans(ctx context.Context, spans []sdktrace.ReadOnlySp
 			}
 		}
 
-		rec := ui.taskRecorderGetterOf(span.SpanContext().SpanID(), span.Name(), total, internal)()
+		rec := ui.taskRecorderGetterOf(span.SpanContext().SpanID(), span.Name(), total, internal && false)()
 		if rec == nil {
 			continue
 		}
