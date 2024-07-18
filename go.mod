@@ -30,8 +30,8 @@ require (
 	github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a
 	github.com/octohelm/gengo v0.0.0-20240622092313-cc61f99ecd84
 	github.com/octohelm/kubekit v0.0.0-20240508035712-15cb61729772
-	github.com/octohelm/kubepkgspec v0.0.0-20240521102121-31a405691640
-	github.com/octohelm/storage v0.0.0-20240705034943-8383756856ad
+	github.com/octohelm/kubepkgspec v0.0.0-20240718060319-273aab64da2d
+	github.com/octohelm/storage v0.0.0-20240717063837-40e14509556f
 	github.com/octohelm/unifs v0.0.0-20240704111304-970f0044ad43
 	github.com/octohelm/x v0.0.0-20240622073357-3fcb5294a9e0
 	github.com/opencontainers/go-digest v1.0.0
@@ -50,7 +50,7 @@ require (
 	golang.org/x/sync v0.7.0
 	golang.org/x/tools v0.23.0
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.30.2
+	k8s.io/apimachinery v0.30.3
 	sigs.k8s.io/controller-runtime v0.18.4
 )
 
@@ -63,7 +63,7 @@ require (
 	github.com/ChrisTrenkamp/goxpath v0.0.0-20210404020558-97928f7e12b6 // indirect
 	github.com/Khan/genqlient v0.7.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
-	github.com/Microsoft/hcsshim v0.12.4 // indirect
+	github.com/Microsoft/hcsshim v0.12.5 // indirect
 	github.com/ProtonMail/go-crypto v1.0.0 // indirect
 	github.com/a-h/templ v0.2.731 // indirect
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
@@ -86,7 +86,7 @@ require (
 	github.com/cloudflare/circl v1.3.9 // indirect
 	github.com/cockroachdb/apd/v3 v3.2.1 // indirect
 	github.com/containerd/console v1.0.4 // indirect
-	github.com/containerd/containerd v1.7.19 // indirect
+	github.com/containerd/containerd v1.7.20 // indirect
 	github.com/containerd/containerd/api v1.7.19 // indirect
 	github.com/containerd/continuity v0.4.3 // indirect
 	github.com/containerd/errdefs v0.1.0 // indirect
@@ -181,7 +181,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/octohelm/courier v0.0.0-20240704050034-47f5b1ea1eb8 // indirect
+	github.com/octohelm/courier v0.0.0-20240713110603-ccd3033e9180 // indirect
 	github.com/onsi/gomega v1.33.1 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
@@ -236,15 +236,15 @@ require (
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20240709173604-40e1e62336c5 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240709173604-40e1e62336c5 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240709173604-40e1e62336c5 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240711142825-46eb208f015d // indirect
 	google.golang.org/grpc v1.65.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	k8s.io/api v0.30.2 // indirect
-	k8s.io/apiextensions-apiserver v0.30.2 // indirect
-	k8s.io/client-go v0.30.2 // indirect
+	k8s.io/api v0.30.3 // indirect
+	k8s.io/apiextensions-apiserver v0.30.3 // indirect
+	k8s.io/client-go v0.30.3 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240709000822-3c01b740850f // indirect
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 // indirect
