@@ -150,8 +150,8 @@ github.com/creasty/defaults v1.7.0 h1:eNdqZvc5B509z18lD8yc212CAqJNvfT1Jq6L8WowdB
 github.com/creasty/defaults v1.7.0/go.mod h1:iGzKe6pbEHnpMPtfDXZEr0NVxWnPTjb1bbDy08fPzYM=
 github.com/cyphar/filepath-securejoin v0.2.5 h1:6iR5tXJ/e6tJZzzdMc1km3Sa7RRIVBKAK32O2s7AYfo=
 github.com/cyphar/filepath-securejoin v0.2.5/go.mod h1:aPGpWjXOXUn2NCNjFvBE6aRxGGx79pTxQpKOJNYHHl4=
-github.com/dagger/dagger v0.12.0 h1:AyFn0a7M//m3IN3iSz8qhn8WXZ/67RW25Yo1OZQ0/SE=
-github.com/dagger/dagger v0.12.0/go.mod h1:jjJeWcElqdx0d0GGfhc0xMNITYx6fYIoteelNFI6Q/A=
+github.com/dagger/dagger v0.12.1 h1:nWBC0bfFXR7mJu3tbQ7Jpqi0OPg2Qk+S1xnWK6DQnO0=
+github.com/dagger/dagger v0.12.1/go.mod h1:hEaNE4S1E+g3ECRHZaHBYL5plZwbgnppq7E+zRmNgcg=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
