@@ -15,7 +15,7 @@ replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbf
 
 require (
 	cuelang.org/go v0.9.2
-	dagger.io/dagger v0.12.2
+	dagger.io/dagger v0.12.3
 	github.com/dagger/dagger v0.12.2
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.17.0

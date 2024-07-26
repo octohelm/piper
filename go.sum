@@ -34,8 +34,8 @@ cuelabs.dev/go/oci/ociregistry v0.0.0-20240703134027-fa95d0563666 h1:ltU3ge8WGW7
 cuelabs.dev/go/oci/ociregistry v0.0.0-20240703134027-fa95d0563666/go.mod h1:pK23AUVXuNzzTpfMCA06sxZGeVQ/75FdVtW249de9Uo=
 cuelang.org/go v0.9.2 h1:pfNiry2PdRBr02G/aKm5k2vhzmqbAOoaB4WurmEbWvs=
 cuelang.org/go v0.9.2/go.mod h1:qpAYsLOf7gTM1YdEg6cxh553uZ4q9ZDWlPbtZr9q1Wk=
-dagger.io/dagger v0.12.2 h1:Tt8a7MRXhb7ANg5y+3yi+dGfy+ttTPjFeEzXZLSHB/Y=
-dagger.io/dagger v0.12.2/go.mod h1:e5Xuvu+FnswwG28nMk7ZcDtT+p9vadvONowzLKf/0dA=
+dagger.io/dagger v0.12.3 h1:CoA3oiThP2lwb6xV7XpTwqtuSWt+wWLs4m4pU0Qu09g=
+dagger.io/dagger v0.12.3/go.mod h1:e5Xuvu+FnswwG28nMk7ZcDtT+p9vadvONowzLKf/0dA=
 dario.cat/mergo v1.0.0 h1:AGCNq9Evsj31mOgNPcLyXc+4PNABt905YmuqPYYpBWk=
 dario.cat/mergo v1.0.0/go.mod h1:uNxQE+84aUszobStD9th8a29P2fMDhsBdgRYvZOxGmk=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
