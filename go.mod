@@ -16,7 +16,7 @@ replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbf
 require (
 	cuelang.org/go v0.9.2
 	dagger.io/dagger v0.12.2
-	github.com/dagger/dagger v0.12.2
+	github.com/dagger/dagger v0.12.3
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.17.0
 	github.com/go-courier/logr v0.3.0
@@ -25,7 +25,7 @@ require (
 	github.com/innoai-tech/infra v0.0.0-20240628125259-5dad47544c26
 	github.com/k0sproject/rig v0.18.4
 	github.com/kevinburke/ssh_config v1.2.0
-	github.com/moby/buildkit v0.14.1-0.20240702183136-981d4fcf403d
+	github.com/moby/buildkit v0.15.1-0.20240723181353-ffadc9ff1531
 	github.com/octohelm/crkit v0.0.0-20240724080156-51514f9b4bd8
 	github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a
 	github.com/octohelm/gengo v0.0.0-20240622092313-cc61f99ecd84
@@ -97,13 +97,13 @@ require (
 	github.com/containerd/typeurl/v2 v2.2.0 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.5 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.12.1 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.12.2 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/docker/cli v27.1.1+incompatible // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
-	github.com/docker/docker v27.0.3+incompatible // indirect
+	github.com/docker/docker v27.1.0+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.8.2 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/emicklei/go-restful/v3 v3.12.1 // indirect
@@ -122,7 +122,7 @@ require (
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
-	github.com/gofrs/flock v0.12.0 // indirect
+	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -203,7 +203,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tidwall/transform v0.0.0-20201103190739-32f242e2dbde // indirect
 	github.com/tonistiigi/fsutil v0.0.0-20240424095704-91a3fc46842c // indirect
-	github.com/tonistiigi/go-csvvalue v0.0.0-20240619222358-bb8dd5cba3c2 // indirect
+	github.com/tonistiigi/go-csvvalue v0.0.0-20240710180619-ddb21b71c0b4 // indirect
 	github.com/tonistiigi/units v0.0.0-20180711220420-6950e57a87ea // indirect
 	github.com/tonistiigi/vt100 v0.0.0-20240514184818-90bafcd6abab // indirect
 	github.com/vbatts/tar-split v0.11.5 // indirect
