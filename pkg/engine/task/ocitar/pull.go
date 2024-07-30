@@ -1,7 +1,8 @@
-package kubepkg
+package ocitar
 
 import (
 	"context"
+	"github.com/octohelm/kubepkgspec/pkg/workload"
 	"github.com/octohelm/piper/internal/pkg/processpool"
 	"net/http"
 	"os"
@@ -20,32 +21,31 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/container"
 	"github.com/octohelm/piper/pkg/engine/task/file"
-	taskocitar "github.com/octohelm/piper/pkg/engine/task/ocitar"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/errors"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &OciTar{})
+	cueflow.RegisterTask(task.Factory, &Pull{})
 }
 
-type OciTar struct {
+type Pull struct {
 	task.Task
 
-	// KubePkg spec
-	KubePkg KubePkg `json:"kubepkg"`
+	// image from
+	Source string `json:"source"`
 
 	// Platforms of oci tar, if empty it will based on KubePkg
 	Platforms []string `json:"platforms,omitempty"`
 
-	// WithAnnotations pick annotations of KubePkg as image annotations
-	WithAnnotations []string `json:"withAnnotations,omitempty"`
+	// Annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
 
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
-	Rename taskocitar.Rename `json:"rename,omitempty"`
+	Rename Rename `json:"rename,omitempty"`
 
 	// OutFile of OciTar
 	OutFile file.File `json:"outFile"`
@@ -54,7 +54,7 @@ type OciTar struct {
 	File file.File
 }
 
-func (t *OciTar) Do(ctx context.Context) error {
+func (t *Pull) Do(ctx context.Context) error {
 	wd, err := task.ClientContext.From(ctx).SourceDir(ctx)
 	if err != nil {
 		return err
@@ -81,7 +81,7 @@ func (t *OciTar) Do(ctx context.Context) error {
 		Transport: remote.DefaultTransport,
 	}
 
-	transport := taskocitar.WithRoundTripperFunc(func(req *http.Request, next http.RoundTripper) (*http.Response, error) {
+	transport := WithRoundTripperFunc(func(req *http.Request, next http.RoundTripper) (*http.Response, error) {
 		if req.Method == http.MethodGet && strings.Contains(req.URL.Path, "/blobs/") {
 			resp, err := fetcher.Do(req)
 			if err != nil {
@@ -105,8 +105,9 @@ func (t *OciTar) Do(ctx context.Context) error {
 	packer := &kubepkg.Packer{
 		Cache:           cache.NewFilesystemCache(cacheDir),
 		Renamer:         t.Rename.Renamer,
-		WithAnnotations: t.WithAnnotations,
 		Platforms:       t.Platforms,
+		WithAnnotations: []string{"*"},
+		ImageOnly:       true,
 		CreatePuller: func(ref name.Reference, options ...remote.Option) (*remote.Puller, error) {
 			for auth := range registryAuthStore.RegistryAuths(ctx) {
 				if ref.Context().RegistryStr() == auth.Address {
@@ -135,9 +136,16 @@ func (t *OciTar) Do(ctx context.Context) error {
 		}
 		defer f.Close()
 
-		kpkg := kubepkgv1alpha1.KubePkg(t.KubePkg)
+		kpkg := &kubepkgv1alpha1.KubePkg{}
+		kpkg.Name = "oci-tar"
+		kpkg.Annotations = t.Annotations
+		kpkg.Spec.Version = "v0.0.0"
+		kpkg.Spec.Containers = make(map[string]kubepkgv1alpha1.Container)
+		kpkg.Spec.Containers["x"] = kubepkgv1alpha1.Container{
+			Image: *workload.ParseImage(t.Source),
+		}
 
-		idx, err := packer.PackAsIndex(ctx, &kpkg)
+		idx, err := packer.PackAsIndex(ctx, kpkg)
 		if err != nil {
 			return err
 		}

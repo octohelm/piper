@@ -2,6 +2,7 @@ package kubepkg
 
 import (
 	"context"
+	taskocitar "github.com/octohelm/piper/pkg/engine/task/ocitar"
 
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/octohelm/kubepkgspec/pkg/object"
@@ -30,7 +31,7 @@ type Manifests struct {
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
-	Rename Rename `json:"rename,omitempty"`
+	Rename taskocitar.Rename `json:"rename,omitempty"`
 	// recursively extract KubePkg in sub manifests
 	Recursive bool `json:"recursive,omitempty"`
 	// Manifests of k8s resources
@@ -45,7 +46,7 @@ func (r *Manifests) Do(ctx context.Context) error {
 		return errors.Wrap(err, "extract manifests failed")
 	}
 
-	if renamer := r.Rename.renamer; renamer != nil {
+	if renamer := r.Rename.Renamer; renamer != nil {
 		images := workload.Images(func(yield func(object.Object) bool) {
 			for _, m := range manifests {
 				if !yield(m) {

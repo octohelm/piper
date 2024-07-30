@@ -1,4 +1,4 @@
-package kubepkg
+package processpool
 
 import (
 	"context"
@@ -14,24 +14,24 @@ import (
 	"github.com/octohelm/piper/pkg/otel"
 )
 
-func newProcessPool(action string) *processPool {
-	return &processPool{
+func NewProcessPool(action string) *ProcessPool {
+	return &ProcessPool{
 		action:  action,
 		workers: make(chan *processWorker),
 	}
 }
 
-type processPool struct {
+type ProcessPool struct {
 	action  string
 	workers chan *processWorker
 }
 
-func (p *processPool) Close() error {
+func (p *ProcessPool) Close() error {
 	close(p.workers)
 	return nil
 }
 
-func (p *processPool) Progress(ref name.Reference) chan<- v1.Update {
+func (p *ProcessPool) Progress(ref name.Reference) chan<- v1.Update {
 	ch := make(chan v1.Update)
 	p.workers <- &processWorker{
 		action: p.action,
@@ -41,7 +41,7 @@ func (p *processPool) Progress(ref name.Reference) chan<- v1.Update {
 	return ch
 }
 
-func (p *processPool) Wait(ctx context.Context) {
+func (p *ProcessPool) Wait(ctx context.Context) {
 	for w := range p.workers {
 		go func() {
 			w.Wait(ctx)
@@ -104,7 +104,7 @@ func (w *processWorker) Logger(ctx context.Context, u *v1.Update) logr.Logger {
 	return w.log
 }
 
-func newProcessReader(r io.ReadCloser, total int64, update chan<- v1.Update) io.ReadCloser {
+func NewProcessReader(r io.ReadCloser, total int64, update chan<- v1.Update) io.ReadCloser {
 	w := &processWriter{
 		total:  total,
 		update: update,

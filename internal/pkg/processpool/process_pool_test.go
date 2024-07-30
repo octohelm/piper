@@ -1,4 +1,4 @@
-package kubepkg
+package processpool
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 )
 
 func Test_processPool(t *testing.T) {
-	p := newProcessPool("test")
+	p := NewProcessPool("test")
 
 	ctx := logr.WithLogger(context.Background(), slog.Logger(slog.Default()))
 
