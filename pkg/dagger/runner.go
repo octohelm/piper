@@ -17,13 +17,19 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func WithLogExporter(exporter sdklog.Exporter) EngineOptionFunc {
+func WithEngineCallback(callback func(context.Context, string, string, string)) EngineOptionFunc {
+	return func(x *options) {
+		x.EngineCallback = callback
+	}
+}
+
+func WithEngineLogs(exporter sdklog.Exporter) EngineOptionFunc {
 	return func(x *options) {
 		x.EngineLogs = exporter
 	}
 }
 
-func WithSpanExporter(exporter trace.SpanExporter) EngineOptionFunc {
+func WithEngineTrace(exporter trace.SpanExporter) EngineOptionFunc {
 	return func(x *options) {
 		x.EngineTrace = exporter
 	}
@@ -41,7 +47,6 @@ func (o *options) Build(optFns ...EngineOptionFunc) {
 	for i := range optFns {
 		optFns[i](o)
 	}
-
 	if o.Hosts.Default == nil {
 		o.AddHost(RunnerHost())
 	}
@@ -56,7 +61,7 @@ var engineVersion = sync.OnceValue(func() string {
 			}
 		}
 	}
-	return "v0.11.8"
+	return "v0.12.3"
 })
 
 func init() {
@@ -104,7 +109,7 @@ type runner struct {
 }
 
 func (r *runner) ClientParams(host string) client.Params {
-	return r.Hosts.ClientParams(host)
+	return r.Hosts.WithRunnerHost(r.Params, host)
 }
 
 func (r *runner) Select(ctx context.Context, scope Scope) EngineWithScope {
@@ -140,7 +145,7 @@ func (r *runner) Shutdown(ctx context.Context) error {
 	eg := &errgroup.Group{}
 
 	r.engines.Range(func(key, value any) bool {
-		e := value.(Engine)
+		e := value.(func() Engine)()
 		eg.Go(func() error {
 			return e.Shutdown(ctx)
 		})
@@ -181,16 +186,18 @@ func (h *Hosts) AddHost(runnerHost *PiperRunnerHost) {
 	}
 }
 
-func (h *Hosts) ClientParams(name string) client.Params {
+func (h *Hosts) WithRunnerHost(options client.Params, name string) client.Params {
 	for _, hh := range h.Platformed {
 		for _, p := range hh {
 			if p.Name == name {
-				return client.Params{RunnerHost: p.RunnerHost}
+				options.RunnerHost = p.RunnerHost
+				return options
 			}
 		}
 	}
 
-	return client.Params{RunnerHost: h.Default.RunnerHost}
+	options.RunnerHost = h.Default.RunnerHost
+	return options
 }
 
 func Select(ctx context.Context, scope Scope) EngineWithScope {

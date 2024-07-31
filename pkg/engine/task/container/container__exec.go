@@ -2,6 +2,7 @@ package container
 
 import (
 	"context"
+	"slices"
 	"time"
 
 	"dagger.io/dagger"
@@ -40,14 +41,6 @@ func (e *Exec) Do(ctx context.Context) error {
 
 		execOptions := make([]dagger.ContainerWithExecOpts, 0)
 
-		if len(e.Entrypoint) > 0 {
-			execOptions = append(execOptions, dagger.ContainerWithExecOpts{
-				UseEntrypoint: true,
-			})
-
-			container = container.WithEntrypoint(e.Entrypoint)
-		}
-
 		for n := range e.Mounts {
 			mounted, err := e.Mounts[n].MountTo(ctx, c, container)
 			if err != nil {
@@ -79,7 +72,7 @@ func (e *Exec) Do(ctx context.Context) error {
 			container = container.WithEnvVariable("__RUN_STARTED_AT", time.Now().String())
 		}
 
-		container = container.WithExec(e.Args, execOptions...)
+		container = container.WithExec(slices.Concat(e.Entrypoint, e.Args), execOptions...)
 
 		if err := e.Output.Sync(ctx, container, e.Input.Platform); err != nil {
 			return err

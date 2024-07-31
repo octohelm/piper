@@ -47,6 +47,9 @@ install:
 test:
 	go test -v -failfast ./...
 
+debug.dagger:
+	TTY=0 go run ./pkg/dagger/__debug__
+
 debug.distroless:
 	$(PIPER) do ship distroless export linux/arm64
 

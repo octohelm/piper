@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	sdklog "go.opentelemetry.io/otel/sdk/log"
+	"github.com/octohelm/piper/pkg/dagger"
 	"io"
 	"sort"
 	"strconv"
@@ -13,26 +13,14 @@ import (
 	"sync/atomic"
 	"text/tabwriter"
 
-	"dagger.io/dagger/telemetry"
-
-	"github.com/octohelm/piper/internal/version"
-	"go.opentelemetry.io/otel/sdk/resource"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
-
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/ast"
 	cueerrors "cuelang.org/go/cue/errors"
 	"github.com/gobwas/glob"
 	"github.com/octohelm/cuekit/pkg/mod/module"
-	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
-
-	"github.com/octohelm/piper/internal/logger"
 	"github.com/octohelm/piper/pkg/cueflow/internal"
-	"github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
+	"github.com/pkg/errors"
 )
 
 func NewRunner(build func() (Value, *module.Module, error)) *Runner {
@@ -145,7 +133,7 @@ func (r *Runner) Run(ctx context.Context, action []string) error {
 		return g.Match(taskPath)
 	}
 
-	return runWith(ctx, targetPath, func(ctx context.Context) error {
+	return dagger.Run(ctx, targetPath, func(ctx context.Context) error {
 		return r.run(ctx)
 	})
 }
@@ -334,45 +322,4 @@ func (r *Runner) scanActiveTarget() {
 			}
 		}
 	}
-}
-
-func runWith(ctx context.Context, name string, fn func(ctx context.Context) error) error {
-	frontend := logger.New()
-
-	return frontend.Run(ctx, func(ctx context.Context) (rerr error) {
-		defer telemetry.Close()
-
-		ctx = telemetry.Init(ctx, telemetry.Config{
-			Detect: true,
-			Resource: resource.NewWithAttributes(
-				semconv.SchemaURL,
-				semconv.ServiceName("piper"),
-				semconv.ServiceVersion(version.Version()),
-			),
-			LiveTraceExporters:    []sdktrace.SpanExporter{frontend},
-			BatchedTraceExporters: []sdktrace.SpanExporter{frontend},
-			LiveLogExporters:      []sdklog.Exporter{frontend},
-		})
-
-		daggerRunner, err := dagger.NewRunner(
-			dagger.WithLogExporter(frontend),
-			dagger.WithSpanExporter(frontend),
-		)
-		if err != nil {
-			return err
-		}
-
-		tracer := Tracer()
-
-		ctx = logger.TracerContext.Inject(ctx, tracer)
-
-		c, span := tracer.Start(ctx, name)
-		defer telemetry.End(span, func() error { return rerr })
-
-		return fn(dagger.RunnerContext.Inject(c, daggerRunner))
-	})
-}
-
-func Tracer() trace.Tracer {
-	return otel.Tracer("piper.octohelm.tech/cli")
 }
