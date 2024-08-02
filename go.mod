@@ -16,7 +16,7 @@ replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbf
 require (
 	cuelang.org/go v0.9.2
 	dagger.io/dagger v0.12.3
-	github.com/dagger/dagger v0.12.3
+	github.com/dagger/dagger v0.12.4
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.17.0
 	github.com/go-courier/logr v0.3.0
@@ -94,7 +94,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.2.0 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.3.1 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.12.2 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.12.3 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
