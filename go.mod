@@ -4,10 +4,10 @@ go 1.22.5
 
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240623041817-7631442da716
 
-// cause by github.com/dagger/dagger v0.12.1
+// cause by github.com/dagger/dagger v0.12.4
 replace (
 	github.com/dagger/dagger/engine/distconsts => ./internal/dagger/engine/distconsts
-	github.com/moby/buildkit => github.com/moby/buildkit v0.14.1-0.20240702183136-981d4fcf403d
+	github.com/moby/buildkit => github.com/moby/buildkit v0.15.1-0.20240723181353-ffadc9ff1531
 )
 
 // locked by cuelang.org/go v0.9.2
@@ -15,8 +15,8 @@ replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbf
 
 require (
 	cuelang.org/go v0.9.2
-	dagger.io/dagger v0.12.3
-	github.com/dagger/dagger v0.12.3
+	dagger.io/dagger v0.12.4
+	github.com/dagger/dagger v0.12.4
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.17.0
 	github.com/go-courier/logr v0.3.0
@@ -26,7 +26,7 @@ require (
 	github.com/k0sproject/rig v0.18.4
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/moby/buildkit v0.15.1-0.20240723181353-ffadc9ff1531
-	github.com/octohelm/crkit v0.0.0-20240730061122-4816e7984bfc
+	github.com/octohelm/crkit v0.0.0-20240805100147-9caf596c926b
 	github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a
 	github.com/octohelm/gengo v0.0.0-20240622092313-cc61f99ecd84
 	github.com/octohelm/kubekit v0.0.0-20240508035712-15cb61729772
@@ -94,7 +94,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.2.0 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.3.1 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.12.2 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.12.3 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect

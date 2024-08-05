@@ -1,6 +1,10 @@
 package distconsts
 
 const (
+	EngineContainerName = "dagger-engine"
+)
+
+const (
 	RuncPath     = "/usr/local/bin/runc"
 	DumbInitPath = "/usr/local/bin/dumb-init"
 
