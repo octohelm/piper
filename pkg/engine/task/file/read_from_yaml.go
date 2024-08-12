@@ -64,6 +64,10 @@ func (t *ReadFromYAML) Do(ctx context.Context) error {
 				return err
 			}
 
+			if _, ok := obj.(*anyjson.Null); ok {
+				continue
+			}
+
 			// ignore null value
 			v := anyjson.Transform(ctx, obj, func(v anyjson.Valuer, keyPath ...any) anyjson.Valuer {
 				if _, ok := v.(*anyjson.Null); ok {
