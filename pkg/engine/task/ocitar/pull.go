@@ -51,7 +51,7 @@ type Pull struct {
 	OutFile file.File `json:"outFile"`
 
 	// File of tar created
-	File file.File
+	File file.File `json:"-" output:"file"`
 }
 
 func (t *Pull) Do(ctx context.Context) error {
