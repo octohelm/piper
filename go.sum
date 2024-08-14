@@ -341,8 +341,8 @@ github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
 github.com/octohelm/courier v0.0.0-20240723055937-13d07eef9d84 h1:ez39VRQDySB/TGLI3P6Sa0jEN6vSoJK273EHdqZXyLA=
 github.com/octohelm/courier v0.0.0-20240723055937-13d07eef9d84/go.mod h1:ZqnTloL9ZtrPltL2m816qzisKrMDoT8h99tCKVjOSqY=
-github.com/octohelm/crkit v0.0.0-20240814023511-e19fd0f9e2a3 h1:g9QzbZa65e8nsaOgogLTWZHxDpm0pCk8XZNBwUoQH4k=
-github.com/octohelm/crkit v0.0.0-20240814023511-e19fd0f9e2a3/go.mod h1:OCObYpSwKN21uQeOxFYLw9Cm2W5T1WAvpA0vMswEU18=
+github.com/octohelm/crkit v0.0.0-20240814091559-5dd38d558050 h1:nbzzGtoSoR7CX+1gvjYZ1RrIL2UsIQGjUwAttBgENoI=
+github.com/octohelm/crkit v0.0.0-20240814091559-5dd38d558050/go.mod h1:OCObYpSwKN21uQeOxFYLw9Cm2W5T1WAvpA0vMswEU18=
 github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a h1:mPUiSxvFgmcRO/VR4I3Ym6drNQjf2Zmr4CaHKeBcdVY=
 github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a/go.mod h1:zRFJiO6/WgqKc3Qr1TKrGeJf4r7bKTFVK71mxOfaS6k=
 github.com/octohelm/gengo v0.0.0-20240622092313-cc61f99ecd84 h1:VH5E6nJ3UR60bOmXojgzu6mQPmuWzG0+dm2AIGnRxVo=
