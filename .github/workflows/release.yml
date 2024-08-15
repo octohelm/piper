@@ -16,7 +16,7 @@ jobs:
         target: [ ship, release, ship.distroless ]
 
     env:
-      GOEXPERIMENT: rangefunc
+      GOEXPERIMENT: "rangefunc"
 
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '^1.22'
+          go-version: '^1.23'
 
       - run: make ${{ matrix.target }}
         env:
