@@ -30,7 +30,6 @@ actions: go: golang.#Project & {
 	goos: [
 		"darwin",
 		"linux",
-		"windows",
 	]
 	goarch: [
 		"amd64",
