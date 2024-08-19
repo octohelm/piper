@@ -2,13 +2,33 @@ package typescript
 
 import (
 	"path"
+	"strings"
 
 	"piper.octohelm.tech/wd"
+	"piper.octohelm.tech/file"
 	"piper.octohelm.tech/client"
 	"piper.octohelm.tech/container"
 
 	"github.com/octohelm/piper/cuepkg/debian"
 )
+
+#BunImageResolver: {
+	packagejson: file.#File & {
+		filename: "package.json"
+	}
+
+	_read: file.#ReadFromJSON & {
+		file: packagejson
+	}
+
+	_output: client.#Wait & {
+		image: #BunImage & {
+			version: "\(strings.Split(_read.data.packageManager, "@")[1])"
+		}
+	}
+
+	image: _output.image
+}
 
 #BunImage: {
 	name:    string | *"docker.io/oven/bun"

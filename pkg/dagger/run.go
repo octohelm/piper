@@ -19,7 +19,7 @@ func Run(ctx context.Context, name string, fn func(ctx context.Context) error) e
 	frontend := logger.NewFrontend()
 
 	return frontend.Run(ctx, idtui.FrontendOpts{TooFastThreshold: 1}, func(ctx context.Context) (rerr error) {
-		defer telemetry.Close()
+		defer telemetry.Close(ctx)
 
 		ctx = telemetry.Init(ctx, telemetry.Config{
 			Resource: resource.NewWithAttributes(

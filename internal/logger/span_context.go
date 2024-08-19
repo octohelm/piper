@@ -36,7 +36,7 @@ func start(ctx context.Context, spanName string, keyAndValues ...any) (context.C
 
 	spanCtx.span = span
 	spanCtx.ctx = c
-	spanCtx.log = telemetry.Logger(spanName)
+	spanCtx.log = telemetry.Logger(ctx, spanName)
 
 	return c, attrs, spanCtx
 }
