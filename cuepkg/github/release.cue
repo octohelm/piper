@@ -57,7 +57,7 @@ import (
 
 			_select: client.#Wait & {
 				release_id: [
-						for _step in _steps if _step.$ok {
+					for _step in _steps if _step.$ok != _|_ && _step.$ok {
 						_step.response.data.id
 					},
 				][0]
@@ -97,7 +97,7 @@ import (
 						method: "POST"
 						url:    "\(#GithubAPI.uploads)/repos/\(owner)/\(repo)/releases/\(_get_or_create_release.release_id)/assets"
 						header: "Content-Type": "application/octet-stream"
-						query: name: "\(assetName)"
+						query: name:            "\(assetName)"
 						body: f
 					}
 
