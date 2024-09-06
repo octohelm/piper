@@ -27,7 +27,7 @@ require (
 	github.com/k0sproject/rig v0.18.4
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/moby/buildkit v0.15.1-0.20240819072657-49f3d8f8294d
-	github.com/octohelm/crkit v0.0.0-20240905040048-fec321b46ff7
+	github.com/octohelm/crkit v0.0.0-20240906040206-033f0627af9a
 	github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a
 	github.com/octohelm/gengo v0.0.0-20240622092313-cc61f99ecd84
 	github.com/octohelm/kubekit v0.0.0-20240816091736-f2433647d633
