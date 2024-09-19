@@ -2,7 +2,6 @@ package container
 
 import (
 	"context"
-	"os"
 	"path/filepath"
 
 	"dagger.io/dagger"
@@ -10,7 +9,6 @@ import (
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
-	"github.com/octohelm/piper/pkg/ociutil"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/pkg/errors"
 )
@@ -49,49 +47,17 @@ func (x *Export) Do(ctx context.Context) error {
 			return err
 		}
 
-		destTar := filepath.Join(base, x.OutFile.Filename)
-
-		dest := destTar
-
 		if len(x.Annotations) > 0 {
-			dest = destTar + ".wip"
+			for k, v := range x.Annotations {
+				cc = cc.WithAnnotation(k, v)
+			}
 		}
 
-		resp, err := cc.Export(ctx, dest, dagger.ContainerExportOpts{
+		resp, err := cc.Export(ctx, filepath.Join(base, x.OutFile.Filename), dagger.ContainerExportOpts{
 			MediaTypes: dagger.Ocimediatypes,
 		})
 		if err != nil {
 			return err
-		}
-
-		if len(x.Annotations) > 0 {
-			defer func() {
-				_ = os.RemoveAll(dest)
-			}()
-
-			p := &ociutil.OciTarPatcher{
-				Manifests: []ociutil.ManifestPatcher{
-					{
-						Annotations: x.Annotations,
-					},
-				},
-			}
-
-			wipFile, err := os.Open(dest)
-			if err != nil {
-				return err
-			}
-			defer wipFile.Close()
-
-			dstFile, err := os.OpenFile(destTar, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
-			if err != nil {
-				return err
-			}
-			defer wipFile.Close()
-
-			if err := p.PatchTo(dstFile, wipFile); err != nil {
-				return err
-			}
 		}
 
 		if len(resp) > 0 {

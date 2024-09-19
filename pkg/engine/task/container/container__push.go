@@ -28,6 +28,8 @@ type Push struct {
 	// images for push
 	// [Platform]: _
 	Images map[string]Container `json:"images"`
+	// annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
 
 	// registry auth
 	Auth *Auth `json:"auth,omitempty"`
@@ -88,7 +90,15 @@ func (x *Push) Do(ctx context.Context) error {
 			opt.PlatformVariants = append(opt.PlatformVariants, cc.From(image))
 		}
 
-		result, err := c.Container().Publish(ctx, x.Dest, opt)
+		finalC := c.Container()
+
+		if len(x.Annotations) > 0 {
+			for k, v := range x.Annotations {
+				finalC = finalC.WithAnnotation(k, v)
+			}
+		}
+
+		result, err := finalC.Publish(ctx, x.Dest, opt)
 		if err != nil {
 			return fmt.Errorf("published manifest list failed")
 		}

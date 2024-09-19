@@ -3,7 +3,7 @@ package dagger
 import (
 	"context"
 	"dagger.io/dagger/telemetry"
-	"github.com/dagger/dagger/dagql/idtui"
+	"github.com/dagger/dagger/dagql/dagui"
 	"github.com/dagger/dagger/engine/slog"
 	"github.com/octohelm/piper/internal/logger"
 	"github.com/octohelm/piper/internal/version"
@@ -18,7 +18,7 @@ import (
 func Run(ctx context.Context, name string, fn func(ctx context.Context) error) error {
 	frontend := logger.NewFrontend()
 
-	return frontend.Run(ctx, idtui.FrontendOpts{TooFastThreshold: 1}, func(ctx context.Context) (rerr error) {
+	return frontend.Run(ctx, dagui.FrontendOpts{TooFastThreshold: 1}, func(ctx context.Context) (rerr error) {
 		defer telemetry.Close()
 
 		ctx = telemetry.Init(ctx, telemetry.Config{
