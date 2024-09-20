@@ -12,15 +12,12 @@ import (
 	"github.com/octohelm/piper/cuepkg/debian"
 	"github.com/octohelm/piper/cuepkg/distroless"
 	"github.com/octohelm/piper/cuepkg/containerutil"
-
 	"github.com/octohelm/piper/testdata/cuepkg/example"
 )
 
-hosts: local: wd.#Local & {
-}
+hosts: local: wd.#Local & {}
 
-ver: client.#RevInfo & {
-}
+ver: client.#RevInfo & {}
 
 actions: go: golang.#Project & {
 	cwd:     hosts.local.dir
@@ -39,7 +36,6 @@ actions: go: golang.#Project & {
 		"-s", "-w",
 		"-X", "\(module)/internal/version.version=\(version)",
 	]
-	env: GOEXPERIMENT: "rangefunc"
 }
 
 actions: release: {
@@ -122,8 +118,7 @@ settings: {
 
 actions: pkg: {
 	manifests: kubepkg.#Manifests & {
-		"kubepkg": example.#Example & {
-		}
+		"kubepkg": example.#Example & {}
 	}
 
 	yaml: file.#WriteAsYAML & {
@@ -136,7 +131,7 @@ actions: pkg: {
 
 	ocitar: kubepkg.#OciTar & {
 		"kubepkg": manifests.kubepkg
-		"rename": "docker.io/x/{{ .name }}"
+		"rename":  "docker.io/x/{{ .name }}"
 		"outFile": {
 			wd:       hosts.local.dir
 			filename: "target/\(manifests.kubepkg.metadata.name).kubepkg.tar"

@@ -2,7 +2,7 @@ module github.com/octohelm/piper
 
 go 1.23.1
 
-replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240623041817-7631442da716
+replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240920093217-dd32573e1cbd
 
 // cause by github.com/dagger/dagger v0.13.1
 replace (
@@ -15,7 +15,7 @@ replace (
 replace github.com/protocolbuffers/txtpbfmt => github.com/protocolbuffers/txtpbfmt v0.0.0-20230328191034-3462fbc510c0
 
 require (
-	cuelang.org/go v0.10.0
+	cuelang.org/go v0.11.0-alpha.1
 	dagger.io/dagger v0.13.1
 	github.com/dagger/dagger v0.13.1
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -23,28 +23,28 @@ require (
 	github.com/go-courier/logr v0.3.0
 	github.com/gobwas/glob v0.2.3
 	github.com/google/go-containerregistry v0.20.2
-	github.com/innoai-tech/infra v0.0.0-20240828065440-823baddc18c0
-	github.com/k0sproject/rig v0.18.4
+	github.com/innoai-tech/infra v0.0.0-20240920044133-bd9089f58588
+	github.com/k0sproject/rig v0.18.7
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/moby/buildkit v0.16.0-rc2.0.20240912123401-2a7accc029ec
 	github.com/octohelm/crkit v0.0.0-20240906040206-033f0627af9a
-	github.com/octohelm/cuekit v0.0.0-20240613043008-8b18a0bf3e6a
-	github.com/octohelm/gengo v0.0.0-20240622092313-cc61f99ecd84
+	github.com/octohelm/cuekit v0.0.0-20240920091830-74bd03cdca64
+	github.com/octohelm/gengo v0.0.0-20240919101245-4bc8a41dd2f4
 	github.com/octohelm/kubekit v0.0.0-20240816091736-f2433647d633
-	github.com/octohelm/kubepkgspec v0.0.0-20240820101422-8f85dc2940ad
-	github.com/octohelm/storage v0.0.0-20240828070144-acf8c5de2b4f
-	github.com/octohelm/unifs v0.0.0-20240824002502-170c12511409
-	github.com/octohelm/x v0.0.0-20240819031507-95d7ab05c4cf
+	github.com/octohelm/kubepkgspec v0.0.0-20240910052731-07f208736894
+	github.com/octohelm/storage v0.0.0-20240919143925-9d143fd6c23c
+	github.com/octohelm/unifs v0.0.0-20240906103445-29045af3bc39
+	github.com/octohelm/x v0.0.0-20240904081416-42a1ee2d28a9
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.0
 	github.com/pelletier/go-toml/v2 v2.2.3
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.6
-	go.opentelemetry.io/otel v1.29.0
-	go.opentelemetry.io/otel/log v0.5.0
-	go.opentelemetry.io/otel/sdk v1.29.0
-	go.opentelemetry.io/otel/sdk/log v0.5.0
-	go.opentelemetry.io/otel/trace v1.29.0
+	go.opentelemetry.io/otel v1.30.0
+	go.opentelemetry.io/otel/log v0.6.0
+	go.opentelemetry.io/otel/sdk v1.30.0
+	go.opentelemetry.io/otel/sdk/log v0.6.0
+	go.opentelemetry.io/otel/trace v1.30.0
 	golang.org/x/crypto v0.27.0
 	golang.org/x/net v0.29.0
 	golang.org/x/sync v0.8.0
@@ -55,7 +55,7 @@ require (
 )
 
 require (
-	cuelabs.dev/go/oci/ociregistry v0.0.0-20240807094312-a32ad29eed79 // indirect
+	cuelabs.dev/go/oci/ociregistry v0.0.0-20240906074133-82eb438dd565 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/99designs/gqlgen v0.17.49 // indirect
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230811130428-ced1acdcaa24 // indirect
@@ -69,7 +69,7 @@ require (
 	github.com/alessio/shellescape v1.4.2 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bodgit/ntlmssp v0.0.0-20231128222409-0a45a2447e7c // indirect
+	github.com/bodgit/ntlmssp v0.0.0-20240506230425-31973bb52d9b // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -152,7 +152,7 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/masterzen/simplexml v0.0.0-20190410153822-31eea3082786 // indirect
-	github.com/masterzen/winrm v0.0.0-20231128182143-52a9e15d5730 // indirect
+	github.com/masterzen/winrm v0.0.0-20240702205601-3fad6e106085 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-localereader v0.0.1 // indirect
@@ -173,12 +173,12 @@ require (
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/octohelm/courier v0.0.0-20240828072746-af3b5bc1f867 // indirect
-	github.com/onsi/gomega v1.34.1 // indirect
+	github.com/onsi/gomega v1.34.2 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
-	github.com/prometheus/client_golang v1.20.2 // indirect
+	github.com/prometheus/client_golang v1.20.4 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.57.0 // indirect
+	github.com/prometheus/common v0.59.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20240416193709-1e18ef0a7fdc // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
@@ -208,17 +208,17 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.0.0-20240518090000-14441aefdf88 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.5.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.29.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.29.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.29.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.30.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.30.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.30.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.29.0 // indirect
-	go.opentelemetry.io/otel/exporters/prometheus v0.51.0 // indirect
-	go.opentelemetry.io/otel/metric v1.29.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.29.0 // indirect
+	go.opentelemetry.io/otel/exporters/prometheus v0.52.0 // indirect
+	go.opentelemetry.io/otel/metric v1.30.0 // indirect
+	go.opentelemetry.io/otel/sdk/metric v1.30.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
-	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
+	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
 	golang.org/x/mod v0.21.0 // indirect
-	golang.org/x/oauth2 v0.22.0 // indirect
+	golang.org/x/oauth2 v0.23.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
 	golang.org/x/term v0.24.0 // indirect
 	golang.org/x/text v0.18.0 // indirect

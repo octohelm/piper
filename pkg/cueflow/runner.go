@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/octohelm/piper/pkg/dagger"
 	"io"
 	"sort"
 	"strconv"
@@ -19,6 +18,7 @@ import (
 	"github.com/gobwas/glob"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 	"github.com/octohelm/piper/pkg/cueflow/internal"
+	"github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
 	"github.com/pkg/errors"
 )

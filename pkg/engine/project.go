@@ -2,16 +2,16 @@ package engine
 
 import (
 	"context"
+	"iter"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"sync"
 
-	"github.com/octohelm/cuekit/pkg/mod/module"
-
 	"github.com/k0sproject/rig"
-	"github.com/octohelm/cuekit/pkg/cuecontext"
+	cuekitcuecontext "github.com/octohelm/cuekit/pkg/cuecontext"
+	"github.com/octohelm/cuekit/pkg/mod/module"
 	"github.com/octohelm/piper/cuepkg"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -93,14 +93,29 @@ type project struct {
 	*client
 }
 
+func seq[T any](values ...T) iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for _, v := range values {
+			if !yield(v) {
+				return
+			}
+		}
+	}
+}
+
 func (p *project) Run(ctx context.Context, action ...string) error {
 	runner := cueflow.NewRunner(func() (cueflow.Value, *module.Module, error) {
-		buildConfig, err := cuecontext.NewConfig(cuecontext.WithRoot(p.opt.cwd))
+		buildConfig, err := cuekitcuecontext.NewConfig(cuekitcuecontext.WithRoot(p.opt.cwd))
 		if err != nil {
 			return nil, nil, err
 		}
 
-		val, err := cuecontext.Build(buildConfig.Config, p.opt.entry)
+		val, err := cuekitcuecontext.Build(
+			buildConfig.Config,
+			seq(p.opt.entry),
+
+			//cuecontext.EvaluatorVersion(cuecontext.EvalV3),
+		)
 		if err != nil {
 			return nil, nil, err
 		}
