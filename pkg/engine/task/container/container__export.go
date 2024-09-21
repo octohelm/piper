@@ -1,10 +1,16 @@
 package container
 
 import (
+	"archive/tar"
+	"bytes"
 	"context"
+	"dagger.io/dagger"
+	"encoding/json"
+	"github.com/octohelm/piper/pkg/ocitar"
+	specv1 "github.com/opencontainers/image-spec/specs-go/v1"
+	"io"
 	"path/filepath"
 
-	"dagger.io/dagger"
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -53,14 +59,50 @@ func (x *Export) Do(ctx context.Context) error {
 			}
 		}
 
-		resp, err := cc.Export(ctx, filepath.Join(base, x.OutFile.Filename), dagger.ContainerExportOpts{
+		output, err := cc.Export(ctx, filepath.Join(base, x.OutFile.Filename), dagger.ContainerExportOpts{
 			MediaTypes: dagger.Ocimediatypes,
 		})
 		if err != nil {
 			return err
 		}
 
-		if len(resp) > 0 {
+		if len(x.Annotations) > 0 {
+			if err := ocitar.Replace(output, func(hdr *tar.Header, r io.Reader) (io.Reader, error) {
+				if hdr.Name == "index.json" {
+					index := &specv1.Index{}
+					if err := json.NewDecoder(r).Decode(index); err != nil {
+						return nil, err
+					}
+
+					for i, m := range index.Manifests {
+						if m.Annotations == nil {
+							m.Annotations = make(map[string]string)
+						}
+
+						for k, v := range x.Annotations {
+							m.Annotations[k] = v
+						}
+
+						index.Manifests[i] = m
+					}
+
+					raw, err := json.Marshal(index)
+					if err != nil {
+						return nil, err
+					}
+
+					hdr.Size = int64(len(raw))
+
+					return bytes.NewBuffer(raw), nil
+				}
+
+				return r, nil
+			}); err != nil {
+				return err
+			}
+		}
+
+		if len(output) > 0 {
 			return x.File.SyncWith(ctx, x.OutFile)
 		}
 

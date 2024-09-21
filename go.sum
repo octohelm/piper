@@ -2,8 +2,8 @@ cuelabs.dev/go/oci/ociregistry v0.0.0-20240906074133-82eb438dd565 h1:R5wwEcbEZSB
 cuelabs.dev/go/oci/ociregistry v0.0.0-20240906074133-82eb438dd565/go.mod h1:5A4xfTzHTXfeVJBU6RAUf+QrlfTCW+017q/QiW+sMLg=
 cuelang.org/go v0.11.0-alpha.1 h1:pciMZE03E9Uuk+/muceaab2qUSb0k0DYkLcehkDBJI4=
 cuelang.org/go v0.11.0-alpha.1/go.mod h1:HzlaqqqInHNiqE6slTP6+UtxT9hN6DAzgJgdbNxXvX8=
-dagger.io/dagger v0.13.1 h1:QCfZ8duWCjSUt3n0zhYK4LYELKHxdAAiwlin0pESdQQ=
-dagger.io/dagger v0.13.1/go.mod h1:hbPmZK/iZihwjLlSivuQ5rlRp/IyN0KH8965o5vp6/M=
+dagger.io/dagger v0.13.3 h1:ZgsQr0QDZfSe24ItkzJt6c4IvSUQK47WGmisPx7rsrw=
+dagger.io/dagger v0.13.3/go.mod h1:MskKkqirGk7Nzq8TQY+bGoT7arpLr0D1/ODkJ4jH9i8=
 dario.cat/mergo v1.0.0 h1:AGCNq9Evsj31mOgNPcLyXc+4PNABt905YmuqPYYpBWk=
 dario.cat/mergo v1.0.0/go.mod h1:uNxQE+84aUszobStD9th8a29P2fMDhsBdgRYvZOxGmk=
 github.com/99designs/gqlgen v0.17.49 h1:b3hNGexHd33fBSAd4NDT/c3NCcQzcAVkknhN9ym36YQ=
@@ -98,8 +98,8 @@ github.com/creasty/defaults v1.7.0 h1:eNdqZvc5B509z18lD8yc212CAqJNvfT1Jq6L8WowdB
 github.com/creasty/defaults v1.7.0/go.mod h1:iGzKe6pbEHnpMPtfDXZEr0NVxWnPTjb1bbDy08fPzYM=
 github.com/cyphar/filepath-securejoin v0.2.4 h1:Ugdm7cg7i6ZK6x3xDF1oEu1nfkyfH53EtKeQYTC3kyg=
 github.com/cyphar/filepath-securejoin v0.2.4/go.mod h1:aPGpWjXOXUn2NCNjFvBE6aRxGGx79pTxQpKOJNYHHl4=
-github.com/dagger/dagger v0.13.1 h1:0rweG3JIHFrc+ZHXpNHut6Z9PVBSPE/gbsjTH7rWObo=
-github.com/dagger/dagger v0.13.1/go.mod h1:1GZnW7D/ND0QLulcVri2xRqTjtyL90D66h68CIA4bVI=
+github.com/dagger/dagger v0.13.3 h1:a0Y7AAu3H8h81vJ6APxoun/IrMKbo0aHklp5+GUCWp8=
+github.com/dagger/dagger v0.13.3/go.mod h1:jocyXST5YIA97SM92UEEu5VkcDKsmYldm3DBZ6Yp8j0=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
@@ -451,8 +451,8 @@ github.com/vektah/gqlparser/v2 v2.5.16 h1:1gcmLTvs3JLKXckwCwlUagVn/IlV2bwqle0vJ0
 github.com/vektah/gqlparser/v2 v2.5.16/go.mod h1:1lz1OeCqgQbQepsGxPVywrjdBHW2T08PUS3pJqepRww=
 github.com/vito/go-sse v1.1.2 h1:FLQ1J0tMGN7pKa3KOyZCHojYDR0Z/L/y+3ejUO3P+tM=
 github.com/vito/go-sse v1.1.2/go.mod h1:2wkcaQ+jtlZ94Uve8gYZjFpL68luAjssTINA2hpgcZs=
-github.com/vito/midterm v0.1.4 h1:SALq5mQ+AgzeZxjL4loB6Uk5TZc9JMyX2ELA/NVH65c=
-github.com/vito/midterm v0.1.4/go.mod h1:Mm3u6lrpzo2EFSJbwksKOdottTJzYePK8c1KJy4aRbk=
+github.com/vito/midterm v0.1.5-0.20240307214207-d0271a7ca452 h1:I5FdiUvkD++87hOiZYuDu0BqsaJXAnpOCed3kqkjCEE=
+github.com/vito/midterm v0.1.5-0.20240307214207-d0271a7ca452/go.mod h1:2ujYuyOObdWrQtnXAzwSBcPRKhC5Q96ex0nsf2Dmfzk=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/xanzy/ssh-agent v0.3.3 h1:+/15pJfg/RsTxqYcX6fHqOXZwwMP+2VyYWJeWM2qQFM=
