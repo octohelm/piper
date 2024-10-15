@@ -2,17 +2,18 @@ package container
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
 	"dagger.io/dagger"
+
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/generic/record"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -56,7 +57,7 @@ func (x *Push) Do(ctx context.Context) error {
 
 				p, err := pkgwd.ParsePlatform(platform)
 				if err != nil {
-					return errors.Wrapf(err, "parse platform failed: %s", p)
+					return fmt.Errorf("parse platform failed: %s: %w", p, err)
 				}
 
 				// push without tag tmp

@@ -3,6 +3,7 @@ package file
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -37,7 +37,7 @@ func (t *WriteAsJSON) Do(ctx context.Context) error {
 
 		f, err := cwd.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
-			return errors.Wrap(err, "open file failed")
+			return fmt.Errorf("open file failed: %w", err)
 		}
 		defer f.Close()
 
@@ -45,7 +45,7 @@ func (t *WriteAsJSON) Do(ctx context.Context) error {
 		enc.SetIndent("", "  ")
 
 		if err := enc.Encode(t.Data.Value); err != nil {
-			return errors.Wrap(err, "marshal to json failed")
+			return fmt.Errorf("marshal to json failed: %w", err)
 		}
 
 		return t.File.SyncWith(ctx, t.OutFile)

@@ -15,7 +15,6 @@ import (
 	"cuelang.org/go/cue"
 	"github.com/go-courier/logr"
 	contextx "github.com/octohelm/x/context"
-	"github.com/pkg/errors"
 )
 
 var TaskRunnerFactoryContext = contextx.New[TaskRunnerResolver]()
@@ -85,7 +84,7 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 	defer l.End()
 
 	if err := t.task.Decode(stepRunner); err != nil {
-		return errors.Wrapf(err, "decode failed")
+		return fmt.Errorf("decode failed: %w", err)
 	}
 
 	if n, ok := stepRunner.(WithScopeName); ok {
@@ -107,7 +106,7 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 func (t *taskRunner) fill(output map[string]any) error {
 	// fill output to root value
 	if err := t.task.Scope().FillPath(t.task.Path(), output); err != nil {
-		return errors.Wrap(err, "fill result values failed")
+		return fmt.Errorf("fill result values failed: %w", err)
 	}
 	return nil
 }
@@ -154,7 +153,7 @@ func (t *taskRunner) cachedOrDoTask(ctx context.Context, stepRunner StepRunner) 
 			l.WithValues("params", params).Debug("starting")
 
 			if err := stepRunner.Do(ctx); err != nil {
-				return errors.Wrapf(err, "%s", params)
+				return fmt.Errorf("%s: %w", params, err)
 			}
 		}
 

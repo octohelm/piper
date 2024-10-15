@@ -41,7 +41,6 @@ func main() {
 			dirID = id
 			return nil
 		})
-
 		if err != nil {
 			return err
 		}
@@ -52,7 +51,6 @@ func main() {
 			return err
 		})
 	})
-
 	if err != nil {
 		panic(err)
 	}

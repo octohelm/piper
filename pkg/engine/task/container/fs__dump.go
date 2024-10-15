@@ -2,6 +2,8 @@ package container
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"io/fs"
 
 	"github.com/octohelm/piper/pkg/cueflow"
@@ -10,7 +12,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -42,7 +43,7 @@ func (x *Dump) Do(ctx context.Context) error {
 
 		realpath, err := pkgwd.RealPath(dest)
 		if err != nil {
-			return errors.Errorf("%T: only support cwd in local host", x)
+			return fmt.Errorf("%T: only support cwd in local host", x)
 		}
 
 		if x.With.Empty {
@@ -53,11 +54,11 @@ func (x *Dump) Do(ctx context.Context) error {
 				}
 
 				if err := dest.RemoveAll(ctx, path); err != nil {
-					return errors.Wrapf(err, "remove failed %s", path)
+					return fmt.Errorf("remove failed %s: %w", path, err)
 				}
 				return filesystem.SkipAll
 			}); err != nil {
-				return errors.Wrap(err, "empty outDir failed")
+				return fmt.Errorf("empty outDir failed: %w", err)
 			}
 		}
 

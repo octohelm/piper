@@ -2,10 +2,10 @@ package client
 
 import (
 	"context"
+	"errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
-	"github.com/pkg/errors"
 )
 
 func init() {

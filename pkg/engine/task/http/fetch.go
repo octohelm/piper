@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -17,7 +18,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 )
 
 func init() {

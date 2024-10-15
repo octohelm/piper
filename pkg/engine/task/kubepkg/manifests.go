@@ -2,12 +2,13 @@ package kubepkg
 
 import (
 	"context"
+	"fmt"
+
 	taskocitar "github.com/octohelm/piper/pkg/engine/task/ocitar"
 
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/octohelm/kubepkgspec/pkg/object"
 	"github.com/octohelm/kubepkgspec/pkg/workload"
-	"github.com/pkg/errors"
 
 	kubepkgv1alpha1 "github.com/octohelm/kubepkgspec/pkg/apis/kubepkg/v1alpha1"
 	"github.com/octohelm/kubepkgspec/pkg/kubepkg"
@@ -43,7 +44,7 @@ func (r *Manifests) Do(ctx context.Context) error {
 
 	manifests, err := manifest.SortedExtract(&kpkg, kubepkg.WithRecursive(r.Recursive))
 	if err != nil {
-		return errors.Wrap(err, "extract manifests failed")
+		return fmt.Errorf("extract manifests failed: %w", err)
 	}
 
 	if renamer := r.Rename.Renamer; renamer != nil {

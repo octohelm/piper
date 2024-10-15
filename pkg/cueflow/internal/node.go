@@ -2,10 +2,10 @@ package internal
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"cuelang.org/go/cue"
-	"github.com/pkg/errors"
 )
 
 type Node interface {
@@ -97,7 +97,7 @@ func (n *node) Run(ctx context.Context) error {
 
 		}
 
-		return errors.Errorf("cycle deps: %s", deps)
+		return fmt.Errorf("cycle deps: %s", deps)
 	}
 
 	if len(n.deps) > 0 {

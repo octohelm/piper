@@ -2,6 +2,7 @@ package ocitar
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -42,7 +42,6 @@ func (t *PackExecutable) Do(ctx context.Context) error {
 	layers := make([]executable.LayerWithPlatform, 0, len(t.Files))
 
 	for p, f := range t.Files {
-
 		if err := f.WorkDir.Do(ctx, func(ctx context.Context, wd pkgwd.WorkDir) error {
 			l, err := executable.PlatformedBinary(p, func() (io.ReadCloser, error) {
 				return wd.OpenFile(ctx, f.Filename, os.O_RDONLY, os.ModePerm)
@@ -56,13 +55,12 @@ func (t *PackExecutable) Do(ctx context.Context) error {
 		}); err != nil {
 			return err
 		}
-
 	}
 
 	return t.OutFile.WorkDir.Do(ctx, func(ctx context.Context, cwd pkgwd.WorkDir) error {
 		f, err := cwd.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
-			return errors.Wrapf(err, "open %s failed", t.OutFile.Filename)
+			return fmt.Errorf("open %s failed: %w", t.OutFile.Filename, err)
 		}
 		defer f.Close()
 
@@ -77,7 +75,7 @@ func (t *PackExecutable) Do(ctx context.Context) error {
 		}
 
 		if err := ocitar.Write(f, idx); err != nil {
-			return errors.Errorf("%#v", err)
+			return fmt.Errorf("%#v", err)
 		}
 
 		return t.File.SyncWith(ctx, t.OutFile)

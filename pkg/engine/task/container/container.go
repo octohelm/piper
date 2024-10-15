@@ -2,13 +2,13 @@ package container
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/go-courier/logr"
 
 	"dagger.io/dagger"
 	"github.com/opencontainers/go-digest"
-	"github.com/pkg/errors"
 
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 )
@@ -45,7 +45,7 @@ func (container *Container) Container(ctx context.Context, c *dagger.Client) (*d
 	if k, ok := containerIDs.Load(container.Ref.ID); ok {
 		return c.LoadContainerFromID(k.(containerMeta).id), nil
 	}
-	return nil, errors.Errorf("missing container %s", container.Ref.ID)
+	return nil, fmt.Errorf("missing container %s", container.Ref.ID)
 }
 
 func (container *Container) Sync(ctx context.Context, c *dagger.Container, platform string) error {
@@ -55,7 +55,7 @@ func (container *Container) Sync(ctx context.Context, c *dagger.Container, platf
 	}
 	id, err := cc.ID(ctx)
 	if err != nil || id == "" {
-		return errors.Wrap(err, "resolve container id failed")
+		return fmt.Errorf("resolve container id failed: %w", err)
 	}
 
 	if err := container.Rootfs.Sync(ctx, c.Rootfs()); err != nil {

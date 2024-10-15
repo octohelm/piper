@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 
 	cueformat "cuelang.org/go/cue/format"
 	"github.com/octohelm/piper/pkg/cueflow/cueify"
@@ -142,9 +141,8 @@ import (
 
 	data, err := cueformat.Source(b.Bytes(), cueformat.Simplify())
 	if err != nil {
-		return nil, errors.Wrapf(err, `format invalid:
-
-%s`, b.Bytes())
+		return nil, fmt.Errorf(`format invalid: %w
+%s`, err, b.Bytes())
 	}
 	return data, nil
 }

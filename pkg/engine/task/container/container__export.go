@@ -1,22 +1,18 @@
 package container
 
 import (
-	"archive/tar"
-	"bytes"
 	"context"
-	"dagger.io/dagger"
-	"encoding/json"
-	"github.com/octohelm/piper/pkg/ocitar"
-	specv1 "github.com/opencontainers/image-spec/specs-go/v1"
-	"io"
+	"errors"
+	"fmt"
 	"path/filepath"
+
+	"dagger.io/dagger"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -45,7 +41,7 @@ func (x *Export) Do(ctx context.Context) error {
 
 		base, err := pkgwd.RealPath(w)
 		if err != nil {
-			return errors.Errorf("%T: only support cwd in local host", x)
+			return fmt.Errorf("%T: only support cwd in local host", x)
 		}
 
 		cc, err := x.Input.Container(ctx, c)
@@ -66,41 +62,41 @@ func (x *Export) Do(ctx context.Context) error {
 			return err
 		}
 
-		if len(x.Annotations) > 0 {
-			if err := ocitar.Replace(output, func(hdr *tar.Header, r io.Reader) (io.Reader, error) {
-				if hdr.Name == "index.json" {
-					index := &specv1.Index{}
-					if err := json.NewDecoder(r).Decode(index); err != nil {
-						return nil, err
-					}
-
-					for i, m := range index.Manifests {
-						if m.Annotations == nil {
-							m.Annotations = make(map[string]string)
-						}
-
-						for k, v := range x.Annotations {
-							m.Annotations[k] = v
-						}
-
-						index.Manifests[i] = m
-					}
-
-					raw, err := json.Marshal(index)
-					if err != nil {
-						return nil, err
-					}
-
-					hdr.Size = int64(len(raw))
-
-					return bytes.NewBuffer(raw), nil
-				}
-
-				return r, nil
-			}); err != nil {
-				return err
-			}
-		}
+		//if len(x.Annotations) > 0 {
+		//	if err := ocitar.Replace(output, func(hdr *tar.Header, r io.Reader) (io.Reader, error) {
+		//		if hdr.Name == "index.json" {
+		//			index := &specv1.Index{}
+		//			if err := json.NewDecoder(r).Decode(index); err != nil {
+		//				return nil, err
+		//			}
+		//
+		//			for i, m := range index.Manifests {
+		//				if m.Annotations == nil {
+		//					m.Annotations = make(map[string]string)
+		//				}
+		//
+		//				for k, v := range x.Annotations {
+		//					m.Annotations[k] = v
+		//				}
+		//
+		//				index.Manifests[i] = m
+		//			}
+		//
+		//			raw, err := json.Marshal(index)
+		//			if err != nil {
+		//				return nil, err
+		//			}
+		//
+		//			hdr.Size = int64(len(raw))
+		//
+		//			return bytes.NewBuffer(raw), nil
+		//		}
+		//
+		//		return r, nil
+		//	}); err != nil {
+		//		return err
+		//	}
+		//}
 
 		if len(output) > 0 {
 			return x.File.SyncWith(ctx, x.OutFile)

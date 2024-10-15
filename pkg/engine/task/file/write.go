@@ -2,6 +2,7 @@ package file
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -37,12 +37,12 @@ func (t *Write) Do(ctx context.Context) error {
 
 		f, err := cwd.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
-			return errors.Wrapf(err, "%s: open file failed", cwd)
+			return fmt.Errorf("%s: open file failed: %w", cwd, err)
 		}
 		defer f.Close()
 
 		if _, err = f.Write(t.Contents); err != nil {
-			return errors.Wrapf(err, "%s: write file failed", cwd)
+			return fmt.Errorf("%s: write file failed: %w", cwd, err)
 		}
 
 		return t.File.SyncWith(ctx, t.OutFile)

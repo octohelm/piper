@@ -1,6 +1,7 @@
 package sshutil
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/k0sproject/rig"
 	"github.com/kevinburke/ssh_config"
-	"github.com/pkg/errors"
 )
 
 func Load(configPath string, hostKey string) (*rig.SSH, error) {
@@ -68,7 +68,7 @@ func Load(configPath string, hostKey string) (*rig.SSH, error) {
 		}
 	}
 
-	return nil, errors.Errorf("not found %s", hostKey)
+	return nil, fmt.Errorf("not found %s", hostKey)
 }
 
 func mayUnquote(s string) string {

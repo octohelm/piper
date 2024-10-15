@@ -2,10 +2,10 @@ package container
 
 import (
 	"context"
+	"fmt"
 	"slices"
 
 	"cuelang.org/go/cue"
-	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -51,13 +51,13 @@ func (x *Build) Do(ctx context.Context) error {
 		}
 
 		if err := tt.Scope().RunTasks(ctx, cueflow.WithPrefix(itemValue.Path())); err != nil {
-			return errors.Wrapf(err, "steps[%d]", idx)
+			return fmt.Errorf("steps[%d]: %w", idx, err)
 		}
 
 		stepValue := tt.Scope().LookupPath(itemValue.Path())
 
 		if err := stepValue.Decode(step); err != nil {
-			return errors.Wrapf(err, "steps[%d]: decode result failed", idx)
+			return fmt.Errorf("steps[%d]: decode result failed: %w", idx, err)
 		}
 	}
 

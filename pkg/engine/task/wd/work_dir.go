@@ -2,10 +2,10 @@ package wd
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
 )
 
 type WorkDir struct {
@@ -18,7 +18,7 @@ func (w *WorkDir) Get(ctx context.Context, optFns ...wd.OptionFunc) (wd.WorkDir,
 	if found, ok := task.WorkDirContext.From(ctx).Load(w.Ref.ID); ok {
 		return wd.With(found, optFns...)
 	}
-	return nil, errors.Errorf("workdir %s is not found", w.Ref.ID)
+	return nil, fmt.Errorf("workdir %s is not found", w.Ref.ID)
 }
 
 func (w *WorkDir) Do(ctx context.Context, action func(ctx context.Context, wd wd.WorkDir) error, optFns ...wd.OptionFunc) error {
@@ -27,7 +27,7 @@ func (w *WorkDir) Do(ctx context.Context, action func(ctx context.Context, wd wd
 		return err
 	}
 	if err := action(ctx, cwd); err != nil {
-		return errors.Wrapf(err, "%s", cwd)
+		return fmt.Errorf("do failed at %s: %w", cwd, err)
 	}
 	return nil
 }

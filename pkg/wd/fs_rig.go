@@ -2,12 +2,11 @@ package wd
 
 import (
 	"context"
+	"errors"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
-
-	"github.com/pkg/errors"
 
 	"github.com/k0sproject/rig/pkg/rigfs"
 	"github.com/octohelm/unifs/pkg/filesystem"

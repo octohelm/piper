@@ -1,13 +1,13 @@
 package client
 
 import (
+	"fmt"
 	"strings"
 
 	"cuelang.org/go/cue"
 	cueerrors "cuelang.org/go/cue/errors"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -31,7 +31,7 @@ func (ret *WaitInterface) UnmarshalTask(t cueflow.Task) error {
 	v := cueflow.CueValue(t.Value())
 
 	if v.Kind() != cue.StructKind {
-		return errors.Errorf("client.#Wait must be a struct, but got %s", t.Value().Source())
+		return fmt.Errorf("client.#Wait must be a struct, but got %s", t.Value().Source())
 	}
 
 	i, err := v.Fields(cue.All())
@@ -63,7 +63,7 @@ func (ret *WaitInterface) UnmarshalTask(t cueflow.Task) error {
 			}
 
 			if !ok {
-				return errors.Errorf("task continue, cause got %s", t.Value().Source())
+				return fmt.Errorf("task continue, cause got %s", t.Value().Source())
 			}
 		}
 

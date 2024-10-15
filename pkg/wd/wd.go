@@ -2,6 +2,7 @@ package wd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/url"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/octohelm/unifs/pkg/filesystem/local"
 	"github.com/opencontainers/go-digest"
-	"github.com/pkg/errors"
 
 	"github.com/go-courier/logr"
 	"github.com/k0sproject/rig"

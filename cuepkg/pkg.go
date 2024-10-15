@@ -2,14 +2,13 @@ package cuepkg
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 
 	"github.com/octohelm/cuekit/pkg/mod/modmem"
-
-	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/unifs/pkg/filesystem"
@@ -27,7 +26,7 @@ func RegisterAsMemModule() error {
 		return listFile(ctx, fsSrc, base, func(filename string) error {
 			src, err := fsSrc.OpenFile(ctx, filepath.Join(base, filename), os.O_RDONLY, os.ModePerm)
 			if err != nil {
-				return errors.Wrap(err, "open source file failed")
+				return fmt.Errorf("open source file failed: %w", err)
 			}
 			defer src.Close()
 
@@ -36,7 +35,7 @@ func RegisterAsMemModule() error {
 			}
 			dest, err := fsDest.OpenFile(ctx, filename, os.O_RDWR|os.O_TRUNC|os.O_CREATE, os.ModePerm)
 			if err != nil {
-				return errors.Wrap(err, "open dest file failed")
+				return fmt.Errorf("open dest file failed: %w", err)
 			}
 			defer dest.Close()
 

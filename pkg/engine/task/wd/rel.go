@@ -2,12 +2,12 @@ package wd
 
 import (
 	"context"
+	"errors"
 	"path/filepath"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
 )
 
 func init() {

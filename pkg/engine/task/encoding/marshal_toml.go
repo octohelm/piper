@@ -2,9 +2,9 @@ package file
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pelletier/go-toml/v2"
-	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -27,7 +27,7 @@ type MarshalTOML struct {
 func (t *MarshalTOML) Do(ctx context.Context) error {
 	data, err := toml.Marshal(t.Data.Value)
 	if err != nil {
-		return errors.Wrap(err, "marshal to toml failed")
+		return fmt.Errorf("marshal to toml failed: %w", err)
 	}
 	t.Contents = string(data)
 	return nil

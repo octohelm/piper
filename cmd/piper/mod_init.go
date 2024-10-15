@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/innoai-tech/infra/pkg/cli"
 	"github.com/octohelm/cuekit/pkg/cuecontext"
-	"github.com/pkg/errors"
 )
 
 func init() {

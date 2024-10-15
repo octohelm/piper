@@ -2,13 +2,12 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 	"sync"
 
 	"cuelang.org/go/cue"
-
-	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -105,7 +104,7 @@ func (ei *EnvInterface) Do(ctx context.Context) error {
 				}
 			}
 		} else {
-			return errors.Errorf("EnvVar %s is required, but not defined.", key)
+			return fmt.Errorf("env var %s is required, but not defined", key)
 		}
 	}
 

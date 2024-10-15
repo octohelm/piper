@@ -11,7 +11,6 @@ import (
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
 	"github.com/opencontainers/go-digest"
-	"github.com/pkg/errors"
 )
 
 var fsIDs = record.Map[string, any]{}
@@ -58,7 +57,7 @@ func (fs *Fs) Directory(ctx context.Context, c *dagger.Client) (*dagger.Director
 			return x.do(nctx, c)
 		}
 	}
-	return nil, errors.Errorf("fs is not found: %s", fs.Ref.ID)
+	return nil, fmt.Errorf("fs is not found: %s", fs.Ref.ID)
 }
 
 func (fs *Fs) Sync(ctx context.Context, c *dagger.Directory) error {
@@ -68,7 +67,7 @@ func (fs *Fs) Sync(ctx context.Context, c *dagger.Directory) error {
 	}
 	id, err := cc.ID(ctx)
 	if err != nil || id == "" {
-		return errors.Wrap(err, "resolve fs id failed")
+		return fmt.Errorf("resolve fs id failed: %w", err)
 	}
 
 	scope := piperdagger.ScopeContext.From(ctx)

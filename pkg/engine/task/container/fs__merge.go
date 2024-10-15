@@ -2,9 +2,9 @@ package container
 
 import (
 	"context"
+	"errors"
 
 	"dagger.io/dagger"
-	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"

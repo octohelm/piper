@@ -57,6 +57,6 @@ func Replace(filename string, replace func(hdr *tar.Header, r io.Reader) (io.Rea
 			return err
 		}
 	}
-	
+
 	return nil
 }

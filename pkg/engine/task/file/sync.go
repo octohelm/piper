@@ -2,6 +2,8 @@ package file
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -15,7 +17,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -45,11 +46,11 @@ func (t *Sync) Do(ctx context.Context) error {
 	return t.SrcFile.WorkDir.Do(ctx, func(ctx context.Context, src wd.WorkDir) error {
 		srcFileInfo, err := src.Stat(ctx, t.SrcFile.Filename)
 		if err != nil {
-			return errors.Wrapf(err, "%s: get digest failed", src)
+			return fmt.Errorf("get digest failed at %s, %w", src, err)
 		}
 		srcDgst, err := src.Digest(ctx, t.SrcFile.Filename)
 		if err != nil {
-			return errors.Wrapf(err, "%s: get digest failed", src)
+			return fmt.Errorf("get digest failed at %s, %w", src, err)
 		}
 
 		return t.OutFile.WorkDir.Do(ctx, func(ctx context.Context, dst wd.WorkDir) (err error) {
@@ -73,7 +74,7 @@ func (t *Sync) Do(ctx context.Context) error {
 			dir := filepath.Dir(t.OutFile.Filename)
 			if !(dir == "" || dir == "/") {
 				if err := filesystem.MkdirAll(ctx, dst, dir); err != nil {
-					return errors.Wrapf(err, "%s %s: mkdir failed", dst, dir)
+					return fmt.Errorf("%s %s: mkdir failed: %w", dst, dir, err)
 				}
 			}
 
@@ -112,7 +113,7 @@ func (t *Sync) Do(ctx context.Context) error {
 			}
 
 			if dstDgst != srcDgst {
-				return errors.Errorf("sync failed, expected %s, but got %s", srcDgst, dstDgst)
+				return fmt.Errorf("sync failed, expected %s, but got %s", srcDgst, dstDgst)
 			}
 
 			return
@@ -123,7 +124,7 @@ func (t *Sync) Do(ctx context.Context) error {
 func (t *Sync) truncateDst(ctx context.Context, dst wd.WorkDir, total int64) error {
 	dstFile, err := dst.OpenFile(ctx, t.OutFile.Filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
 	if err != nil {
-		return errors.Wrapf(err, "%s %s: open dest file failed", dst, t.OutFile.Filename)
+		return fmt.Errorf("%s %s: open dest file failed: %w", dst, t.OutFile.Filename, err)
 	}
 	defer dstFile.Close()
 
@@ -134,13 +135,13 @@ func (t *Sync) truncateDst(ctx context.Context, dst wd.WorkDir, total int64) err
 		return nil
 	}
 
-	return errors.New("Truncate is not supported")
+	return errors.New("truncate is not supported")
 }
 
 func (t *Sync) syncN(ctx context.Context, src wd.WorkDir, dst wd.WorkDir, size int64, offset int64, alt io.Writer) error {
 	srcFile, err := src.OpenFile(ctx, t.SrcFile.Filename, os.O_RDONLY, os.ModePerm)
 	if err != nil {
-		return errors.Wrapf(err, "%s  %s: open source file failed", src, t.SrcFile.Filename)
+		return fmt.Errorf("%s  %s: open source file failed: %w", src, t.SrcFile.Filename, err)
 	}
 	defer srcFile.Close()
 
@@ -150,7 +151,7 @@ func (t *Sync) syncN(ctx context.Context, src wd.WorkDir, dst wd.WorkDir, size i
 
 	dstFile, err := dst.OpenFile(ctx, t.OutFile.Filename, os.O_WRONLY, os.ModePerm)
 	if err != nil {
-		return errors.Wrapf(err, "%s %s: open dest file failed", src, t.OutFile.Filename)
+		return fmt.Errorf("%s %s: open dest file failed: %w", src, t.OutFile.Filename, err)
 	}
 	defer dstFile.Close()
 

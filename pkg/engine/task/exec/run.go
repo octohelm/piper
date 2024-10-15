@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"errors"
+	"fmt"
 	"io"
 	"strings"
 
@@ -12,7 +14,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/x/ptr"
-	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
@@ -76,7 +77,7 @@ func (r *Run) Do(ctx context.Context) error {
 				if secret, ok := s.Value(ctx); ok {
 					env[k] = secret.Value
 				} else {
-					return errors.Errorf("not found secret for %s", k)
+					return fmt.Errorf("not found secret for %s", k)
 				}
 			} else {
 				env[k] = v.Value

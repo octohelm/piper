@@ -2,9 +2,9 @@ package file
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pelletier/go-toml/v2"
-	"github.com/pkg/errors"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
@@ -27,7 +27,7 @@ type UnmarshalTOML struct {
 func (t *UnmarshalTOML) Do(ctx context.Context) error {
 	err := toml.Unmarshal(t.Contents, &t.Data.Value)
 	if err != nil {
-		return errors.Wrap(err, "unmarshal to toml failed")
+		return fmt.Errorf("unmarshal to toml failed: %w", err)
 	}
 	return nil
 }

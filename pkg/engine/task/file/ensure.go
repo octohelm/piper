@@ -2,12 +2,12 @@ package file
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -28,7 +28,7 @@ type Ensure struct {
 func (t *Ensure) Do(ctx context.Context) error {
 	return t.Cwd.Do(ctx, func(ctx context.Context, cwd pkgwd.WorkDir) (err error) {
 		if _, err = cwd.Stat(ctx, t.Path); err != nil {
-			return errors.Wrapf(err, "%s: stat failed", cwd)
+			return fmt.Errorf("stat failed: %w", err)
 		}
 		return t.File.Sync(ctx, cwd, t.Path)
 	})

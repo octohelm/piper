@@ -2,10 +2,9 @@ package internal
 
 import (
 	"context"
+	"errors"
 	"os"
 	"sync"
-
-	"github.com/pkg/errors"
 
 	"cuelang.org/go/cue"
 	"cuelang.org/go/tools/flow"

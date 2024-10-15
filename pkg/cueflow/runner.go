@@ -3,6 +3,7 @@ package cueflow
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"sort"
@@ -15,12 +16,12 @@ import (
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/ast"
 	cueerrors "cuelang.org/go/cue/errors"
+
 	"github.com/gobwas/glob"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 	"github.com/octohelm/piper/pkg/cueflow/internal"
 	"github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
-	"github.com/pkg/errors"
 )
 
 func NewRunner(build func() (Value, *module.Module, error)) *Runner {
@@ -73,7 +74,7 @@ func (r *Runner) LookupPath(p cue.Path) Value {
 
 func (r *Runner) FillPath(p cue.Path, v any) error {
 	if _, ok := v.(cue.Value); ok {
-		return errors.Errorf("invalid value for filling %s", p)
+		return fmt.Errorf("invalid value for filling %s", p)
 	}
 
 	_, ok := r.taskResult.LoadOrStore(internal.FormatAsJSONPath(p), v)
@@ -103,7 +104,7 @@ func (r *Runner) RunTasks(ctx context.Context, optFns ...TaskOptionFunc) error {
 
 		tr, err := taskRunnerResolver.ResolveTaskRunner(tk)
 		if err != nil {
-			return errors.Wrap(err, "resolve task failed")
+			return fmt.Errorf("resolve task failed: %s", err)
 		}
 
 		if err := tr.Run(ctx); err != nil {
@@ -144,21 +145,21 @@ func (r *Runner) run(ctx context.Context) error {
 	}
 
 	if err := r.scanTargets(ctx, internal.New(CueValue(r.Value()))); err != nil {
-		return errors.Wrap(err, "prepare task failed")
+		return fmt.Errorf("prepare task failed: %w", err)
 	}
 
 	if err := r.RunTasks(ctx, internal.WithShouldRunFunc(func(value cue.Value) bool {
 		_, ok := r.setups[internal.FormatAsJSONPath(value.Path())]
 		return ok
 	})); err != nil {
-		return errors.Wrap(err, "run setup task failed")
+		return fmt.Errorf("run setup task failed: %w", err)
 	}
 
 	if err := r.RunTasks(ctx, internal.WithShouldRunFunc(func(value cue.Value) bool {
 		_, ok := r.activeTargets[internal.FormatAsJSONPath(value.Path())]
 		return ok
 	})); err != nil {
-		return errors.Wrap(err, "run task failed")
+		return fmt.Errorf("run task failed: %w", err)
 	}
 
 	return nil

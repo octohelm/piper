@@ -2,9 +2,10 @@ package ocitar
 
 import (
 	"context"
-	"github.com/octohelm/piper/internal/pkg/processpool"
 	"io"
 	"os"
+
+	"github.com/octohelm/piper/internal/pkg/processpool"
 
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"

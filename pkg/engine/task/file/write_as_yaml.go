@@ -2,6 +2,7 @@ package file
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -45,7 +45,7 @@ func (t *WriteAsYAML) Do(ctx context.Context) error {
 
 		f, err := outDir.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
-			return errors.Wrap(err, "open file failed")
+			return fmt.Errorf("open file failed: %w", err)
 		}
 		defer f.Close()
 
@@ -55,22 +55,18 @@ func (t *WriteAsYAML) Do(ctx context.Context) error {
 		case []any:
 			if t.With.AsStream {
 				for _, item := range x {
-					//_, err := fmt.Fprintln(f, "---")
-					//if err != nil {
-					//	return errors.Wrap(err, "marshal to yaml failed")
-					//}
 					if err := enc.Encode(item); err != nil {
-						return errors.Wrap(err, "marshal to yaml failed")
+						return fmt.Errorf("marshal to yaml failed: %w", err)
 					}
 				}
 			} else {
 				if err := enc.Encode(x); err != nil {
-					return errors.Wrap(err, "marshal to yaml failed")
+					return fmt.Errorf("marshal to yaml failed: %w", err)
 				}
 			}
 		default:
 			if err := enc.Encode(x); err != nil {
-				return errors.Wrap(err, "marshal to yaml failed")
+				return fmt.Errorf("marshal to yaml failed: %w", err)
 			}
 		}
 

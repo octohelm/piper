@@ -5,8 +5,6 @@ import (
 	"compress/zlib"
 	"encoding/base64"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 func printGraph(scope string, nodes []Node) {
@@ -14,7 +12,7 @@ func printGraph(scope string, nodes []Node) {
 
 	w, err := zlib.NewWriterLevel(buffer, 9)
 	if err != nil {
-		panic(errors.Wrap(err, "fail to write"))
+		panic(fmt.Errorf("fail to write: %w", err))
 	}
 
 	wrap := func(name string) string {

@@ -2,13 +2,15 @@ package ocitar
 
 import (
 	"context"
-	"github.com/octohelm/kubepkgspec/pkg/workload"
-	"github.com/octohelm/piper/internal/pkg/processpool"
+	"fmt"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/octohelm/kubepkgspec/pkg/workload"
+	"github.com/octohelm/piper/internal/pkg/processpool"
 
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
@@ -23,7 +25,6 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/file"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -132,7 +133,7 @@ func (t *Pull) Do(ctx context.Context) error {
 
 		f, err := cwd.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
-			return errors.Wrapf(err, "open %s failed", t.OutFile.Filename)
+			return fmt.Errorf("open %s failed: %w", t.OutFile.Filename, err)
 		}
 		defer f.Close()
 
@@ -151,7 +152,7 @@ func (t *Pull) Do(ctx context.Context) error {
 		}
 
 		if err := ocitar.Write(f, idx); err != nil {
-			return errors.Errorf("%#v", err)
+			return err
 		}
 
 		return nil

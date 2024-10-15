@@ -2,6 +2,7 @@ package file
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pelletier/go-toml/v2"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -37,17 +37,17 @@ func (t *WriteAsTOML) Do(ctx context.Context) error {
 		}
 		f, err := outDir.OpenFile(ctx, t.OutFile.Filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
-			return errors.Wrap(err, "open file failed")
+			return fmt.Errorf("open file failed: %w", err)
 		}
 		defer f.Close()
 
 		data, err := toml.Marshal(t.Data.Value)
 		if err != nil {
-			return errors.Wrap(err, "marshal to toml failed")
+			return fmt.Errorf("marshal to toml failed: %w", err)
 		}
 
 		if _, err := f.Write(data); err != nil {
-			return errors.Wrap(err, "write data failed")
+			return fmt.Errorf("write data failed: %w", err)
 		}
 
 		return t.File.SyncWith(ctx, t.OutFile)

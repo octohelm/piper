@@ -2,13 +2,14 @@ package file
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
-	"github.com/pkg/errors"
 )
 
 func init() {
@@ -40,7 +41,7 @@ func (t *Exists) Do(ctx context.Context) error {
 			if errors.Is(err, os.ErrNotExist) {
 				return nil
 			}
-			return errors.Wrapf(err, "%s: stat failed", cwd)
+			return fmt.Errorf("stat failed at %s: %w", cwd, err)
 		}
 
 		t.Info.IsDir = info.IsDir()

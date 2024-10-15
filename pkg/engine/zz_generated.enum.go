@@ -5,7 +5,7 @@ DON'T EDIT THIS FILE
 package engine
 
 import (
-	github_com_pkg_errors "github.com/pkg/errors"
+	github_com_pkg_errors "errors"
 )
 
 var InvalidLogLevel = github_com_pkg_errors.New("invalid LogLevel")
