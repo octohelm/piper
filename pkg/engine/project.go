@@ -113,7 +113,6 @@ func (p *project) Run(ctx context.Context, action ...string) error {
 		val, err := cuekitcuecontext.Build(
 			buildConfig.Config,
 			seq(p.opt.entry),
-
 			// cuecontext.EvaluatorVersion(cuecontext.EvalV3),
 		)
 		if err != nil {
