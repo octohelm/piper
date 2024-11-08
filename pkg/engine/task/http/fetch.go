@@ -56,7 +56,7 @@ func (r *Fetch) Do(ctx context.Context) (e error) {
 		return err
 	}
 
-	if newHitValue != currentHitValue {
+	if newHitValue == "" || newHitValue != currentHitValue {
 		size := resp.ContentLength
 
 		var reader io.Reader = resp.Body
