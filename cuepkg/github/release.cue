@@ -50,15 +50,13 @@ import (
 				})
 			}
 
-			_steps: [
-				_get_release,
-				_create_release,
-			]
-
 			_select: client.#Wait & {
 				release_id: [
-					for _step in _steps if _step.$ok != _|_ && _step.$ok {
-						_step.response.data.id
+					if _get_release.$ok != _|_ && _get_release.$ok {
+						_get_release.response.data.id
+					},
+					if _create_release.$ok != _|_ && _create_release.$ok {
+						_create_release.response.data.id
 					},
 				][0]
 			}

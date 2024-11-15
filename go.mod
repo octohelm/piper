@@ -32,12 +32,12 @@ require (
 	github.com/moby/buildkit v0.16.0-rc2.0.20240917172113-e15601a00fbe
 	github.com/octohelm/crkit v0.0.0-20241111094027-c233080e8633
 	github.com/octohelm/cuekit v0.0.0-20240920091830-74bd03cdca64
-	github.com/octohelm/gengo v0.0.0-20241023040556-a66fecda6cd6
+	github.com/octohelm/gengo v0.0.0-20241115071734-9f4b1461bafa
 	github.com/octohelm/kubekit v0.0.0-20241021071650-ce12d81a1113
-	github.com/octohelm/kubepkgspec v0.0.0-20241015012541-484a91b9d42a
-	github.com/octohelm/storage v0.0.0-20241025090738-73beed467466
+	github.com/octohelm/kubepkgspec v0.0.0-20241115094009-d3b136b10f7b
+	github.com/octohelm/storage v0.0.0-20241115090317-a4c990ec6ce5
 	github.com/octohelm/unifs v0.0.0-20241019063356-9efed187f510
-	github.com/octohelm/x v0.0.0-20241011014327-0fcf864c84d6
+	github.com/octohelm/x v0.0.0-20241115085849-6402f8916ad3
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.0
 	github.com/pelletier/go-toml/v2 v2.2.3
@@ -175,7 +175,7 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/octohelm/courier v0.0.0-20241111063329-088302edc01d // indirect
+	github.com/octohelm/courier v0.0.0-20241115093923-2654f419a8ed // indirect
 	github.com/onsi/gomega v1.35.1 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
@@ -232,7 +232,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20241104194629-dd2ea8efbc28 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241104194629-dd2ea8efbc28 // indirect
 	google.golang.org/grpc v1.68.0 // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
