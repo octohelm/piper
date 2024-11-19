@@ -9,6 +9,9 @@ import (
 	"strings"
 	"sync"
 
+	"cuelang.org/go/cue/cuecontext"
+	"cuelang.org/go/cue/interpreter/embed"
+	"cuelang.org/go/cue/interpreter/wasm"
 	"github.com/k0sproject/rig"
 	cuekitcuecontext "github.com/octohelm/cuekit/pkg/cuecontext"
 	"github.com/octohelm/cuekit/pkg/mod/module"
@@ -113,6 +116,8 @@ func (p *project) Run(ctx context.Context, action ...string) error {
 		val, err := cuekitcuecontext.Build(
 			buildConfig.Config,
 			seq(p.opt.entry),
+			cuecontext.Interpreter(embed.New()),
+			cuecontext.Interpreter(wasm.New()),
 			//cuecontext.EvaluatorVersion(cuecontext.EvalV3),
 		)
 		if err != nil {
