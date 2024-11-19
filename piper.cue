@@ -19,9 +19,8 @@ hosts: local: wd.#Local & {}
 
 ver: client.#RevInfo & {}
 
-actions: go: golang.#Project & {
+actions: go: X =golang.#Project & {
 	cwd:     hosts.local.dir
-	module:  _
 	main:    "./cmd/piper"
 	version: ver.version
 	goos: [
@@ -34,7 +33,7 @@ actions: go: golang.#Project & {
 	]
 	ldflags: [
 		"-s", "-w",
-		"-X", "\(module)/internal/version.version=\(version)",
+		"-X", "\(X.module)/internal/version.version=\(X.version)",
 	]
 }
 

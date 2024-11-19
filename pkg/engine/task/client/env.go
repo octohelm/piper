@@ -52,7 +52,7 @@ func (ei *EnvInterface) UnmarshalTask(t cueflow.Task) error {
 
 		v := SecretOrString{}
 
-		if i.Value().LookupPath(SecretPath).Exists() {
+		if i.Value().Kind() == cue.StructKind {
 			v.Secret = &Secret{}
 		}
 

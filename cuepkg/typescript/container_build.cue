@@ -82,6 +82,7 @@ import (
 				mounts
 
 				bun_install_cache: container.#Mount & {
+					type: "cache"
 					// https://bun.sh/docs/install/cache
 					dest: "/root/.bun/install/cache"
 					contents: container.#CacheDir & {

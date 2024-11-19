@@ -13,32 +13,28 @@ import (
 	"piper.octohelm.tech/archive"
 )
 
-#Project: #ProjectBase & {
-	cwd: wd.#WorkDir
+#Project: X = {
+	#ProjectBase
 
-	main:    _
-	goos:    _
-	goarch:  _
-	env:     _
-	ldflags: _
-	bin:     _
+	cwd: wd.#WorkDir
 
 	_info: #GoInfo & {
 		gomod: wd: cwd
 	}
+
 	module: _info.output.module
 
 	_out_dir: "./target"
 
 	build: {
-		for _os in goos for _arch in goarch {
+		for _os in X.goos for _arch in X.goarch {
 			"\(_os)/\(_arch)": {
-				_filename: "\(_out_dir)/\(bin)_\(_os)_\(_arch)/\(bin)"
+				_filename: "\(_out_dir)/\(X.bin)_\(_os)_\(_arch)/\(X.bin)"
 
 				_run: exec.#Run & {
 					"cwd": cwd
 					"env": {
-						env
+						X.env
 
 						CGO_ENABLED: "0"
 						GOOS:        _os
@@ -46,9 +42,9 @@ import (
 					}
 					cmd: [
 						"go", "build",
-						"-ldflags", strconv.Quote(strings.Join(ldflags, " ")),
+						"-ldflags", strconv.Quote(strings.Join(X.ldflags, " ")),
 						"-o", _filename,
-						"\(main)",
+						"\(X.main)",
 					]
 				}
 
@@ -65,7 +61,7 @@ import (
 	}
 
 	"archive": {
-		for _os in goos for _arch in goarch {
+		for _os in X.goos for _arch in X.goarch {
 			"\(_os)/\(_arch)": {
 				_out_file: build["\(_os)/\(_arch)"].file
 
@@ -78,7 +74,7 @@ import (
 					srcDir: _dir.dir
 					outFile: {
 						wd:       cwd
-						filename: "\(_out_dir)/\(bin)_\(_os)_\(_arch).tar.gz"
+						filename: "\(_out_dir)/\(X.bin)_\(_os)_\(_arch).tar.gz"
 					}
 				}
 
@@ -94,9 +90,8 @@ import (
 	goos: [...string] | *["darwin", "linux"]
 	goarch: [...string] | *["amd64", "arm64"]
 	ldflags: [...string] | *["-s", "-w"]
-	env: [Name=string]: string | client.#Secret
+	env: [Name=string]: client.#SecretOrString
 	bin: string | *path.Base(main)
-	...
 }
 
 #GoInfo: {

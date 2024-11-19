@@ -57,7 +57,18 @@ import (
 			}
 		}
 
-		$ok:      _req.$ok
-		response: _req.response
+		$ok: _req.$ok
+
+		response: http.#Response & {
+			if _req.response.status != _|_ {
+				status: _req.response.status
+			}
+			if _req.response.header != _|_ {
+				header: _req.response.header
+			}
+			if _req.response.header != _|_ {
+				data: _req.response.data
+			}
+		}
 	}
 }

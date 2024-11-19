@@ -26,7 +26,9 @@ import (
 	}
 }
 
-#ContainerBuild: #ProjectBase & {
+#ContainerBuild: X = {
+	#ProjectBase
+
 	source: container.#Source
 
 	_info: #GoInfo & {
@@ -39,13 +41,6 @@ import (
 		GOPRIVATE: string | *""
 		GOSUMDB:   string | *""
 	}
-
-	main:    _
-	goos:    _
-	goarch:  _
-	env:     _
-	ldflags: _
-	bin:     _
 
 	mounts: [Name=string]: container.#Mount
 
@@ -76,6 +71,7 @@ import (
 		_cached_mounts: {
 			for _n, _p in _cache {
 				"\(_p)": container.#Mount & {
+					type: "cache"
 					dest: _p
 					contents: container.#CacheDir & {
 						id: "\(_n)"
@@ -96,20 +92,20 @@ import (
 						"workdir": "\(workdir)"
 						mounts:    _cached_mounts
 						run:       prepare
-						"env":     env
+						"env":     X.env
 					}
 				},
 			]
 		}
 
-		for _os in goos for _arch in goarch {
+		for _os in X.goos for _arch in X.goarch {
 			"\(_os)/\(_arch)": {
 				_outDir: "./target"
 
 				_build: container.#Run & {
 					input:     _load_source.output
 					"workdir": "\(workdir)"
-					run:       "go build -ldflags=\"\(strings.Join(ldflags, " "))\" -o \(_outDir)/\(bin) \(main)"
+					run:       "go build -ldflags=\"\(strings.Join(X.ldflags, " "))\" -o \(_outDir)/\(X.bin) \(X.main)"
 					"env": {
 						env
 						CGO_ENABLED: "0"
@@ -136,11 +132,11 @@ import (
 	dump: {
 		outDir: string | *"./target"
 
-		for _os in goos for _arch in goarch {
+		for _os in X.goos for _arch in X.goarch {
 			"\(_os)/\(_arch)": {
 				_outDir: wd.#Sub & {
 					cwd: source.cwd
-					"path": path.Join([outDir, "\(bin)_\(_os)_\(_arch)"])
+					"path": path.Join([outDir, "\(X.bin)_\(_os)_\(_arch)"])
 				}
 
 				_dump: container.#Dump & {
@@ -151,7 +147,7 @@ import (
 
 				"file": file.#File & {
 					wd:       _dump.dir
-					filename: bin
+					filename: X.bin
 				}
 			}
 		}

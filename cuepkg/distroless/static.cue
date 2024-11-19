@@ -56,5 +56,5 @@ import (
 		]
 	}
 
-	output: _build.output
+	output: close(_build.output)
 }

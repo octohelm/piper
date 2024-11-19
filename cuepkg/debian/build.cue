@@ -43,5 +43,9 @@ import (
 		]
 	}
 
-	output: _build.output
+	output: container.#Container & {
+		$$container: _build.output.$$container
+		rootfs:      _build.output.rootfs
+		platform:    _build.output.platform
+	}
 }

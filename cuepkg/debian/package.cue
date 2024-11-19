@@ -52,6 +52,7 @@ import (
 					mounts: {
 						for id, dir in _dirs {
 							"\(id)": container.#Mount & {
+								type: "cache"
 								dest: "\(dir)"
 								contents: container.#CacheDir & {
 									"id": "\(input.platform)/\(id)"
@@ -78,5 +79,9 @@ import (
 		]
 	}
 
-	output: _install.output
+	output: container.#Container & {
+		$$container: _install.output.$$container
+		rootfs:      _install.output.rootfs
+		platform:    _install.output.platform
+	}
 }
