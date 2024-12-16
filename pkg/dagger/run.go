@@ -49,7 +49,9 @@ func Run(ctx context.Context, name string, fn func(ctx context.Context) error) e
 		defer telemetry.End(span, func() error { return rerr })
 
 		// important for exec logging
-		frontend.SetPrimary(span.SpanContext().SpanID())
+		frontend.SetPrimary(dagui.SpanID{
+			SpanID: span.SpanContext().SpanID(),
+		})
 		slog.SetDefault(slog.SpanLogger(ctx, name))
 
 		return fn(RunnerContext.Inject(c, daggerRunner))

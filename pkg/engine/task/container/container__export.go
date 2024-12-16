@@ -56,7 +56,7 @@ func (x *Export) Do(ctx context.Context) error {
 		}
 
 		output, err := cc.Export(ctx, filepath.Join(base, x.OutFile.Filename), dagger.ContainerExportOpts{
-			MediaTypes: dagger.Ocimediatypes,
+			MediaTypes: dagger.ImageMediaTypesOcimediaTypes,
 		})
 		if err != nil {
 			return err

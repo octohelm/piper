@@ -9,9 +9,9 @@ import (
 	"github.com/innoai-tech/infra/devpkg/gengo"
 	"github.com/innoai-tech/infra/pkg/cli"
 
+	_ "github.com/octohelm/enumeration/devpkg/enumgen"
 	_ "github.com/octohelm/gengo/devpkg/deepcopygen"
 	_ "github.com/octohelm/gengo/devpkg/runtimedocgen"
-	_ "github.com/octohelm/storage/devpkg/enumgen"
 )
 
 var App = cli.NewApp("gengo", "dev")
