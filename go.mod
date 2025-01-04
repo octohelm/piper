@@ -26,10 +26,10 @@ require (
 	github.com/k0sproject/rig v0.18.7
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/moby/buildkit v0.16.0-rc2.0.20240917172113-e15601a00fbe
-	github.com/octohelm/crkit v0.0.0-20241230062807-787c77ee0529
+	github.com/octohelm/crkit v0.0.0-20250101045256-51b25fec259c
 	github.com/octohelm/cuekit v0.0.0-20240920091830-74bd03cdca64
 	github.com/octohelm/enumeration v0.0.0-20241121070632-2cd7179b161c
-	github.com/octohelm/gengo v0.0.0-20241227040918-5bca0aaef7d5
+	github.com/octohelm/gengo v0.0.0-20250104080658-4527b142baef
 	github.com/octohelm/kubekit v0.0.0-20241216023902-2c9d675d9ca8
 	github.com/octohelm/kubepkgspec v0.0.0-20241220093955-977f489bf4b8
 	github.com/octohelm/unifs v0.0.0-20241019063356-9efed187f510
