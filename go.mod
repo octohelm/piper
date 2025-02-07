@@ -1,12 +1,12 @@
 module github.com/octohelm/piper
 
-go 1.23.5
+go 1.23.6
 
 replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240920093217-dd32573e1cbd
 
 replace github.com/dagger/dagger/engine/distconsts => ./internal/dagger/engine/distconsts
 
-// cause by github.com/dagger/dagger v0.15.2
+// cause by github.com/dagger/dagger v0.15.3
 replace (
 	github.com/moby/buildkit => github.com/dagger/buildkit v0.0.0-20250122144224-acd758f7c300
 	go.opentelemetry.io/otel/log => go.opentelemetry.io/otel/log v0.8.0
