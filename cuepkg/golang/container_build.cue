@@ -40,6 +40,7 @@ import (
 		GOPROXY:   string | *""
 		GOPRIVATE: string | *""
 		GOSUMDB:   string | *""
+		GOAUTH:    string | *""
 	}
 
 	mounts: [Name=string]: container.#Mount
@@ -48,6 +49,7 @@ import (
 		GOPROXY:   _goenv.GOPROXY
 		GOPRIVATE: _goenv.GOPRIVATE
 		GOSUMDB:   _goenv.GOSUMDB
+		GOAUTH:    _goenv.GOAUTH
 	}
 
 	_default_image: #GolangImage & {
