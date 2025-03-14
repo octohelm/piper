@@ -4,21 +4,9 @@ DON'T EDIT THIS FILE
 */
 package http
 
-// nolint:deadcode,unused
-func runtimeDoc(v any, names ...string) ([]string, bool) {
-	if c, ok := v.(interface {
-		RuntimeDoc(names ...string) ([]string, bool)
-	}); ok {
-		return c.RuntimeDoc(names...)
-	}
-	return nil, false
-}
-
-func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Do) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Method":
 			return []string{
 				"http method",
@@ -44,23 +32,21 @@ func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
 				"options",
 			}, true
 		case "Response":
-			return []string{
-				"Response",
-			}, true
+			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Do http request",
+		"http request",
 	}, true
 }
 
-func (v DoOption) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *DoOption) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "ExposeHeaders":
@@ -74,11 +60,9 @@ func (v DoOption) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Fetch) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Fetch) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Url":
 			return []string{
 				"http request url",
@@ -93,18 +77,18 @@ func (v Fetch) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Fetch http resource to local cache",
+		"http resource to local cache",
 	}, true
 }
 
-func (v Response) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Response) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Status":
@@ -125,4 +109,22 @@ func (v Response) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
+}
+
+// nolint:deadcode,unused
+func runtimeDoc(v any, prefix string, names ...string) ([]string, bool) {
+	if c, ok := v.(interface {
+		RuntimeDoc(names ...string) ([]string, bool)
+	}); ok {
+		doc, ok := c.RuntimeDoc(names...)
+		if ok {
+			if prefix != "" && len(doc) > 0 {
+				doc[0] = prefix + doc[0]
+				return doc, true
+			}
+
+			return doc, true
+		}
+	}
+	return nil, false
 }

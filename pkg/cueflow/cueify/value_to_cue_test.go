@@ -8,7 +8,7 @@ import (
 )
 
 func TestValueToCue(t *testing.T) {
-	a := &txtar.Archive{}
+	a := testingx.NewSnapshot()
 
 	{
 		v, err := ValueToCue(map[string]any{

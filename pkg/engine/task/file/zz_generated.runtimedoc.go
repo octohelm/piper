@@ -4,21 +4,9 @@ DON'T EDIT THIS FILE
 */
 package file
 
-// nolint:deadcode,unused
-func runtimeDoc(v any, names ...string) ([]string, bool) {
-	if c, ok := v.(interface {
-		RuntimeDoc(names ...string) ([]string, bool)
-	}); ok {
-		return c.RuntimeDoc(names...)
-	}
-	return nil, false
-}
-
-func (v Ensure) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Ensure) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Cwd":
 			return []string{
 				"current workdir",
@@ -33,22 +21,20 @@ func (v Ensure) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Ensure to check path exists",
+		"to check path exists",
 	}, true
 }
 
-func (v Exists) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Exists) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Cwd":
 			return []string{
 				"current workdir",
@@ -61,18 +47,18 @@ func (v Exists) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Exists to check path exists",
+		"to check path exists",
 	}, true
 }
 
-func (v File) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *File) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "WorkDir":
@@ -91,7 +77,7 @@ func (v File) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Info) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Info) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "IsDir":
@@ -108,11 +94,9 @@ func (v Info) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v ReadAsString) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadAsString) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "File":
 			return []string{
 				"file",
@@ -123,22 +107,20 @@ func (v ReadAsString) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"ReadAsString read file as string",
+		"read file as string",
 	}, true
 }
 
-func (v ReadAsTable) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadAsTable) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "File":
 			return []string{
 				"file",
@@ -153,18 +135,18 @@ func (v ReadAsTable) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"ReadAsTable file read as table",
+		"file read as table",
 	}, true
 }
 
-func (v ReadAsTableOption) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadAsTableOption) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "StrictColNum":
@@ -178,11 +160,9 @@ func (v ReadAsTableOption) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v ReadFromJSON) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadFromJSON) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "File":
 			return []string{
 				"file",
@@ -193,66 +173,20 @@ func (v ReadFromJSON) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"ReadFromJSON read and parse json",
+		"read and parse json",
 	}, true
 }
 
-func (v ReadFromTOML) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadFromTOML) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
-		case "File":
-			return []string{
-				"file",
-			}, true
-		case "With":
-			return []string{
-				"options",
-			}, true
-		case "Data":
-			return []string{
-				"data",
-			}, true
-
-		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
-			return doc, ok
-		}
-
-		return nil, false
-	}
-	return []string{
-		"ReadFromTOML read and parse yaml",
-	}, true
-}
-
-func (v ReadFromTOMLOption) RuntimeDoc(names ...string) ([]string, bool) {
-	if len(names) > 0 {
-		switch names[0] {
-		case "AsList":
-			return []string{
-				"read as list",
-			}, true
-		}
-
-		return nil, false
-	}
-	return []string{}, true
-}
-
-func (v ReadFromYAML) RuntimeDoc(names ...string) ([]string, bool) {
-	if len(names) > 0 {
-		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "File":
 			return []string{
 				"file",
@@ -267,18 +201,18 @@ func (v ReadFromYAML) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"ReadFromYAML read and parse yaml",
+		"read and parse yaml",
 	}, true
 }
 
-func (v ReadFromYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadFromTOMLOption) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "AsList":
@@ -292,11 +226,51 @@ func (v ReadFromYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Rel) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadFromYAML) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
+		case "File":
+			return []string{
+				"file",
+			}, true
+		case "With":
+			return []string{
+				"options",
+			}, true
+		case "Data":
+			return []string{
+				"data",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{
+		"read and parse yaml",
+	}, true
+}
+
+func (v *ReadFromYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "AsList":
+			return []string{
+				"read as list",
+			}, true
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v *Rel) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
 		case "BaseDir":
 			return []string{
 				"current workdir",
@@ -311,18 +285,18 @@ func (v Rel) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Rel to check path exists",
+		"to check path exists",
 	}, true
 }
 
-func (v StringOrFile) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *StringOrFile) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "File":
@@ -337,11 +311,9 @@ func (v StringOrFile) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Sync) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Sync) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "SrcFile":
 			return []string{
 				"source file",
@@ -360,18 +332,18 @@ func (v Sync) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Sync file to contents",
+		"file to contents",
 	}, true
 }
 
-func (v SyncOption) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *SyncOption) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "MaxConcurrent":
@@ -386,11 +358,9 @@ func (v SyncOption) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Write) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Write) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "OutFile":
 			return []string{
 				"output file",
@@ -405,22 +375,20 @@ func (v Write) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Write file with contents",
+		"file with contents",
 	}, true
 }
 
-func (v WriteAsJSON) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *WriteAsJSON) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "OutFile":
 			return []string{
 				"output file",
@@ -435,22 +403,20 @@ func (v WriteAsJSON) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"WriteAsJSON read and parse json",
+		"read and parse json",
 	}, true
 }
 
-func (v WriteAsTOML) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *WriteAsTOML) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "OutFile":
 			return []string{
 				"filename",
@@ -465,7 +431,7 @@ func (v WriteAsTOML) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -476,11 +442,9 @@ func (v WriteAsTOML) RuntimeDoc(names ...string) ([]string, bool) {
 	}, true
 }
 
-func (v WriteAsYAML) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *WriteAsYAML) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "OutFile":
 			return []string{
 				"output file",
@@ -499,18 +463,18 @@ func (v WriteAsYAML) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"WriteAsYAML read and parse yaml",
+		"read and parse yaml",
 	}, true
 }
 
-func (v WriteAsYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *WriteAsYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "AsStream":
@@ -522,4 +486,22 @@ func (v WriteAsYAMLOption) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
+}
+
+// nolint:deadcode,unused
+func runtimeDoc(v any, prefix string, names ...string) ([]string, bool) {
+	if c, ok := v.(interface {
+		RuntimeDoc(names ...string) ([]string, bool)
+	}); ok {
+		doc, ok := c.RuntimeDoc(names...)
+		if ok {
+			if prefix != "" && len(doc) > 0 {
+				doc[0] = prefix + doc[0]
+				return doc, true
+			}
+
+			return doc, true
+		}
+	}
+	return nil, false
 }

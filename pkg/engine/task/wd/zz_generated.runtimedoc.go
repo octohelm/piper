@@ -4,17 +4,7 @@ DON'T EDIT THIS FILE
 */
 package wd
 
-// nolint:deadcode,unused
-func runtimeDoc(v any, names ...string) ([]string, bool) {
-	if c, ok := v.(interface {
-		RuntimeDoc(names ...string) ([]string, bool)
-	}); ok {
-		return c.RuntimeDoc(names...)
-	}
-	return nil, false
-}
-
-func (v Dir) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Dir) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "WorkDir":
@@ -33,11 +23,9 @@ func (v Dir) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Local) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Local) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Source":
 			return []string{
 				"related dir on the root of project",
@@ -48,19 +36,18 @@ func (v Local) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Local",
 		"create a local workdir",
 	}, true
 }
 
-func (v Platform) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Platform) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "OS":
@@ -75,11 +62,9 @@ func (v Platform) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Rel) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Rel) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "BaseDir":
 			return []string{}, true
 		case "TargetDir":
@@ -88,18 +73,18 @@ func (v Rel) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Rel to get related path between two dirs",
+		"to get related path between two dirs",
 	}, true
 }
 
-func (v Release) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Release) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Name":
@@ -127,11 +112,9 @@ func (v Release) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v SSH) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *SSH) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Address":
 			return []string{
 				"ssh address",
@@ -158,23 +141,20 @@ func (v SSH) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"SSH",
 		"create ssh work dir for remote executing",
 	}, true
 }
 
-func (v SSHFromConfig) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *SSHFromConfig) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Config":
 			return []string{
 				"path to ssh config",
@@ -189,23 +169,20 @@ func (v SSHFromConfig) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"SSHFromConfig",
 		"create ssh work dir for remote executing",
 	}, true
 }
 
-func (v Su) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Su) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Cwd":
 			return []string{
 				"current workdir",
@@ -220,23 +197,20 @@ func (v Su) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Su",
 		"switch user",
 	}, true
 }
 
-func (v Sub) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Sub) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Cwd":
 			return []string{
 				"current workdir",
@@ -251,23 +225,20 @@ func (v Sub) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Sub",
 		"create new work dir base on current work dir",
 	}, true
 }
 
-func (v SysInfo) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *SysInfo) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Cwd":
 			return []string{
 				"current workdir",
@@ -286,23 +257,20 @@ func (v SysInfo) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"SysInfo",
 		"get sys info of current work dir",
 	}, true
 }
 
-func (v Temp) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Temp) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "ID":
 			return []string{
 				"related dir on the root of project",
@@ -313,7 +281,7 @@ func (v Temp) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -325,7 +293,7 @@ func (v Temp) RuntimeDoc(names ...string) ([]string, bool) {
 	}, true
 }
 
-func (v WorkDir) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *WorkDir) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		}
@@ -333,4 +301,22 @@ func (v WorkDir) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
+}
+
+// nolint:deadcode,unused
+func runtimeDoc(v any, prefix string, names ...string) ([]string, bool) {
+	if c, ok := v.(interface {
+		RuntimeDoc(names ...string) ([]string, bool)
+	}); ok {
+		doc, ok := c.RuntimeDoc(names...)
+		if ok {
+			if prefix != "" && len(doc) > 0 {
+				doc[0] = prefix + doc[0]
+				return doc, true
+			}
+
+			return doc, true
+		}
+	}
+	return nil, false
 }

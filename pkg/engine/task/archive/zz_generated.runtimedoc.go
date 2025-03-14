@@ -4,21 +4,9 @@ DON'T EDIT THIS FILE
 */
 package archive
 
-// nolint:deadcode,unused
-func runtimeDoc(v any, names ...string) ([]string, bool) {
-	if c, ok := v.(interface {
-		RuntimeDoc(names ...string) ([]string, bool)
-	}); ok {
-		return c.RuntimeDoc(names...)
-	}
-	return nil, false
-}
-
-func (v Tar) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Tar) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "SrcDir":
 			return []string{
 				"specified dir for tar",
@@ -33,23 +21,20 @@ func (v Tar) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Tar",
 		"make a tar archive file of specified dir",
 	}, true
 }
 
-func (v UnTar) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *UnTar) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "SrcFile":
 			return []string{
 				"tar filename base on the current work outDir",
@@ -68,14 +53,31 @@ func (v UnTar) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"UnTar",
 		"un tar files into specified outDir",
 	}, true
+}
+
+// nolint:deadcode,unused
+func runtimeDoc(v any, prefix string, names ...string) ([]string, bool) {
+	if c, ok := v.(interface {
+		RuntimeDoc(names ...string) ([]string, bool)
+	}); ok {
+		doc, ok := c.RuntimeDoc(names...)
+		if ok {
+			if prefix != "" && len(doc) > 0 {
+				doc[0] = prefix + doc[0]
+				return doc, true
+			}
+
+			return doc, true
+		}
+	}
+	return nil, false
 }

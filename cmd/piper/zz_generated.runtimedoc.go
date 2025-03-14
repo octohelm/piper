@@ -4,29 +4,14 @@ DON'T EDIT THIS FILE
 */
 package main
 
-// nolint:deadcode,unused
-func runtimeDoc(v any, names ...string) ([]string, bool) {
-	if c, ok := v.(interface {
-		RuntimeDoc(names ...string) ([]string, bool)
-	}); ok {
-		return c.RuntimeDoc(names...)
-	}
-	return nil, false
-}
-
-func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Do) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Logger":
-			return []string{}, true
-		case "Pipeline":
-			return []string{}, true
-
 		}
-		if doc, ok := runtimeDoc(v.Logger, names...); ok {
+		if doc, ok := runtimeDoc(&v.Logger, "", names...); ok {
 			return doc, ok
 		}
-		if doc, ok := runtimeDoc(v.Pipeline, names...); ok {
+		if doc, ok := runtimeDoc(&v.Pipeline, "", names...); ok {
 			return doc, ok
 		}
 
@@ -35,13 +20,11 @@ func (v Do) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Init) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Init) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "InitRun":
-			return []string{}, true
 		}
-		if doc, ok := runtimeDoc(v.InitRun, names...); ok {
+		if doc, ok := runtimeDoc(&v.InitRun, "", names...); ok {
 			return doc, ok
 		}
 
@@ -50,7 +33,7 @@ func (v Init) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v InitRun) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *InitRun) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Name":
@@ -62,7 +45,7 @@ func (v InitRun) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Tidy) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Tidy) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		}
@@ -70,4 +53,22 @@ func (v Tidy) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{}, true
+}
+
+// nolint:deadcode,unused
+func runtimeDoc(v any, prefix string, names ...string) ([]string, bool) {
+	if c, ok := v.(interface {
+		RuntimeDoc(names ...string) ([]string, bool)
+	}); ok {
+		doc, ok := c.RuntimeDoc(names...)
+		if ok {
+			if prefix != "" && len(doc) > 0 {
+				doc[0] = prefix + doc[0]
+				return doc, true
+			}
+
+			return doc, true
+		}
+	}
+	return nil, false
 }

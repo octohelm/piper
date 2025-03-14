@@ -147,7 +147,7 @@ func (l *Logger) printf(ll log.Logger, msg string, attrs []attribute.KeyValue) {
 
 		switch x := attr.Value.Any().(type) {
 		case string:
-			_, _ = fmt.Fprintf(buf, color.WhiteString(" %s=%q", attr.Key, attr.Value))
+			_, _ = fmt.Fprint(buf, color.WhiteString(" %s=%q", attr.Key, attr.Value))
 		default:
 			logValue := x
 			if valuer, ok := logValue.(slog.LogValuer); ok {

@@ -4,17 +4,7 @@ DON'T EDIT THIS FILE
 */
 package container
 
-// nolint:deadcode,unused
-func runtimeDoc(v any, names ...string) ([]string, bool) {
-	if c, ok := v.(interface {
-		RuntimeDoc(names ...string) ([]string, bool)
-	}); ok {
-		return c.RuntimeDoc(names...)
-	}
-	return nil, false
-}
-
-func (v Auth) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Auth) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Username":
@@ -29,29 +19,27 @@ func (v Auth) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Build) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Build) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Group":
-			return []string{}, true
 		case "Steps":
 			return []string{}, true
 		case "Output":
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Group, names...); ok {
+		if doc, ok := runtimeDoc(&v.Group, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Build docker build step",
+		"docker build step",
 	}, true
 }
 
-func (v CacheDir) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *CacheDir) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "ID":
@@ -63,16 +51,13 @@ func (v CacheDir) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Config) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Config) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "SetupTask":
-			return []string{}, true
 		case "Auths":
 			return []string{}, true
-
 		}
-		if doc, ok := runtimeDoc(v.SetupTask, names...); ok {
+		if doc, ok := runtimeDoc(&v.SetupTask, "", names...); ok {
 			return doc, ok
 		}
 
@@ -81,7 +66,7 @@ func (v Config) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Container) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Container) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Rootfs":
@@ -96,11 +81,9 @@ func (v Container) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Copy) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Copy) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Contents":
@@ -117,7 +100,7 @@ func (v Copy) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -126,11 +109,9 @@ func (v Copy) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Diff) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Diff) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Upper":
 			return []string{}, true
 		case "Lower":
@@ -139,7 +120,7 @@ func (v Diff) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -148,11 +129,9 @@ func (v Diff) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Dir) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Dir) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Path":
@@ -161,7 +140,7 @@ func (v Dir) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -170,11 +149,9 @@ func (v Dir) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Dump) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Dump) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "OutDir":
@@ -185,7 +162,7 @@ func (v Dump) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -194,7 +171,7 @@ func (v Dump) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v DumpOption) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *DumpOption) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Empty":
@@ -206,11 +183,9 @@ func (v DumpOption) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Exec) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Exec) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Args":
@@ -231,7 +206,7 @@ func (v Exec) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -240,11 +215,9 @@ func (v Exec) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Export) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Export) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Annotations":
@@ -257,7 +230,7 @@ func (v Export) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -266,7 +239,7 @@ func (v Export) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Fs) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Fs) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		}
@@ -276,11 +249,9 @@ func (v Fs) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v HTTPFetch) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *HTTPFetch) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Source":
 			return []string{}, true
 		case "Dest":
@@ -289,7 +260,7 @@ func (v HTTPFetch) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -298,7 +269,7 @@ func (v HTTPFetch) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v ImageConfig) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ImageConfig) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "WorkingDir":
@@ -321,22 +292,20 @@ func (v ImageConfig) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (LazyDoFn) RuntimeDoc(names ...string) ([]string, bool) {
+func (*LazyDoFn) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Merge) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Merge) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Inputs":
 			return []string{}, true
 		case "Output":
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -345,11 +314,9 @@ func (v Merge) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Mkdir) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Mkdir) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Path":
@@ -360,7 +327,7 @@ func (v Mkdir) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -369,13 +336,11 @@ func (v Mkdir) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Mount) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Mount) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Mounter":
-			return []string{}, true
 		}
-		if doc, ok := runtimeDoc(v.Mounter, names...); ok {
+		if doc, ok := runtimeDoc(&v.Mounter, "", names...); ok {
 			return doc, ok
 		}
 
@@ -384,7 +349,7 @@ func (v Mount) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v MountCacheDir) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *MountCacheDir) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Type":
@@ -401,7 +366,7 @@ func (v MountCacheDir) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v MountFile) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *MountFile) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Type":
@@ -420,7 +385,7 @@ func (v MountFile) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v MountFs) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *MountFs) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Type":
@@ -439,7 +404,7 @@ func (v MountFs) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v MountSecret) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *MountSecret) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Type":
@@ -456,7 +421,7 @@ func (v MountSecret) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v MountTemp) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *MountTemp) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Type":
@@ -471,11 +436,9 @@ func (v MountTemp) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Pull) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Pull) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Source":
 			return []string{
 				"image from",
@@ -494,23 +457,20 @@ func (v Pull) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Pull",
 		"image from",
 	}, true
 }
 
-func (v Push) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Push) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Dest":
 			return []string{
 				"image tag",
@@ -519,6 +479,10 @@ func (v Push) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{
 				"images for push",
 				"[Platform]: _",
+			}, true
+		case "Annotations":
+			return []string{
+				"annotations",
 			}, true
 		case "Auth":
 			return []string{
@@ -530,22 +494,20 @@ func (v Push) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Push image to registry",
+		"image to registry",
 	}, true
 }
 
-func (v ReadFile) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *ReadFile) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Path":
@@ -554,7 +516,7 @@ func (v ReadFile) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -563,7 +525,7 @@ func (v ReadFile) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v RegistryAuth) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *RegistryAuth) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Address":
@@ -580,11 +542,9 @@ func (v RegistryAuth) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Rm) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Rm) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Path":
@@ -593,7 +553,7 @@ func (v Rm) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -602,11 +562,9 @@ func (v Rm) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v RootfsDo) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *RootfsDo) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Group":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Steps":
@@ -615,7 +573,7 @@ func (v RootfsDo) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Group, names...); ok {
+		if doc, ok := runtimeDoc(&v.Group, "", names...); ok {
 			return doc, ok
 		}
 
@@ -626,7 +584,7 @@ func (v RootfsDo) RuntimeDoc(names ...string) ([]string, bool) {
 	}, true
 }
 
-func (v RootfsDoStepInterface) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *RootfsDoStepInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Input":
@@ -641,11 +599,9 @@ func (v RootfsDoStepInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Run) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Run) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Mounts":
@@ -666,7 +622,7 @@ func (v Run) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -675,11 +631,9 @@ func (v Run) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Set) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Set) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Config":
@@ -688,7 +642,7 @@ func (v Set) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -697,11 +651,9 @@ func (v Set) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Source) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Source) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Cwd":
 			return []string{
 				"working dir",
@@ -716,7 +668,7 @@ func (v Source) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -725,11 +677,9 @@ func (v Source) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v SourceFile) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *SourceFile) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "File":
 			return []string{}, true
 		case "Dest":
@@ -738,7 +688,7 @@ func (v SourceFile) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -747,7 +697,7 @@ func (v SourceFile) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v StepInterface) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *StepInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Input":
@@ -762,11 +712,9 @@ func (v StepInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v Stretch) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Stretch) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Platform":
 			return []string{
 				"image platform",
@@ -777,23 +725,20 @@ func (v Stretch) RuntimeDoc(names ...string) ([]string, bool) {
 			}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{
-		"Stretch",
 		"image from stretch",
 	}, true
 }
 
-func (v Sub) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *Sub) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{
 				"source fs",
@@ -810,7 +755,7 @@ func (v Sub) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
@@ -819,11 +764,9 @@ func (v Sub) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (v WriteFile) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *WriteFile) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
-		case "Task":
-			return []string{}, true
 		case "Input":
 			return []string{}, true
 		case "Path":
@@ -836,11 +779,29 @@ func (v WriteFile) RuntimeDoc(names ...string) ([]string, bool) {
 			return []string{}, true
 
 		}
-		if doc, ok := runtimeDoc(v.Task, names...); ok {
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
 			return doc, ok
 		}
 
 		return nil, false
 	}
 	return []string{}, true
+}
+
+// nolint:deadcode,unused
+func runtimeDoc(v any, prefix string, names ...string) ([]string, bool) {
+	if c, ok := v.(interface {
+		RuntimeDoc(names ...string) ([]string, bool)
+	}); ok {
+		doc, ok := c.RuntimeDoc(names...)
+		if ok {
+			if prefix != "" && len(doc) > 0 {
+				doc[0] = prefix + doc[0]
+				return doc, true
+			}
+
+			return doc, true
+		}
+	}
+	return nil, false
 }

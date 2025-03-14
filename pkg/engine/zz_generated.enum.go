@@ -5,10 +5,11 @@ DON'T EDIT THIS FILE
 package engine
 
 import (
-	github_com_pkg_errors "errors"
+	errors "errors"
+	fmt "fmt"
 )
 
-var InvalidLogLevel = github_com_pkg_errors.New("invalid LogLevel")
+var InvalidLogLevel = errors.New("invalid LogLevel")
 
 func (LogLevel) EnumValues() []any {
 	return []any{
@@ -44,6 +45,6 @@ func (v LogLevel) Label() string {
 		return "warn"
 
 	default:
-		return "UNKNOWN"
+		return fmt.Sprint(v)
 	}
 }

@@ -72,8 +72,16 @@ actions: ship: piper: containerutil.#Ship & {
 				git:  _
 				make: _
 				file: _
+				curl: _
 			}
 		},
+
+		container.#Run & {
+			run: """
+				curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+				"""
+		},
+
 		{
 			input: _
 
