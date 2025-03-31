@@ -2,6 +2,8 @@ package distconsts
 
 const (
 	EngineContainerName = "dagger-engine.dev"
+
+	DefaultEngineSockAddr = "unix:///run/dagger/engine.sock"
 )
 
 const (
@@ -20,7 +22,7 @@ const (
 	AlpineVersion = "3.20.2"
 	AlpineImage   = "alpine:" + AlpineVersion
 
-	GolangVersion = "1.23.2"
+	GolangVersion = "1.23.6"
 	GolangImage   = "golang:" + GolangVersion + "-alpine"
 
 	BusyboxVersion = "1.37.0"

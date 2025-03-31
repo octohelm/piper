@@ -2,3 +2,5 @@
 .idea/
 .piper/
 target/
+
+gengo.sum
