@@ -1,6 +1,6 @@
 module github.com/octohelm/piper
 
-go 1.24.1
+go 1.24.2
 
 tool (
 	github.com/octohelm/piper/cmd/piper
@@ -23,7 +23,7 @@ require (
 	github.com/go-courier/logr v0.3.2
 	github.com/innoai-tech/infra v0.0.0-20250331025532-485c79106226
 	github.com/octohelm/crkit v0.0.0-20250331031259-fcd1e01c3984
-	github.com/octohelm/cuekit v0.0.0-20250212022411-4670e5ee95b0
+	github.com/octohelm/cuekit v0.0.0-20250407043137-ee94f4619ab5
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
 	github.com/octohelm/gengo v0.0.0-20250326091949-b027fe02828d
 	github.com/octohelm/kubekit v0.0.0-20250312095848-866464095748
@@ -33,9 +33,9 @@ require (
 )
 
 require (
-	cuelang.org/go v0.12.0
-	dagger.io/dagger v0.18.1
-	github.com/dagger/dagger v0.18.1
+	cuelang.org/go v0.12.1
+	dagger.io/dagger v0.18.2
+	github.com/dagger/dagger v0.18.2
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.18.0
 	github.com/gobwas/glob v0.2.3
@@ -52,9 +52,9 @@ require (
 	go.opentelemetry.io/otel/sdk v1.35.0
 	go.opentelemetry.io/otel/sdk/log v0.10.0
 	go.opentelemetry.io/otel/trace v1.35.0
-	golang.org/x/crypto v0.36.0
+	golang.org/x/crypto v0.37.0
 	golang.org/x/net v0.38.0
-	golang.org/x/sync v0.12.0
+	golang.org/x/sync v0.13.0
 	golang.org/x/tools v0.31.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.32.3
@@ -215,7 +215,7 @@ require (
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/octohelm/courier v0.0.0-20250328062733-f414c6503803 // indirect
-	github.com/onsi/gomega v1.36.3 // indirect
+	github.com/onsi/gomega v1.37.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
@@ -274,10 +274,10 @@ require (
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
 	golang.org/x/mod v0.24.0 // indirect
 	golang.org/x/oauth2 v0.28.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/telemetry v0.0.0-20250206143958-557cf9c30e9f // indirect
-	golang.org/x/term v0.30.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/telemetry v0.0.0-20250406004356-f593adaf3fc1 // indirect
+	golang.org/x/term v0.31.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/genproto v0.0.0-20240722135656-d784300faade // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250219182151-9fdb1cabc7b2 // indirect
