@@ -118,7 +118,7 @@ func (p *project) Run(ctx context.Context, action ...string) error {
 			seq(p.opt.entry),
 			cuecontext.Interpreter(embed.New()),
 			cuecontext.Interpreter(wasm.New()),
-			//cuecontext.EvaluatorVersion(cuecontext.EvalV3),
+			// cuecontext.EvaluatorVersion(cuecontext.EvalV3),
 		)
 		if err != nil {
 			return nil, nil, err
