@@ -26,14 +26,14 @@ type ReadFromYAML struct {
 	// file
 	File File `json:"file"`
 	// options
-	With ReadFromYAMLOption `json:"with,omitempty"`
+	With ReadFromYAMLOption `json:"with,omitzero"`
 	// data
 	Data client.Any `json:"-" output:"data"`
 }
 
 type ReadFromYAMLOption struct {
 	// read as list
-	AsList bool `json:"asList,omitempty"`
+	AsList bool `json:"asList,omitzero"`
 }
 
 func (t *ReadFromYAML) Do(ctx context.Context) error {

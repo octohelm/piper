@@ -23,14 +23,14 @@ type ReadAsTable struct {
 	// file
 	File File `json:"file"`
 	// options
-	With ReadAsTableOption `json:"with,omitempty"`
+	With ReadAsTableOption `json:"with,omitzero"`
 	// file contents
 	Data [][]string `json:"-" output:"data"`
 }
 
 type ReadAsTableOption struct {
 	// strict column num
-	StrictColNum int `json:"strictColNum,omitempty"`
+	StrictColNum int `json:"strictColNum,omitzero"`
 }
 
 func (t *ReadAsTable) Do(ctx context.Context) error {

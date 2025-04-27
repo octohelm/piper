@@ -22,12 +22,12 @@ type Exec struct {
 	Input Container `json:"input"`
 
 	Args       []string                         `json:"args"`
-	Mounts     map[string]Mount                 `json:"mounts,omitempty"`
-	Env        map[string]client.SecretOrString `json:"env,omitempty"`
-	Workdir    string                           `json:"workdir,omitempty" default:"/"`
-	Entrypoint []string                         `json:"entrypoint,omitempty"`
-	User       string                           `json:"user,omitempty" default:"root:root"`
-	Always     bool                             `json:"always,omitempty"`
+	Mounts     map[string]Mount                 `json:"mounts,omitzero"`
+	Env        map[string]client.SecretOrString `json:"env,omitzero"`
+	Workdir    string                           `json:"workdir,omitzero" default:"/"`
+	Entrypoint []string                         `json:"entrypoint,omitzero"`
+	User       string                           `json:"user,omitzero" default:"root:root"`
+	Always     bool                             `json:"always,omitzero"`
 
 	Output Container `json:"-" output:"output"`
 }

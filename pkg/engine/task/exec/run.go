@@ -32,38 +32,38 @@ type Run struct {
 	// cmd for executing
 	Command client.StringOrSlice `json:"cmd"`
 	// env vars
-	Env map[string]client.SecretOrString `json:"env,omitempty"`
+	Env map[string]client.SecretOrString `json:"env,omitzero"`
 	// executing user
-	User string `json:"user,omitempty"`
+	User string `json:"user,omitzero"`
 
 	// other setting
-	With RunOption `json:"with,omitempty"`
+	With RunOption `json:"with,omitzero"`
 
 	// exists when `with.stdout` enabled
-	Stdout *string `json:"-" output:"stdout,omitempty"`
+	Stdout *string `json:"-" output:"stdout,omitzero"`
 	// exists when `with.stdout` enabled
-	Stderr *string `json:"-" output:"stderr,omitempty"`
+	Stderr *string `json:"-" output:"stderr,omitzero"`
 }
 
 type RunOption struct {
 	// when enabled
 	// once executed failed, will break whole pipeline
 	// otherwise, just set result
-	Failfast bool `json:"failfast,omitempty" default:"true"`
+	Failfast bool `json:"failfast,omitzero" default:"true"`
 
 	// when enabled
 	// `result.stdout` should be with the string value
 	// otherwise, just log stdout
-	Stdout bool `json:"stdout,omitempty" default:"false"`
+	Stdout bool `json:"stdout,omitzero" default:"false"`
 
 	// when enabled
 	// `result.ok` will not set be false if empty stdout
-	StdoutOmitempty bool `json:"stdoutOmitempty,omitempty" default:"false"`
+	StdoutOmitempty bool `json:"stdoutOmitempty,omitzero" default:"false"`
 
 	// when enabled
 	// `result.stderr` should be with the string value
 	// otherwise, just log stderr
-	Stderr bool `json:"stderr,omitempty" default:"false"`
+	Stderr bool `json:"stderr,omitzero" default:"false"`
 }
 
 func (r *Run) Do(ctx context.Context) error {

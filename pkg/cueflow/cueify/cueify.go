@@ -342,12 +342,12 @@ func walkFields(st reflect.Type, each func(info *Field), parentLoc ...int) {
 		jsonTag, hasJsonTag := f.Tag.Lookup("json")
 		if !hasJsonTag {
 			if f.Anonymous && f.Type.Kind() == reflect.Struct {
-				walkFields(f.Type, each, append(info.Loc)...)
+				walkFields(f.Type, each, info.Loc...)
 			}
 			continue
 		}
 
-		if strings.Contains(jsonTag, ",omitempty") {
+		if strings.Contains(jsonTag, ",omitzero") || strings.Contains(jsonTag, ",omitzero") {
 			info.Optional = true
 		}
 
@@ -374,7 +374,7 @@ func walkFields(st reflect.Type, each func(info *Field), parentLoc ...int) {
 				info.Name = name
 			}
 
-			if strings.Contains(outputTag, ",omitempty") {
+			if strings.Contains(outputTag, ",omitzero") {
 				info.Optional = true
 			}
 		}

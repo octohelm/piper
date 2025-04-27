@@ -13,11 +13,11 @@ type Pipeline struct {
 	Action []string `arg:""`
 	// plan root file
 	// and the dir of the root file will be the cwd for all cue files
-	Project string `flag:",omitempty" alias:"p"`
+	Project string `flag:",omitzero" alias:"p"`
 
 	// cache dir root
 	// for cache files
-	CacheDir string `flag:",omitempty"`
+	CacheDir string `flag:",omitzero"`
 }
 
 func (pipeline *Pipeline) SetDefaults() {

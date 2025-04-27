@@ -35,7 +35,7 @@ type Push struct {
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
-	Rename Rename `json:"rename,omitempty"`
+	Rename Rename `json:"rename,omitzero"`
 }
 
 func (t *Push) registry() (kubepkg.Registry, error) {

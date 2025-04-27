@@ -29,9 +29,9 @@ type Exists struct {
 }
 
 type Info struct {
-	IsDir bool   `json:"isDir,omitempty"`
-	Mode  uint32 `json:"mode,omitempty"`
-	Size  int64  `json:"size,omitempty"`
+	IsDir bool   `json:"isDir,omitzero"`
+	Mode  uint32 `json:"mode,omitzero"`
+	Size  int64  `json:"size,omitzero"`
 }
 
 func (t *Exists) Do(ctx context.Context) error {

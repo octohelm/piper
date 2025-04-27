@@ -18,7 +18,7 @@ func init() {
 }
 
 type RootfsDoStepInterface struct {
-	Input  Fs `json:"input,omitempty"`
+	Input  Fs `json:"input,omitzero"`
 	Output Fs `json:"output"`
 }
 

@@ -19,13 +19,13 @@ type Run struct {
 
 	Input Container `json:"input"`
 
-	Mounts  map[string]Mount                 `json:"mounts,omitempty"`
-	Env     map[string]client.SecretOrString `json:"env,omitempty"`
-	Workdir string                           `json:"workdir,omitempty" default:"/"`
-	User    string                           `json:"user,omitempty" default:"root:root"`
-	Always  bool                             `json:"always,omitempty"`
+	Mounts  map[string]Mount                 `json:"mounts,omitzero"`
+	Env     map[string]client.SecretOrString `json:"env,omitzero"`
+	Workdir string                           `json:"workdir,omitzero" default:"/"`
+	User    string                           `json:"user,omitzero" default:"root:root"`
+	Always  bool                             `json:"always,omitzero"`
 
-	Shell string               `json:"shell,omitempty" default:"sh"`
+	Shell string               `json:"shell,omitzero" default:"sh"`
 	Run   client.StringOrSlice `json:"run"`
 
 	Output Container `json:"-" output:"output"`

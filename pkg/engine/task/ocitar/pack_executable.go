@@ -27,7 +27,7 @@ type PackExecutable struct {
 	Files map[string]file.File `json:"files"`
 
 	// Annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitzero"`
 
 	// OutFile of OciTar
 	OutFile file.File `json:"outFile"`

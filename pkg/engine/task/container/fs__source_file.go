@@ -23,7 +23,7 @@ type SourceFile struct {
 	task.Task
 
 	File file.File `json:"file"`
-	Dest string    `json:"dest,omitempty"`
+	Dest string    `json:"dest,omitzero"`
 
 	Output Fs `json:"-" output:"output"`
 }

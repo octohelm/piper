@@ -25,7 +25,7 @@ type Export struct {
 	Input Container `json:"input"`
 
 	// oci annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitzero"`
 
 	OutFile file.File `json:"outFile"`
 

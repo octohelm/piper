@@ -25,7 +25,7 @@ type PushOciTar struct {
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
-	Rename taskocitar.Rename `json:"rename,omitempty"`
+	Rename taskocitar.Rename `json:"rename,omitzero"`
 }
 
 func (t *PushOciTar) Do(ctx context.Context) error {

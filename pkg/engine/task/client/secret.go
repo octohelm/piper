@@ -18,7 +18,7 @@ func SecretOfID(id string) *Secret {
 
 type Secret struct {
 	Ref struct {
-		ID string `json:"id,omitempty"`
+		ID string `json:"id,omitzero"`
 	} `json:"$$secret"`
 }
 

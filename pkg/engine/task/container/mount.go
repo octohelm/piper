@@ -106,7 +106,7 @@ type MountFs struct {
 	Type     string  `json:"type" enum:"fs"`
 	Contents Fs      `json:"contents"`
 	Dest     string  `json:"dest"`
-	Source   *string `json:"source,omitempty"`
+	Source   *string `json:"source,omitzero"`
 }
 
 func (f MountFs) MountTo(ctx context.Context, c *dagger.Client, container *dagger.Container) (*dagger.Container, error) {

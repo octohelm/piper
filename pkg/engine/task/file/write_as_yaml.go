@@ -25,7 +25,7 @@ type WriteAsYAML struct {
 	// output file
 	OutFile File `json:"outFile"`
 	// options
-	With WriteAsYAMLOption `json:"with,omitempty"`
+	With WriteAsYAMLOption `json:"with,omitzero"`
 	// data could convert to yaml
 	Data client.Any `json:"data"`
 	// writen file
@@ -34,7 +34,7 @@ type WriteAsYAML struct {
 
 type WriteAsYAMLOption struct {
 	// write as stream
-	AsStream bool `json:"asStream,omitempty"`
+	AsStream bool `json:"asStream,omitzero"`
 }
 
 func (t *WriteAsYAML) Do(ctx context.Context) error {

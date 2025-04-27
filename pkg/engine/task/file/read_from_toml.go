@@ -32,7 +32,7 @@ type ReadFromTOML struct {
 
 type ReadFromTOMLOption struct {
 	// read as list
-	AsList bool `json:"asList,omitempty"`
+	AsList bool `json:"asList,omitzero"`
 }
 
 func (t *ReadFromTOML) Do(ctx context.Context) error {

@@ -36,12 +36,12 @@ type Release struct {
 	// OS name
 	Name string `json:"name"`
 	// OS Version
-	Version string `json:"version,omitempty"`
+	Version string `json:"version,omitzero"`
 	// OS id, like `ubuntu` `windows`
 	ID string `json:"id"`
 	// if os is based on some upstream
 	// like debian when id is `ubuntu`
-	IDLike string `json:"id_like,omitempty"`
+	IDLike string `json:"id_like,omitzero"`
 }
 
 func (t *SysInfo) Do(ctx context.Context) error {

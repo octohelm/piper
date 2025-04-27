@@ -38,15 +38,15 @@ type OciTar struct {
 	KubePkg KubePkg `json:"kubepkg"`
 
 	// Platforms of oci tar, if empty it will based on KubePkg
-	Platforms []string `json:"platforms,omitempty"`
+	Platforms []string `json:"platforms,omitzero"`
 
 	// WithAnnotations pick annotations of KubePkg as image annotations
-	WithAnnotations []string `json:"withAnnotations,omitempty"`
+	WithAnnotations []string `json:"withAnnotations,omitzero"`
 
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
-	Rename taskocitar.Rename `json:"rename,omitempty"`
+	Rename taskocitar.Rename `json:"rename,omitzero"`
 
 	// OutFile of OciTar
 	OutFile file.File `json:"outFile"`

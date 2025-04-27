@@ -12,30 +12,30 @@ replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240920093217
 
 replace github.com/dagger/dagger/engine/distconsts => ./internal/dagger/engine/distconsts
 
-// cause by github.com/dagger/dagger v0.18.3
+// cause by github.com/dagger/dagger v0.18.5
 replace (
-	github.com/moby/buildkit => github.com/dagger/buildkit v0.0.0-20250415011403-6f5903130a80
+	github.com/moby/buildkit => github.com/dagger/buildkit v0.0.0-20250418225557-9389ea772a3a
 	go.opentelemetry.io/otel/log => go.opentelemetry.io/otel/log v0.8.0
 	go.opentelemetry.io/otel/sdk/log => go.opentelemetry.io/otel/sdk/log v0.8.0
 )
 
 require (
 	github.com/go-courier/logr v0.3.2
-	github.com/innoai-tech/infra v0.0.0-20250415090026-b203b5815587
-	github.com/octohelm/crkit v0.0.0-20250331031259-fcd1e01c3984
+	github.com/innoai-tech/infra v0.0.0-20250421035604-f3f725407e2f
+	github.com/octohelm/crkit v0.0.0-20250422100932-9755e1155936
 	github.com/octohelm/cuekit v0.0.0-20250407043137-ee94f4619ab5
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
-	github.com/octohelm/gengo v0.0.0-20250326091949-b027fe02828d
+	github.com/octohelm/gengo v0.0.0-20250418031154-d14a228621d4
 	github.com/octohelm/kubekit v0.0.0-20250312095848-866464095748
-	github.com/octohelm/kubepkgspec v0.0.0-20250411040253-f07a0ca7ebd3
-	github.com/octohelm/unifs v0.0.0-20250226142023-b53492a1bfd7
+	github.com/octohelm/kubepkgspec v0.0.0-20250417113059-3a0b7b2c59f4
+	github.com/octohelm/unifs v0.0.0-20250422094950-9f303c84c11a
 	github.com/octohelm/x v0.0.0-20250409031213-9c254440c2b8
 )
 
 require (
 	cuelang.org/go v0.12.1
-	dagger.io/dagger v0.18.3
-	github.com/dagger/dagger v0.18.3
+	dagger.io/dagger v0.18.5
+	github.com/dagger/dagger v0.18.5
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.18.0
 	github.com/gobwas/glob v0.2.3
@@ -108,7 +108,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.2.2 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.18.0 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.18.4 // indirect
 	github.com/danielgatis/go-ansicode v1.0.7 // indirect
 	github.com/danielgatis/go-iterator v0.0.1 // indirect
 	github.com/danielgatis/go-utf8 v1.0.0 // indirect
@@ -136,7 +136,7 @@ require (
 	github.com/go-git/go-billy/v5 v5.6.2 // indirect
 	github.com/go-git/go-git/v5 v5.14.0 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.4 // indirect
-	github.com/go-json-experiment/json v0.0.0-20250223041408-d3c622f1b874 // indirect
+	github.com/go-json-experiment/json v0.0.0-20250417205406-170dfdcf87d1 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.21.1 // indirect
@@ -185,7 +185,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/lmittmann/tint v1.0.7 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
@@ -214,7 +214,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/octohelm/courier v0.0.0-20250409025123-af965993745b // indirect
+	github.com/octohelm/courier v0.0.0-20250416054450-c6bcc185d5c3 // indirect
 	github.com/onsi/gomega v1.37.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
@@ -223,7 +223,7 @@ require (
 	github.com/prometheus/client_golang v1.22.0 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.63.0 // indirect
-	github.com/prometheus/procfs v0.16.0 // indirect
+	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20241112170944-20d2c9ebc01d // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
@@ -282,7 +282,7 @@ require (
 	google.golang.org/genproto v0.0.0-20240722135656-d784300faade // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250414145226-207652e42e2e // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250414145226-207652e42e2e // indirect
-	google.golang.org/grpc v1.71.1 // indirect
+	google.golang.org/grpc v1.72.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect

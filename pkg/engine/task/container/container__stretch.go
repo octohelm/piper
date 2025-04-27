@@ -18,7 +18,7 @@ func init() {
 type Stretch struct {
 	task.Task
 	// image platform
-	Platform string `json:"platform,omitempty" output:"platform"`
+	Platform string `json:"platform,omitzero" output:"platform"`
 	// image
 	Output Container `json:"-" output:"output"`
 }

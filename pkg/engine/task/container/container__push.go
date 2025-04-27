@@ -30,10 +30,10 @@ type Push struct {
 	// [Platform]: _
 	Images map[string]Container `json:"images"`
 	// annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitzero"`
 
 	// registry auth
-	Auth *Auth `json:"auth,omitempty"`
+	Auth *Auth `json:"auth,omitzero"`
 
 	// image pushed result
 	Result string `json:"-" output:"result"`

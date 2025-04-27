@@ -9,9 +9,9 @@ import (
 
 type Task struct {
 	// task hook to make task could run after some others
-	Dep any `json:"$dep,omitempty"`
+	Dep any `json:"$dep,omitzero"`
 	// task result
-	Ok *bool `json:"-" output:"$ok,omitempty"`
+	Ok *bool `json:"-" output:"$ok,omitzero"`
 
 	cueflow.TaskImpl
 }

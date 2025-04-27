@@ -29,7 +29,7 @@ type Sync struct {
 	// source file
 	SrcFile File `json:"srcFile"`
 	// sync option
-	With SyncOption `json:"with,omitempty"`
+	With SyncOption `json:"with,omitzero"`
 	// dest fie
 	OutFile File `json:"outFile"`
 	// synced file same as dest

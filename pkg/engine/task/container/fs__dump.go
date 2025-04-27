@@ -25,13 +25,13 @@ type Dump struct {
 
 	OutDir wd.WorkDir `json:"outDir"`
 
-	With DumpOption `json:"with,omitempty"`
+	With DumpOption `json:"with,omitzero"`
 
 	Dir wd.WorkDir `json:"-" output:"dir"`
 }
 
 type DumpOption struct {
-	Empty bool `json:"empty,omitempty"`
+	Empty bool `json:"empty,omitzero"`
 }
 
 func (x *Dump) Do(ctx context.Context) error {

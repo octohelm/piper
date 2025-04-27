@@ -31,7 +31,7 @@ type Fetch struct {
 	// http request url
 	Url string `json:"url"`
 	// hit by response header
-	HitBy string `json:"hitBy,omitempty" default:"etag"`
+	HitBy string `json:"hitBy,omitzero" default:"etag"`
 
 	// fetched file
 	File file.File `json:"-" output:"file"`

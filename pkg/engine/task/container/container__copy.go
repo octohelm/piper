@@ -19,8 +19,8 @@ type Copy struct {
 
 	Contents Fs       `json:"contents"`
 	Source   string   `json:"source" default:"/"`
-	Include  []string `json:"include,omitempty"`
-	Exclude  []string `json:"exclude,omitempty"`
+	Include  []string `json:"include,omitzero"`
+	Exclude  []string `json:"exclude,omitzero"`
 
 	Dest string `json:"dest" default:"/"`
 

@@ -38,15 +38,15 @@ type Pull struct {
 	Source string `json:"source"`
 
 	// Platforms of oci tar, if empty it will based on KubePkg
-	Platforms []string `json:"platforms,omitempty"`
+	Platforms []string `json:"platforms,omitzero"`
 
 	// Annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitzero"`
 
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
-	Rename Rename `json:"rename,omitempty"`
+	Rename Rename `json:"rename,omitzero"`
 
 	// OutFile of OciTar
 	OutFile file.File `json:"outFile"`

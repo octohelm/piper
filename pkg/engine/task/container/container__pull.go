@@ -21,9 +21,9 @@ type Pull struct {
 	// image from
 	Source string `json:"source"`
 	// image platform
-	Platform string `json:"platform,omitempty" output:"platform"`
+	Platform string `json:"platform,omitzero" output:"platform"`
 	// registry auth
-	Auth *Auth `json:"auth,omitempty"`
+	Auth *Auth `json:"auth,omitzero"`
 
 	// image
 	Output Container `json:"-" output:"output"`

@@ -16,10 +16,10 @@ type Sub struct {
 	task.Task
 
 	// source fs
-	Input   Fs       `json:"input,omitempty"`
+	Input   Fs       `json:"input,omitzero"`
 	Source  string   `json:"source" default:"/"`
-	Include []string `json:"include,omitempty"`
-	Exclude []string `json:"exclude,omitempty"`
+	Include []string `json:"include,omitzero"`
+	Exclude []string `json:"exclude,omitzero"`
 	Dest    string   `json:"dest" default:"/"`
 	Output  Fs       `json:"-" output:"output"`
 }

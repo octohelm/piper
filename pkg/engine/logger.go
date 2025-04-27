@@ -20,7 +20,7 @@ const (
 
 type Logger struct {
 	// Log level
-	LogLevel LogLevel `flag:",omitempty"`
+	LogLevel LogLevel `flag:",omitzero"`
 	logger   logr.Logger
 }
 

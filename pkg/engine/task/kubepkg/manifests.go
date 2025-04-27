@@ -32,9 +32,9 @@ type Manifests struct {
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
-	Rename taskocitar.Rename `json:"rename,omitempty"`
+	Rename taskocitar.Rename `json:"rename,omitzero"`
 	// recursively extract KubePkg in sub manifests
-	Recursive bool `json:"recursive,omitempty"`
+	Recursive bool `json:"recursive,omitzero"`
 	// Manifests of k8s resources
 	Manifests []client.Any `json:"-" output:"manifests"`
 }

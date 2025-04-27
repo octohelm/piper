@@ -15,7 +15,7 @@ func init() {
 type Dir struct {
 	task.Task
 
-	Input Container `json:"input,omitempty"`
+	Input Container `json:"input,omitzero"`
 	Path  string    `json:"path" default:"/"`
 
 	Output Fs `json:"-" output:"output"`

@@ -8,28 +8,28 @@ import (
 )
 
 type ImageConfig struct {
-	WorkingDir string            `json:"workdir,omitempty"`
-	Env        map[string]string `json:"env,omitempty"`
-	Labels     map[string]string `json:"label,omitempty"`
-	Entrypoint []string          `json:"entrypoint,omitempty"`
-	Cmd        []string          `json:"cmd,omitempty"`
-	User       string            `json:"user,omitempty"`
+	WorkingDir string            `json:"workdir,omitzero"`
+	Env        map[string]string `json:"env,omitzero"`
+	Labels     map[string]string `json:"label,omitzero"`
+	Entrypoint []string          `json:"entrypoint,omitzero"`
+	Cmd        []string          `json:"cmd,omitzero"`
+	User       string            `json:"user,omitzero"`
 }
 
 func ResolveImageConfig(ctx context.Context, c *Client, id dagger.ContainerID) (ImageConfig, error) {
 	ret := struct {
 		Container struct {
-			ID dagger.ContainerID `json:"id,omitempty"`
+			ID dagger.ContainerID `json:"id,omitzero"`
 
-			Platform string `json:"platform,omitempty"`
+			Platform string `json:"platform,omitzero"`
 
-			Entrypoint  []string `json:"entrypoint,omitempty"`
-			DefaultArgs []string `json:"defaultArgs,omitempty"`
-			Workdir     string   `json:"workdir,omitempty"`
+			Entrypoint  []string `json:"entrypoint,omitzero"`
+			DefaultArgs []string `json:"defaultArgs,omitzero"`
+			Workdir     string   `json:"workdir,omitzero"`
 
-			User         string        `json:"user,omitempty"`
-			EnvVariables []EnvVariable `json:"envVariables,omitempty"`
-			Labels       []Label       `json:"labels,omitempty"`
+			User         string        `json:"user,omitzero"`
+			EnvVariables []EnvVariable `json:"envVariables,omitzero"`
+			Labels       []Label       `json:"labels,omitzero"`
 		} `json:"container"`
 	}{}
 

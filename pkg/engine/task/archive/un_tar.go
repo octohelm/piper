@@ -28,7 +28,7 @@ type UnTar struct {
 	// tar filename base on the current work outDir
 	SrcFile file.File `json:"srcFile"`
 	// tar file content encoding
-	ContentEncoding string `json:"contentEncoding,omitempty"`
+	ContentEncoding string `json:"contentEncoding,omitzero"`
 	// output outDir for tar
 	OutDir wd.WorkDir `json:"outDir"`
 	// final dir contains tar files

@@ -20,13 +20,13 @@ type SSH struct {
 	// ssh address
 	Address string `json:"address"`
 	// ssh hostKey
-	HostKey string `json:"hostKey,omitempty"`
+	HostKey string `json:"hostKey,omitzero"`
 	// ssh identity file
 	IdentityFile string `json:"identityFile"`
 	// ssh port
-	Port int `json:"port,omitempty" default:"22"`
+	Port int `json:"port,omitzero" default:"22"`
 	// ssh user
-	User string `json:"user,omitempty" default:"root"`
+	User string `json:"user,omitzero" default:"root"`
 	// the workdir from ssh
 	WorkDir WorkDir `json:"-" output:"dir"`
 }

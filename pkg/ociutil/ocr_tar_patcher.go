@@ -10,7 +10,7 @@ import (
 )
 
 type ManifestPatcher struct {
-	Annotations map[string]string `json:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitzero"`
 }
 
 type OciTarPatcher struct {

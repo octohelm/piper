@@ -29,9 +29,12 @@ type TaskUnmarshaler interface {
 	UnmarshalTask(t Task) error
 }
 
-func NewTask(scope Scope, node internal.Node) Task {
+func NewTask(scope Scope, node internal.Node) (Task, error) {
 	v := CueValue(scope.LookupPath(node.Path()))
-	name, _ := v.LookupPath(TaskPath).String()
+	name, err := v.LookupPath(TaskPath).String()
+	if err != nil {
+		return nil, err
+	}
 
 	depNodes := node.Deps()
 	deps := make([]cue.Path, len(depNodes))
@@ -39,12 +42,14 @@ func NewTask(scope Scope, node internal.Node) Task {
 		deps[i] = depNodes[i].Path()
 	}
 
-	return &task{
+	t := &task{
 		name:  name,
 		path:  node.Path(),
 		scope: scope,
 		deps:  deps,
 	}
+
+	return t, nil
 }
 
 type task struct {

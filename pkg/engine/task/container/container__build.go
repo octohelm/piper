@@ -16,7 +16,7 @@ func init() {
 }
 
 type StepInterface struct {
-	Input  Container `json:"input,omitempty"`
+	Input  Container `json:"input,omitzero"`
 	Output Container `json:"output"`
 }
 

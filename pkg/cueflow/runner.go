@@ -100,8 +100,10 @@ func (r *Runner) RunTasks(ctx context.Context, optFns ...TaskOptionFunc) error {
 			return nil
 		}
 
-		tk := NewTask(r, n)
-
+		tk, err := NewTask(r, n)
+		if err != nil {
+			return err
+		}
 		tr, err := taskRunnerResolver.ResolveTaskRunner(tk)
 		if err != nil {
 			return fmt.Errorf("resolve task failed: %s", err)
@@ -262,9 +264,14 @@ func (r *Runner) walkTasks(ctx context.Context, tasks []internal.Node, prefix []
 	taskRunnerFactory := TaskRunnerFactoryContext.From(ctx)
 
 	for i, tk := range tasks {
-		t, err := taskRunnerFactory.ResolveTaskRunner(NewTask(r, tk))
+		tt, err := NewTask(r, tk)
 		if err != nil {
-			return errors.New("resolve task failed")
+			return fmt.Errorf("resolve task failed: %w", err)
+		}
+
+		t, err := taskRunnerFactory.ResolveTaskRunner(tt)
+		if err != nil {
+			return fmt.Errorf("resolve task failed: %w", err)
 		}
 
 		switch t.Underlying().(type) {

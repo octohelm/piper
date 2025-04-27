@@ -1,0 +1,4 @@
+*.mk
+*.just
+!mod/*.just
+!default.just

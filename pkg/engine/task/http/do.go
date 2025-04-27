@@ -34,14 +34,14 @@ type Do struct {
 	// http request url
 	Url string `json:"url"`
 	// http headers
-	Header map[string]client.StringOrSlice `json:"header,omitempty"`
+	Header map[string]client.StringOrSlice `json:"header,omitzero"`
 	// http query
-	Query map[string]client.StringOrSlice `json:"query,omitempty"`
+	Query map[string]client.StringOrSlice `json:"query,omitzero"`
 	// http request body
-	RequestBody file.StringOrFile `json:"body,omitempty"`
+	RequestBody file.StringOrFile `json:"body,omitzero"`
 
 	// options
-	With DoOption `json:"with,omitempty"`
+	With DoOption `json:"with,omitzero"`
 
 	// Response
 	Response Response `json:"-" output:"response"`
@@ -54,11 +54,11 @@ type DoOption struct {
 
 type Response struct {
 	// status code
-	Status int `json:"status,omitempty"`
+	Status int `json:"status,omitzero"`
 	// response header, only pick headers requests by `with.header`
-	Header map[string]client.StringOrSlice `json:"header,omitempty"`
+	Header map[string]client.StringOrSlice `json:"header,omitzero"`
 	// auto unmarshal based on content-type
-	Data any `json:"data,omitempty"`
+	Data any `json:"data,omitzero"`
 }
 
 func (r *Do) Do(ctx context.Context) error {

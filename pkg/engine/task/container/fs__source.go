@@ -24,8 +24,8 @@ type Source struct {
 	// working dir
 	Cwd     wd.WorkDir `json:"cwd"`
 	Path    string     `json:"path" default:"."`
-	Include []string   `json:"include,omitempty"`
-	Exclude []string   `json:"exclude,omitempty"`
+	Include []string   `json:"include,omitzero"`
+	Exclude []string   `json:"exclude,omitzero"`
 
 	Output Fs `json:"-" output:"output"`
 }
