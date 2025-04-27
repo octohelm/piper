@@ -10,23 +10,25 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"text/tabwriter"
 
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/ast"
 	cueerrors "cuelang.org/go/cue/errors"
-
 	"github.com/gobwas/glob"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 	"github.com/octohelm/piper/pkg/cueflow/internal"
 	"github.com/octohelm/piper/pkg/dagger"
-	"github.com/octohelm/piper/pkg/generic/record"
 )
 
 func NewRunner(build func() (Value, *module.Module, error)) *Runner {
 	return &Runner{
 		build: build,
+
+		setups:        make(map[string][]string),
+		targets:       make(map[string][]string),
+		activeTargets: make(map[string][]string),
+		taskResults:   make(map[string]any),
 	}
 }
 
@@ -35,41 +37,45 @@ type scope struct {
 }
 
 type Runner struct {
-	build      func() (Value, *module.Module, error)
-	root       atomic.Pointer[scope]
-	module     atomic.Pointer[module.Module]
-	taskResult record.Map[string, any]
-
+	build  func() (Value, *module.Module, error)
 	match  func(p string) bool
 	output string
 
-	mu sync.RWMutex
+	mu sync.Mutex
+
+	module *module.Module
+	root   *scope
 
 	setups        map[string][]string
 	targets       map[string][]string
 	activeTargets map[string][]string
+	taskResults   map[string]any
 }
 
 func (r *Runner) Module() *module.Module {
-	return r.module.Load()
+	return r.module
 }
 
 func (r *Runner) Value() Value {
-	return r.root.Load().Value
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	return r.root.Value
 }
 
 func (r *Runner) LookupResult(p cue.Path) (any, bool) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	return r.taskResult.Load(internal.FormatAsJSONPath(p))
+	ret, ok := r.taskResults[internal.FormatAsJSONPath(p)]
+	return ret, ok
 }
 
 func (r *Runner) LookupPath(p cue.Path) Value {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	return r.root.Load().Value.LookupPath(p)
+	return r.root.Value.LookupPath(p)
 }
 
 func (r *Runner) FillPath(p cue.Path, v any) error {
@@ -77,18 +83,24 @@ func (r *Runner) FillPath(p cue.Path, v any) error {
 		return fmt.Errorf("invalid value for filling %s", p)
 	}
 
-	_, ok := r.taskResult.LoadOrStore(internal.FormatAsJSONPath(p), v)
-	if !ok {
-		r.mu.Lock()
-		defer r.mu.Unlock()
+	r.mu.Lock()
+	defer r.mu.Unlock()
 
-		r.root.Store(&scope{Value: r.root.Load().Value.FillPath(p, v)})
+	taskPath := internal.FormatAsJSONPath(p)
+	_, ok := r.taskResults[taskPath]
+	if !ok {
+		r.taskResults[taskPath] = v
+		r.root = &scope{Value: r.root.Value.FillPath(p, v)}
 	}
+
 	return nil
 }
 
 func (r *Runner) Processed(p cue.Path) bool {
-	_, processed := r.taskResult.Load(internal.FormatAsJSONPath(p))
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	_, processed := r.taskResults[internal.FormatAsJSONPath(p)]
 	return processed
 }
 
@@ -141,6 +153,22 @@ func (r *Runner) Run(ctx context.Context, action []string) error {
 	})
 }
 
+func (r *Runner) isTask(v cue.Value) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	_, ok := r.setups[internal.FormatAsJSONPath(v.Path())]
+	return ok
+}
+
+func (r *Runner) isActiveTarget(v cue.Value) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	_, ok := r.activeTargets[internal.FormatAsJSONPath(v.Path())]
+	return ok
+}
+
 func (r *Runner) run(ctx context.Context) error {
 	if err := r.init(); err != nil {
 		return err
@@ -150,17 +178,11 @@ func (r *Runner) run(ctx context.Context) error {
 		return fmt.Errorf("prepare task failed: %w", err)
 	}
 
-	if err := r.RunTasks(ctx, internal.WithShouldRunFunc(func(value cue.Value) bool {
-		_, ok := r.setups[internal.FormatAsJSONPath(value.Path())]
-		return ok
-	})); err != nil {
+	if err := r.RunTasks(ctx, internal.WithShouldRunFunc(r.isTask)); err != nil {
 		return fmt.Errorf("run setup task failed: %w", err)
 	}
 
-	if err := r.RunTasks(ctx, internal.WithShouldRunFunc(func(value cue.Value) bool {
-		_, ok := r.activeTargets[internal.FormatAsJSONPath(value.Path())]
-		return ok
-	})); err != nil {
+	if err := r.RunTasks(ctx, internal.WithShouldRunFunc(r.isActiveTarget)); err != nil {
 		return fmt.Errorf("run task failed: %w", err)
 	}
 
@@ -172,8 +194,8 @@ func (r *Runner) init() error {
 	if err != nil {
 		return err
 	}
-	r.module.Store(mod)
-	r.root.Store(&scope{Value: rootValue})
+	r.module = mod
+	r.root = &scope{Value: rootValue}
 	return nil
 }
 

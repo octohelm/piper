@@ -75,7 +75,7 @@ func (w *processWorker) Log(ctx context.Context) {
 		if lastLogAt := w.lastLogAt.Load(); lastLogAt == nil || (now).Sub(*lastLogAt) >= time.Second {
 			w.Logger(ctx, u).
 				WithValues(slog.Int64(otel.LogAttrProgressTotal, u.Total)).
-				WithValues(slog.Int64(otel.LogAttrProgressCurrent, u.Total)).
+				WithValues(slog.Int64(otel.LogAttrProgressCurrent, u.Complete)).
 				Info(w.action)
 
 			w.lastLogAt.Store(&now)
@@ -84,7 +84,7 @@ func (w *processWorker) Log(ctx context.Context) {
 		if u.Total == u.Complete {
 			w.Logger(ctx, u).
 				WithValues(slog.Int64(otel.LogAttrProgressTotal, u.Total)).
-				WithValues(slog.Int64(otel.LogAttrProgressCurrent, u.Total)).
+				WithValues(slog.Int64(otel.LogAttrProgressCurrent, u.Complete)).
 				Info(w.action)
 			w.Logger(ctx, u).End()
 		}
