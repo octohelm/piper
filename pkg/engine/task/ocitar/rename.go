@@ -3,7 +3,7 @@ package ocitar
 import (
 	"encoding"
 
-	"github.com/octohelm/crkit/pkg/kubepkg"
+	"github.com/octohelm/crkit/pkg/artifact/kubepkg"
 )
 
 var _ encoding.TextUnmarshaler = &Rename{}

@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/octohelm/crkit/pkg/executable"
+	"github.com/octohelm/crkit/pkg/artifact/executable"
 	"github.com/octohelm/crkit/pkg/ocitar"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"

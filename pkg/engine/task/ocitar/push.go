@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"github.com/octohelm/crkit/pkg/kubepkg"
+	"github.com/octohelm/crkit/pkg/artifact/kubepkg"
 	"github.com/octohelm/crkit/pkg/ocitar"
 	"github.com/octohelm/piper/pkg/cueflow"
 	"github.com/octohelm/piper/pkg/engine/task"

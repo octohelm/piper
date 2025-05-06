@@ -5,13 +5,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/octohelm/piper/pkg/chunk"
 	"log/slog"
 	"time"
 
 	"github.com/fatih/color"
 	"github.com/go-courier/logr"
 	"github.com/octohelm/piper/pkg/otel"
-	"github.com/octohelm/unifs/pkg/units"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/log"
@@ -158,9 +158,9 @@ func (l *Logger) printf(ll log.Logger, msg string, attrs []attribute.KeyValue) {
 				if current := attr.Value.Int64(); current < total {
 					_, _ = fmt.Fprint(buf,
 						color.WhiteString(
-							" progress=%sB/%sB",
-							units.BinarySize(current),
-							units.BinarySize(total),
+							" progress=%s/%s",
+							chunk.FileSize(current),
+							chunk.FileSize(total),
 						),
 					)
 				} else {
