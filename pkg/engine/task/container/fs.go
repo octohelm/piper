@@ -7,7 +7,7 @@ import (
 
 	"dagger.io/dagger"
 	"github.com/go-courier/logr"
-	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
 	"github.com/opencontainers/go-digest"

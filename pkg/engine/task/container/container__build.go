@@ -6,13 +6,14 @@ import (
 	"slices"
 
 	"cuelang.org/go/cue"
-
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	"github.com/octohelm/cuekit/pkg/cuepath"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Build{})
+	enginetask.Registry.Register(&Build{})
 }
 
 type StepInterface struct {
@@ -31,17 +32,20 @@ type Build struct {
 func (x *Build) Do(ctx context.Context) error {
 	tt := x.T()
 
-	stepIter, err := cueflow.IterSteps(cueflow.CueValue(tt.Value()))
-	if err != nil {
-		return err
-	}
-
 	step := &StepInterface{}
 
-	for idx, itemValue := range stepIter {
+	for stepValue, err := range task.Steps(tt.Value()) {
+		if err != nil {
+			return err
+		}
+
+		stepPath := stepValue.Path()
+		selectors := stepPath.Selectors()
+		idx := selectors[len(selectors)-1].Index()
+
 		if idx > 0 {
 			path := cue.MakePath(slices.Concat(
-				itemValue.Path().Selectors(),
+				stepValue.Path().Selectors(),
 				cue.ParsePath("input").Selectors(),
 			)...)
 
@@ -50,13 +54,13 @@ func (x *Build) Do(ctx context.Context) error {
 			}
 		}
 
-		if err := tt.Scope().RunTasks(ctx, cueflow.WithPrefix(itemValue.Path())); err != nil {
-			return fmt.Errorf("steps[%d]: %w", idx, err)
+		if err := cueflow.RunSubTasks(ctx, tt.Scope(), func(p cue.Path) bool {
+			return cuepath.Prefix(p, stepPath)
+		}); err != nil {
+			return err
 		}
 
-		stepValue := tt.Scope().LookupPath(itemValue.Path())
-
-		if err := stepValue.Decode(step); err != nil {
+		if err := tt.Scope().LookupPath(stepValue.Path()).Decode(step); err != nil {
 			return fmt.Errorf("steps[%d]: decode result failed: %w", idx, err)
 		}
 	}

@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/go-courier/logr"
-
 	"dagger.io/dagger"
-	"github.com/opencontainers/go-digest"
-
+	"github.com/go-courier/logr"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
+	"github.com/opencontainers/go-digest"
 )
 
 var containerIDs = sync.Map{}

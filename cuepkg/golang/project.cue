@@ -19,10 +19,10 @@ import (
 	cwd: wd.#WorkDir
 
 	_info: #GoInfo & {
-		gomod: wd: cwd
+		gomod: wd: X.cwd
 	}
 
-	module: _info.output.module
+	module: _ | *_info.output.module
 
 	_out_dir: "./target"
 
@@ -42,7 +42,7 @@ import (
 					}
 					cmd: [
 						"go", "build",
-						"-ldflags", strconv.Quote(strings.Join(X.ldflags, " ")),
+						"-ldflags", strconv.Quote(strings.Join(X.ldflags | *["-s", "-w"], " ")),
 						"-o", _filename,
 						"\(X.main)",
 					]
@@ -89,7 +89,7 @@ import (
 	version!: string
 	goos: [...string] | *["darwin", "linux"]
 	goarch: [...string] | *["amd64", "arm64"]
-	ldflags: [...string] | *["-s", "-w"]
+	ldflags?: [...string]
 	env: [Name=string]: client.#SecretOrString
 	bin: string | *path.Base(main)
 }

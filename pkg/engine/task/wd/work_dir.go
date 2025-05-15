@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/octohelm/piper/pkg/engine/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
 )
 
@@ -15,7 +15,7 @@ type WorkDir struct {
 }
 
 func (w *WorkDir) Get(ctx context.Context, optFns ...wd.OptionFunc) (wd.WorkDir, error) {
-	if found, ok := task.WorkDirContext.From(ctx).Load(w.Ref.ID); ok {
+	if found, ok := enginetask.WorkDirContext.From(ctx).Load(w.Ref.ID); ok {
 		return wd.With(found, optFns...)
 	}
 	return nil, fmt.Errorf("workdir %s is not found", w.Ref.ID)
@@ -34,7 +34,7 @@ func (w *WorkDir) Do(ctx context.Context, action func(ctx context.Context, wd wd
 
 func (w *WorkDir) Sync(ctx context.Context, workdir wd.WorkDir) error {
 	w.Ref.ID = workdir.Addr().String()
-	task.WorkDirContext.From(ctx).Store(w.Ref.ID, workdir)
+	enginetask.WorkDirContext.From(ctx).Store(w.Ref.ID, workdir)
 	return nil
 }
 

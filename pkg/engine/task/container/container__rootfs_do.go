@@ -2,19 +2,18 @@ package container
 
 import (
 	"context"
-	"fmt"
-	"slices"
-
-	"dagger.io/dagger"
-
 	"cuelang.org/go/cue"
+	"dagger.io/dagger"
+	"fmt"
+	"github.com/octohelm/cuekit/pkg/cueflow"
 
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	"github.com/octohelm/cuekit/pkg/cuepath"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &RootfsDo{})
+	enginetask.Registry.Register(&RootfsDo{})
 }
 
 type RootfsDoStepInterface struct {
@@ -34,9 +33,9 @@ type RootfsDo struct {
 func (x *RootfsDo) Do(ctx context.Context) error {
 	tt := x.T()
 
-	v := tt.Value().LookupPath(cue.ParsePath("input"))
+	path := cuepath.Join(tt.Value().Path(), cue.ParsePath("input"))
 
-	if err := v.Decode(&x.Input); err != nil {
+	if err := tt.Scope().LookupPath(path).Decode(&x.Input); err != nil {
 		return err
 	}
 
@@ -49,28 +48,28 @@ func (x *RootfsDo) Do(ctx context.Context) error {
 		step := &RootfsDoStepInterface{}
 		step.Output = x.Input.Rootfs
 
-		stepIter, err := cueflow.IterSteps(cueflow.CueValue(tt.Value()))
-		if err != nil {
-			return err
-		}
-
-		for idx, itemValue := range stepIter {
-			path := cue.MakePath(slices.Concat(
-				itemValue.Path().Selectors(),
-				cue.ParsePath("input").Selectors(),
-			)...)
-
-			if err := tt.Scope().FillPath(path, step.Output); err != nil {
+		for stepValue, err := range task.Steps(tt.Value()) {
+			if err != nil {
 				return err
 			}
 
-			if err := tt.Scope().RunTasks(ctx, cueflow.WithPrefix(itemValue.Path())); err != nil {
-				return fmt.Errorf("steps[%d]: %w", idx, err)
+			stepPath := stepValue.Path()
+			selectors := stepPath.Selectors()
+			idx := selectors[len(selectors)-1].Index()
+
+			p := cuepath.Join(stepValue.Value().Path(), cue.ParsePath("input"))
+
+			if err := tt.Scope().FillPath(p, step.Output); err != nil {
+				return err
 			}
 
-			stepValue := tt.Scope().LookupPath(itemValue.Path())
+			if err := cueflow.RunSubTasks(ctx, tt.Scope(), func(p cue.Path) bool {
+				return cuepath.Prefix(p, stepPath)
+			}); err != nil {
+				return err
+			}
 
-			if err := stepValue.Decode(step); err != nil {
+			if err := tt.Scope().LookupPath(stepValue.Path()).Decode(step); err != nil {
 				return fmt.Errorf("steps[%d]: decode result failed: %w", idx, err)
 			}
 		}

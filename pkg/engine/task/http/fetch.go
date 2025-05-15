@@ -5,23 +5,23 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	"github.com/octohelm/piper/pkg/progress"
 	"io"
 	"log/slog"
 	"net/http"
 	"os"
 	"path"
 
-	"github.com/octohelm/piper/pkg/otel"
-
 	"github.com/go-courier/logr"
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
+	"github.com/octohelm/piper/pkg/otel"
 	"github.com/octohelm/unifs/pkg/filesystem"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Fetch{})
+	enginetask.Registry.Register(&Fetch{})
 }
 
 // Fetch http resource to local cache
@@ -38,7 +38,7 @@ type Fetch struct {
 }
 
 func (r *Fetch) Do(ctx context.Context) (e error) {
-	cwd, err := task.ClientContext.From(ctx).CacheDir(ctx, "http")
+	cwd, err := enginetask.ClientContext.From(ctx).CacheDir(ctx, "http")
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (r *Fetch) Do(ctx context.Context) (e error) {
 		var reader io.Reader = resp.Body
 
 		if size > 0 {
-			pw := cueflow.NewProcessWriter(size)
+			pw := progress.NewWriter(size)
 
 			_, l := logr.FromContext(ctx).Start(ctx, "downloading", slog.Int64(otel.LogAttrProgressTotal, size))
 			defer l.End()

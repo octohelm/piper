@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/x/anyjson"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &ReadFromJSON{})
+	enginetask.Registry.Register(&ReadFromJSON{})
 }
 
 // ReadFromJSON read and parse json

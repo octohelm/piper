@@ -9,18 +9,18 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/octohelm/piper/pkg/otel"
-
 	"github.com/go-courier/logr"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	"github.com/octohelm/piper/pkg/chunk"
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/otel"
+	"github.com/octohelm/piper/pkg/progress"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Sync{})
+	enginetask.Registry.Register(&Sync{})
 }
 
 // Sync file to contents
@@ -84,7 +84,7 @@ func (t *Sync) Do(ctx context.Context) error {
 				return err
 			}
 
-			pw := cueflow.NewProcessWriter(total)
+			pw := progress.NewWriter(total)
 			_, l := logr.FromContext(ctx).Start(ctx, "syncing", slog.Int64(otel.LogAttrProgressTotal, total))
 			defer l.End()
 

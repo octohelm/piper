@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/octohelm/cuekit/pkg/cueflow/runner"
 	"github.com/octohelm/cuekit/pkg/mod/modmem"
 	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/unifs/pkg/filesystem"
@@ -17,7 +18,7 @@ func RegisterAsMemModule() error {
 	base := "piper.octohelm.tech"
 
 	m, err := modmem.NewModule(base, "v0.0.0-builtin", func(ctx context.Context, fsDest filesystem.FileSystem) error {
-		fsSrc, err := task.Factory.Sources(context.Background())
+		fsSrc, err := runner.Source(ctx, task.Registry)
 		if err != nil {
 			return err
 		}

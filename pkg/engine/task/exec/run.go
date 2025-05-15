@@ -10,17 +10,16 @@ import (
 	"strings"
 
 	"github.com/go-courier/logr"
-	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/x/ptr"
-
-	"github.com/octohelm/piper/pkg/engine/task"
-	"github.com/octohelm/piper/pkg/engine/task/client"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Run{})
+	enginetask.Registry.Register(&Run{})
 }
 
 // Run some cmd

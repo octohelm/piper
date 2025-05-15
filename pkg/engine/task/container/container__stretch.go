@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"dagger.io/dagger"
-	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
-	"github.com/octohelm/piper/pkg/engine/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Stretch{})
+	enginetask.Registry.Register(&Stretch{})
 }
 
 // Stretch

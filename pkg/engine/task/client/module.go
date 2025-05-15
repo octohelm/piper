@@ -3,16 +3,18 @@ package client
 import (
 	"context"
 
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Module{})
+	enginetask.Registry.Register(&Module{})
 }
 
 type Module struct {
 	task.Task
+
 	t cueflow.Task
 
 	// root module
@@ -29,10 +31,12 @@ func (v *Module) UnmarshalTask(t cueflow.Task) error {
 }
 
 func (t *Module) Do(ctx context.Context) error {
-	m := t.t.Scope().Module()
+	m := enginetask.ModuleContext.From(ctx)
 
 	t.Module = m.Module
+
 	t.Deps = map[string]string{}
+
 	for name, dep := range m.Deps {
 		t.Deps[name] = dep.Version
 	}

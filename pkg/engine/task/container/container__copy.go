@@ -2,14 +2,14 @@ package container
 
 import (
 	"context"
-
+	
 	"dagger.io/dagger"
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Copy{})
+	enginetask.Registry.Register(&Copy{})
 }
 
 type Copy struct {
