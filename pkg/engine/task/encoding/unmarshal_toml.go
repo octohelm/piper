@@ -4,15 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pelletier/go-toml/v2"
-
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
+	"github.com/pelletier/go-toml/v2"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &UnmarshalTOML{})
+	enginetask.Registry.Register(&UnmarshalTOML{})
 }
 
 // UnmarshalTOML

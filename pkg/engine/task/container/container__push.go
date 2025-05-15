@@ -2,23 +2,22 @@ package container
 
 import (
 	"context"
+	"dagger.io/dagger"
 	"errors"
 	"fmt"
 	"strings"
 
-	"dagger.io/dagger"
-
 	"github.com/go-courier/logr"
-	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
-	"github.com/octohelm/piper/pkg/engine/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/generic/record"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 	"golang.org/x/sync/errgroup"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Push{})
+	enginetask.Registry.Register(&Push{})
 }
 
 // Push image to registry

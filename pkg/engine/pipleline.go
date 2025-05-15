@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
@@ -42,18 +43,20 @@ func (pipeline *Pipeline) Run(ctx context.Context) error {
 
 	if err := p.Run(ctx, pipeline.Action...); err != nil {
 		if errList := cueerrors.Errors(err); len(errList) > 0 {
-			buf := os.Stderr
+			buf := bytes.NewBuffer(nil)
+			_, _ = fmt.Fprintf(buf, "\n")
 
-			records := map[cuetoken.Pos]bool{}
-
+			printed := map[cuetoken.Pos]bool{}
 			for _, e := range errList {
-				if _, ok := records[e.Position()]; !ok {
+				if _, ok := printed[e.Position()]; !ok {
 					cueerrors.Print(buf, e, nil)
-					records[e.Position()] = true
+					printed[e.Position()] = true
 				}
 			}
 
 			_, _ = fmt.Fprintf(buf, "\n")
+
+			fmt.Println(buf.String())
 
 			os.Exit(1)
 

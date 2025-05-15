@@ -5,17 +5,17 @@ import (
 	"log/slog"
 
 	"github.com/go-courier/logr"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	"github.com/octohelm/kubekit/pkg/kubeclient"
 	"github.com/octohelm/kubepkgspec/pkg/object"
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	taskclient "github.com/octohelm/piper/pkg/engine/task/client"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Apply{})
+	enginetask.Registry.Register(&Apply{})
 }
 
 // Apply to kubernetes

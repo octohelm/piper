@@ -4,25 +4,23 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/octohelm/piper/pkg/progress"
 	"io"
 	"log/slog"
 	"net/http"
 	"strings"
 
-	"github.com/octohelm/piper/pkg/otel"
-
-	"github.com/octohelm/x/ptr"
-
 	"github.com/go-courier/logr"
-	"github.com/octohelm/piper/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
-
-	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
+	"github.com/octohelm/piper/pkg/otel"
+	"github.com/octohelm/x/ptr"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Do{})
+	enginetask.Registry.Register(&Do{})
 }
 
 // Do http request
@@ -70,7 +68,7 @@ func (r *Do) Do(ctx context.Context) error {
 	var reader io.Reader
 
 	if size > 0 {
-		pw := cueflow.NewProcessWriter(size)
+		pw := progress.NewWriter(size)
 
 		f, err := r.RequestBody.Open(ctx)
 		if err != nil {

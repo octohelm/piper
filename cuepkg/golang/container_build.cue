@@ -34,7 +34,8 @@ import (
 	_info: #GoInfo & {
 		gomod: wd: source.cwd
 	}
-	module: _info.output.module
+	
+	module: _ | *_info.output.module
 
 	_goenv: client.#Env & {
 		GOPROXY:   string | *""
@@ -107,7 +108,7 @@ import (
 				_build: container.#Run & {
 					input:     _load_source.output
 					"workdir": "\(workdir)"
-					run:       "go build -ldflags=\"\(strings.Join(X.ldflags, " "))\" -o \(_outDir)/\(X.bin) \(X.main)"
+					run:       "go build -ldflags=\"\(strings.Join(X.ldflags | *["-s", "-w"], " "))\" -o \(_outDir)/\(X.bin) \(X.main)"
 					"env": {
 						env
 						CGO_ENABLED: "0"

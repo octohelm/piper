@@ -6,14 +6,13 @@ import (
 	"time"
 
 	"dagger.io/dagger"
-
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Exec{})
+	enginetask.Registry.Register(&Exec{})
 }
 
 type Exec struct {

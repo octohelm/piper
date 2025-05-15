@@ -2,10 +2,12 @@ package engine
 
 import (
 	"context"
+	"fmt"
 	"iter"
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -14,10 +16,12 @@ import (
 	"cuelang.org/go/cue/interpreter/wasm"
 	"github.com/k0sproject/rig"
 	cuekitcuecontext "github.com/octohelm/cuekit/pkg/cuecontext"
-	"github.com/octohelm/cuekit/pkg/mod/module"
+	"github.com/octohelm/cuekit/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/runner"
+	"github.com/octohelm/cuekit/pkg/cuepath"
 	"github.com/octohelm/piper/cuepkg"
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/piper/pkg/dagger"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
 
 	_ "github.com/octohelm/piper/pkg/engine/task/archive"
@@ -107,30 +111,78 @@ func seq[T any](values ...T) iter.Seq[T] {
 }
 
 func (p *project) Run(ctx context.Context, action ...string) error {
-	runner := cueflow.NewRunner(func() (cueflow.Value, *module.Module, error) {
-		buildConfig, err := cuekitcuecontext.NewConfig(cuekitcuecontext.WithRoot(p.opt.cwd))
-		if err != nil {
-			return nil, nil, err
+	buildConfig, err := cuekitcuecontext.NewConfig(cuekitcuecontext.WithRoot(p.opt.cwd))
+	if err != nil {
+		return err
+	}
+
+	val, err := cuekitcuecontext.Build(
+		buildConfig.Config,
+		seq(p.opt.entry),
+		cuecontext.Interpreter(embed.New()),
+		cuecontext.Interpreter(wasm.New()),
+		cuecontext.EvaluatorVersion(cuecontext.EvalV3),
+	)
+	if err != nil {
+		return err
+	}
+
+	ctrl := &cueflow.Controller{
+		Action:        runner.AsAction(enginetask.Registry),
+		PrintKrokiURI: os.Getenv("GRAPH") == "1",
+	}
+
+	if err := ctrl.Init(val); err != nil {
+		return err
+	}
+
+	actions := append([]string{"actions"}, action...)
+	for i := range actions {
+		actions[i] = strconv.Quote(actions[i])
+	}
+
+	target := strings.Join(actions, ".")
+
+	direct, err := cuepath.CompileGlobMatcher(target)
+	if err != nil {
+		return err
+	}
+
+	subMatch, err := cuepath.CompileGlobMatcher(target + `."*"`)
+	if err != nil {
+		return err
+	}
+
+	return dagger.Run(ctx, target, func(ctx context.Context) error {
+		ctx = enginetask.ClientContext.Inject(ctx, p)
+		ctx = enginetask.ModuleContext.Inject(ctx, buildConfig.Module)
+
+		if err := ctrl.RunMatched(ctx, func(t cueflow.Task) bool {
+			return cueflow.IsBeforeAll(ctrl, t)
+		}); err != nil {
+			return err
 		}
 
-		val, err := cuekitcuecontext.Build(
-			buildConfig.Config,
-			seq(p.opt.entry),
-			cuecontext.Interpreter(embed.New()),
-			cuecontext.Interpreter(wasm.New()),
-			// cuecontext.EvaluatorVersion(cuecontext.EvalV3),
-		)
-		if err != nil {
-			return nil, nil, err
+		hasMatched := false
+
+		if err := ctrl.RunMatched(ctx, func(t cueflow.Task) bool {
+			matched := direct.Match(t.Path()) || subMatch.Match(t.Path())
+
+			if matched {
+				hasMatched = true
+			}
+
+			return matched
+		}); err != nil {
+			return err
 		}
 
-		return cueflow.WrapValue(val), buildConfig.Module, nil
+		if !hasMatched {
+			return fmt.Errorf("unknown %v", target)
+		}
+
+		return nil
 	})
-
-	ctx = cueflow.TaskRunnerFactoryContext.Inject(ctx, task.Factory)
-	ctx = task.ClientContext.Inject(ctx, p)
-
-	return runner.Run(ctx, action)
 }
 
 func fromOpt(cwd string, opt *option) (*client, error) {

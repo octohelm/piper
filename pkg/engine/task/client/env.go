@@ -8,13 +8,14 @@ import (
 	"sync"
 
 	"cuelang.org/go/cue"
-
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueconvert"
+	"github.com/octohelm/cuekit/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &EnvInterface{})
+	enginetask.Registry.Register(&EnvInterface{})
 }
 
 // EnvInterface of client
@@ -26,15 +27,15 @@ type EnvInterface struct {
 	OptionalEnv map[string]SecretOrString `json:"-"`
 }
 
+var _ cueflow.CacheDisabler = &EnvInterface{}
+
 func (EnvInterface) CacheDisabled() bool {
 	return true
 }
 
-var _ cueflow.CacheDisabler = &EnvInterface{}
+var _ cueflow.CueValueUnmarshaler = &EnvInterface{}
 
-func (ei *EnvInterface) UnmarshalTask(t cueflow.Task) error {
-	v := cueflow.CueValue(t.Value())
-
+func (ei *EnvInterface) UnmarshalCueValue(v cue.Value) error {
 	i, err := v.Fields(cue.All())
 	if err != nil {
 		return err
@@ -66,9 +67,7 @@ func (ei *EnvInterface) UnmarshalTask(t cueflow.Task) error {
 	return nil
 }
 
-var _ cueflow.TaskUnmarshaler = &EnvInterface{}
-
-var _ cueflow.OutputValuer = EnvInterface{}
+var _ cueconvert.OutputValuer = EnvInterface{}
 
 func (ei EnvInterface) OutputValues() map[string]any {
 	values := map[string]any{}
@@ -85,13 +84,13 @@ func (ei EnvInterface) OutputValues() map[string]any {
 }
 
 func (ei *EnvInterface) Do(ctx context.Context) error {
-	secretStore := task.SecretContext.From(ctx)
+	secretStore := enginetask.SecretContext.From(ctx)
 	clientEnvs := getClientEnvs()
 
 	for key, e := range ei.RequiredEnv {
 		if envVar, ok := clientEnvs[key]; ok {
 			if secret := e.Secret; secret != nil {
-				id := secretStore.Set(task.Secret{
+				id := secretStore.Set(enginetask.Secret{
 					Key:   key,
 					Value: envVar,
 				})
@@ -111,7 +110,7 @@ func (ei *EnvInterface) Do(ctx context.Context) error {
 	for key, e := range ei.OptionalEnv {
 		if envVar, ok := clientEnvs[key]; ok {
 			if secret := e.Secret; secret != nil {
-				id := secretStore.Set(task.Secret{
+				id := secretStore.Set(enginetask.Secret{
 					Key:   key,
 					Value: envVar,
 				})

@@ -3,15 +3,13 @@ package wd
 import (
 	"context"
 
-	"github.com/octohelm/piper/pkg/cueflow"
-
-	"github.com/octohelm/piper/pkg/engine/task"
-
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Sub{})
+	enginetask.Registry.Register(&Sub{})
 }
 
 // Sub

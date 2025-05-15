@@ -3,23 +3,23 @@ package kubepkg
 import (
 	"context"
 	"fmt"
+	"github.com/octohelm/cuekit/pkg/cuepath"
 	"os"
 	"strings"
 
-	"github.com/octohelm/x/anyjson"
-
+	"github.com/octohelm/cuekit/pkg/cueconvert"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	"github.com/octohelm/gengo/pkg/camelcase"
 	kubepkgv1alpha1 "github.com/octohelm/kubepkgspec/pkg/apis/kubepkg/v1alpha1"
 	"github.com/octohelm/kubepkgspec/pkg/kubepkg"
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/cueflow/cueify"
-	"github.com/octohelm/piper/pkg/engine/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
+	"github.com/octohelm/x/anyjson"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Cueify{})
+	enginetask.Registry.Register(&Cueify{})
 }
 
 type Cueify struct {
@@ -72,12 +72,17 @@ func (r *Cueify) Do(ctx context.Context) error {
 
 				cleaned := anyjson.Merge(anyjson.Valuer(&anyjson.Object{}), v, anyjson.WithEmptyObjectAsNull())
 
-				data, err := cueify.ValueToCue(
+				m, err := cuepath.CompileGlobMatcher(`"*"."{kind,type}"`)
+				if err != nil {
+					return err
+				}
+
+				data, err := cueconvert.Dump(
 					cleaned,
-					cueify.AsDecl(camelcase.UpperCamelCase(o.GetName())),
-					cueify.WithPkg(r.PkgName),
-					cueify.WithType(&KubePkg{}),
-					cueify.WithStrictValueMatcher(cueify.CreatePathMatcher(`"*"."{kind,type}"`)),
+					cueconvert.AsDecl(camelcase.UpperCamelCase(o.GetName())),
+					cueconvert.WithPkg(r.PkgName),
+					cueconvert.WithType(&KubePkg{}),
+					cueconvert.WithStrictValueMatcher(m),
 				)
 				if err != nil {
 					return err
@@ -96,11 +101,11 @@ func (r *Cueify) Do(ctx context.Context) error {
 
 				cleaned := anyjson.Merge(anyjson.Valuer(&anyjson.Object{}), v, anyjson.WithEmptyObjectAsNull())
 
-				data, err := cueify.ValueToCue(
+				data, err := cueconvert.Dump(
 					cleaned,
-					cueify.AsDecl(camelcase.UpperCamelCase(o.GetName())),
-					cueify.WithPkg(r.PkgName),
-					cueify.WithStaticValue(map[string]any{
+					cueconvert.AsDecl(camelcase.UpperCamelCase(o.GetName())),
+					cueconvert.WithPkg(r.PkgName),
+					cueconvert.WithStaticValue(map[string]any{
 						"apiVersion": gvk.GroupVersion().String(),
 						"kind":       gvk.Kind,
 					}),

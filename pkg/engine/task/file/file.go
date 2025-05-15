@@ -7,15 +7,13 @@ import (
 	"io"
 	"os"
 
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
-
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/wd"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &ReadAsString{})
+	enginetask.Registry.Register(&ReadAsString{})
 }
 
 type File struct {

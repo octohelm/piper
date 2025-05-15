@@ -19,7 +19,7 @@ hosts: local: wd.#Local & {}
 
 ver: client.#RevInfo & {}
 
-actions: go: X=golang.#Project & {
+actions: go: X = golang.#Project & {
 	cwd:     hosts.local.dir
 	main:    "./cmd/piper"
 	version: ver.version

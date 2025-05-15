@@ -7,9 +7,8 @@ import (
 	"sync"
 
 	"dagger.io/dagger"
-	contextx "github.com/octohelm/x/context"
-
 	"github.com/octohelm/piper/pkg/engine/task/client"
+	contextx "github.com/octohelm/x/context"
 )
 
 func Secret(ctx context.Context, c *dagger.Client, s *client.Secret) (*dagger.Secret, bool) {

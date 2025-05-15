@@ -1,4 +1,4 @@
-package cueflow
+package progress
 
 import (
 	"context"
@@ -6,37 +6,32 @@ import (
 	"time"
 )
 
-type ProcessReader interface {
+type Reader interface {
 	io.Reader
 
 	Process(ctx context.Context) <-chan Progress
 }
 
-func NewProcessReader(r io.Reader, total int64) ProcessReader {
-	pw := NewProcessWriter(total)
+func NewReader(r io.Reader, total int64) Reader {
+	pw := NewWriter(total)
 
 	return &processReader{
-		Reader:        io.TeeReader(r, pw),
-		ProcessWriter: pw,
+		Reader: io.TeeReader(r, pw),
+		Writer: pw,
 	}
 }
 
 type processReader struct {
 	io.Reader
-	ProcessWriter
+	Writer
 }
 
-type ProcessWriter interface {
+type Writer interface {
 	io.Writer
 	Process(ctx context.Context) <-chan Progress
 }
 
-type Progress struct {
-	Current int64
-	Total   int64
-}
-
-func NewProcessWriter(total int64) ProcessWriter {
+func NewWriter(total int64) Writer {
 	return &processingWriter{size: total}
 }
 

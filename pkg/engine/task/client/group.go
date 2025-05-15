@@ -2,16 +2,18 @@ package client
 
 import (
 	"context"
+	"cuelang.org/go/cue"
+	"github.com/octohelm/cuekit/pkg/cuepath"
 
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
+	"github.com/octohelm/cuekit/pkg/cueflow"
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &GroupInterface{})
+	enginetask.Registry.Register(&GroupInterface{})
 }
 
-// Group
 type GroupInterface struct {
 	task.Group
 }
@@ -19,7 +21,12 @@ type GroupInterface struct {
 func (x *GroupInterface) Do(ctx context.Context) error {
 	tt := x.T()
 
-	if err := tt.Scope().RunTasks(ctx, cueflow.WithPrefix(tt.Path())); err != nil {
+	if err := cueflow.RunSubTasks(ctx, tt.Scope(), func(p cue.Path) (bool, cue.Path) {
+		if cuepath.Prefix(p, tt.Path()) && !cuepath.Same(p, tt.Path()) {
+			return true, cuepath.TrimPrefix(p, tt.Path())
+		}
+		return false, cue.MakePath()
+	}); err != nil {
 		return err
 	}
 

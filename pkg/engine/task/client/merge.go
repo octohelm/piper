@@ -3,14 +3,13 @@ package client
 import (
 	"context"
 
-	"github.com/octohelm/piper/pkg/cueflow"
-	"github.com/octohelm/piper/pkg/engine/task"
-
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/x/anyjson"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &Merge{})
+	enginetask.Registry.Register(&Merge{})
 }
 
 // Merge
@@ -32,6 +31,10 @@ func (e *Merge) Do(ctx context.Context) error {
 		}
 		o = anyjson.Merge(o, v)
 	}
-	e.Output.Value = o.Value()
+
+	if o != nil {
+		e.Output.Value = o.Value()
+	}
+
 	return nil
 }

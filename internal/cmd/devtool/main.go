@@ -4,10 +4,9 @@ import (
 	"context"
 	"os"
 
-	"github.com/innoai-tech/infra/pkg/otel"
-
 	"github.com/innoai-tech/infra/devpkg/gengo"
 	"github.com/innoai-tech/infra/pkg/cli"
+	"github.com/innoai-tech/infra/pkg/otel"
 
 	_ "github.com/octohelm/enumeration/devpkg/enumgen"
 	_ "github.com/octohelm/gengo/devpkg/deepcopygen"

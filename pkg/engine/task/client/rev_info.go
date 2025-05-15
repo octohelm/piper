@@ -3,16 +3,14 @@ package client
 import (
 	"context"
 
+	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	"github.com/octohelm/cuekit/pkg/version/gomod"
-
-	"github.com/octohelm/piper/pkg/cueflow"
+	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
-
-	"github.com/octohelm/piper/pkg/engine/task"
 )
 
 func init() {
-	cueflow.RegisterTask(task.Factory, &RevInfo{})
+	enginetask.Registry.Register(&RevInfo{})
 }
 
 type RevInfo struct {
@@ -26,7 +24,7 @@ type RevInfo struct {
 }
 
 func (t *RevInfo) Do(ctx context.Context) error {
-	cwd, err := task.ClientContext.From(ctx).SourceDir(ctx)
+	cwd, err := enginetask.ClientContext.From(ctx).SourceDir(ctx)
 	if err != nil {
 		return err
 	}
