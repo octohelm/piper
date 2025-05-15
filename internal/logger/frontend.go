@@ -16,7 +16,7 @@ var isTTY = sync.OnceValue(func() bool {
 
 func NewFrontend() idtui.Frontend {
 	if isTTY() {
-		return idtui.NewPretty()
+		return idtui.NewPretty(os.Stdout)
 	}
-	return idtui.NewPlain()
+	return idtui.NewPlain(os.Stdout)
 }
