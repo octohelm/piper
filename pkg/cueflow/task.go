@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/octohelm/piper/pkg/cueflow/internal"
-
 	"cuelang.org/go/cue"
+	"github.com/octohelm/piper/pkg/cueflow/internal"
 	contextx "github.com/octohelm/x/context"
 )
 

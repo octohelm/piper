@@ -5,12 +5,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/octohelm/piper/pkg/chunk"
 	"log/slog"
 	"time"
 
 	"github.com/fatih/color"
 	"github.com/go-courier/logr"
+	"github.com/octohelm/piper/pkg/chunk"
 	"github.com/octohelm/piper/pkg/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"

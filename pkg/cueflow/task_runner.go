@@ -6,15 +6,13 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/fatih/color"
-	"github.com/octohelm/piper/pkg/otel"
-
-	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
-	"github.com/opencontainers/go-digest"
-
 	"cuelang.org/go/cue"
+	"github.com/fatih/color"
 	"github.com/go-courier/logr"
+	encodingcue "github.com/octohelm/piper/pkg/encoding/cue"
+	"github.com/octohelm/piper/pkg/otel"
 	contextx "github.com/octohelm/x/context"
+	"github.com/opencontainers/go-digest"
 )
 
 var TaskRunnerFactoryContext = contextx.New[TaskRunnerResolver]()

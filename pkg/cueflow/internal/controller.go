@@ -3,11 +3,11 @@ package internal
 import (
 	"context"
 	"errors"
+	"github.com/octohelm/cuekit/pkg/task"
 	"os"
 	"sync"
 
 	"cuelang.org/go/cue"
-	"cuelang.org/go/tools/flow"
 )
 
 var TaskPath = cue.ParsePath("$$task.name")
@@ -15,7 +15,9 @@ var TaskPath = cue.ParsePath("$$task.name")
 func New(v cue.Value, optionFuncs ...OptionFunc) *Controller {
 	c := &Controller{}
 	c.build(optionFuncs...)
-	c.init(v)
+	if err := c.init(v); err != nil {
+		panic(err)
+	}
 	return c
 }
 
@@ -101,12 +103,14 @@ func (x *Controller) Run(ctx context.Context) error {
 		if errors.Is(err, context.Canceled) {
 			return nil
 		}
+
 		return err
 	}
+
 	return nil
 }
 
-func (x *Controller) nodeFromTask(t *flow.Task) *node {
+func (x *Controller) nodeFromTask(t *task.Task) *node {
 	if x.ranks == nil {
 		x.ranks = map[string]int{}
 	}
@@ -115,7 +119,7 @@ func (x *Controller) nodeFromTask(t *flow.Task) *node {
 
 	n := x.loadOrInit(t.Path())
 
-	for _, d := range t.Dependencies() {
+	for d := range t.Deps() {
 		n.addDep(x.nodeFromTask(d))
 	}
 
@@ -126,68 +130,40 @@ func (x *Controller) loadOrInit(p cue.Path) *node {
 	if x.nodes == nil {
 		x.nodes = map[string]*node{}
 	}
+
 	if found, ok := x.nodes[p.String()]; ok {
 		return found
 	}
 	created := &node{path: p, Controller: x}
 	x.nodes[p.String()] = created
+
 	return created
 }
 
-func (c *Controller) init(v cue.Value) {
-	fc := &flow.Config{
-		FindHiddenTasks: true,
+func (c *Controller) init(v cue.Value) error {
+	ctrl := &task.Controller{
+		IsTask: func(v cue.Value) bool {
+			selectors := v.Path().Selectors()
+
+			if prefix := c.Prefix; prefix != nil {
+				if !isPrefixStrict(selectors, prefix.Selectors()) {
+					return false
+				}
+			}
+
+			return c.shouldRun(v)
+		},
 	}
 
-	ctrl := flow.New(fc, v, func(v cue.Value) (flow.Runner, error) {
-		selectors := v.Path().Selectors()
+	if err := ctrl.Init(v); err != nil {
+		return err
+	}
 
-		if prefix := c.Prefix; prefix != nil {
-			if !isPrefixStrict(selectors, prefix.Selectors()) {
-				return nil, nil
-			}
-		}
-
-		if !(c.shouldRun(v)) {
-			return nil, nil
-		}
-
-		if prefix := c.Prefix; prefix != nil {
-			if isInCueSlice(trimPrefix(selectors, prefix.Selectors())) {
-				return nil, nil
-			}
-		} else {
-			if isInCueSlice(selectors) {
-				return nil, nil
-			}
-		}
-
-		return flow.RunnerFunc(func(t *flow.Task) error {
-			// do nothing
-			// just use for task resolver
-			return nil
-		}), nil
-	})
-
-	for _, tt := range ctrl.Tasks() {
+	for tt := range ctrl.Tasks() {
 		_ = c.nodeFromTask(tt)
 	}
-}
 
-func trimPrefix(selectors []cue.Selector, prefixParts []cue.Selector) []cue.Selector {
-	if isPrefixStrict(selectors, prefixParts) {
-		return selectors[len(prefixParts):]
-	}
-	return selectors
-}
-
-func isInCueSlice(selectors []cue.Selector) bool {
-	for _, x := range selectors {
-		if x.Type() == cue.IndexLabel {
-			return true
-		}
-	}
-	return false
+	return nil
 }
 
 func isPrefixStrict(selectors []cue.Selector, prefixSelectors []cue.Selector) bool {
