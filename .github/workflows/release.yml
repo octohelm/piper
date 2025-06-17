@@ -15,19 +15,16 @@ jobs:
       matrix:
         target: [ ship, release, ship-distroless ]
 
-    env:
-      GOEXPERIMENT: "rangefunc"
-
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: docker/setup-qemu-action@v3
-      - uses: extractions/setup-just@v2
+      - uses: extractions/setup-just@v3
       - uses: actions/setup-go@v5
         with:
-          go-version: '^1.24'
+          go-version: '>=1.24.0'
 
       - run: just ${{ matrix.target }}
         env:

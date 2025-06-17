@@ -2,11 +2,12 @@ package client
 
 import (
 	"fmt"
-	"github.com/octohelm/cuekit/pkg/cueconvert"
 	"strings"
 
 	"cuelang.org/go/cue"
 	cueerrors "cuelang.org/go/cue/errors"
+	cueformat "cuelang.org/go/cue/format"
+	"github.com/octohelm/cuekit/pkg/cueconvert"
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
@@ -29,7 +30,7 @@ type WaitInterface struct {
 
 var _ cueflow.CueValueUnmarshaler = &WaitInterface{}
 
-func (ret *WaitInterface) UnmarshalCueValue(v cue.Value) error {
+func (w *WaitInterface) UnmarshalCueValue(v cue.Value) error {
 	if v.Kind() != cue.StructKind {
 		return fmt.Errorf("client.#Wait must be a struct, but got %s", v.Source())
 	}
@@ -39,7 +40,7 @@ func (ret *WaitInterface) UnmarshalCueValue(v cue.Value) error {
 		return err
 	}
 
-	ret.values = map[string]any{}
+	w.values = map[string]any{}
 
 	for i.Next() {
 		s := i.Selector()
@@ -63,7 +64,8 @@ func (ret *WaitInterface) UnmarshalCueValue(v cue.Value) error {
 			}
 
 			if !ok {
-				return fmt.Errorf("task continue, cause got %s", v.Source())
+				data, _ := cueformat.Node(v.Source())
+				return fmt.Errorf("task break, cause got %s", string(data))
 			}
 		}
 
@@ -72,7 +74,7 @@ func (ret *WaitInterface) UnmarshalCueValue(v cue.Value) error {
 			return cueerrors.Wrapf(err, i.Value().Pos(), "invalid result `%s`", prop)
 		}
 
-		ret.values[prop] = a.Value
+		w.values[prop] = a.Value
 	}
 
 	return nil
@@ -80,9 +82,9 @@ func (ret *WaitInterface) UnmarshalCueValue(v cue.Value) error {
 
 var _ cueconvert.OutputValuer = &WaitInterface{}
 
-func (ret *WaitInterface) OutputValues() map[string]any {
+func (w *WaitInterface) OutputValues() map[string]any {
 	values := map[string]any{}
-	for k, v := range ret.values {
+	for k, v := range w.values {
 		values[k] = v
 	}
 	return values
