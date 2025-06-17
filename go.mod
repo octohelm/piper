@@ -22,25 +22,28 @@ replace (
 replace cuelang.org/go => github.com/morlay/cue v0.13.1-0.20250612070309-e53135da282a
 
 require (
-	cuelang.org/go v0.13.1
-	dagger.io/dagger v0.18.10
-	github.com/dagger/dagger v0.18.10
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
-	github.com/fatih/color v1.18.0
 	github.com/go-courier/logr v0.3.2
-	github.com/google/go-containerregistry v0.20.6
-	github.com/innoai-tech/infra v0.0.0-20250605020503-09e00dc84a46
-	github.com/k0sproject/rig v0.0.0-00010101000000-000000000000
-	github.com/kevinburke/ssh_config v1.2.0
-	github.com/moby/buildkit v0.16.0-rc2.0.20240917172113-e15601a00fbe
-	github.com/octohelm/crkit v0.0.0-20250509074042-2cf4c7222a91
-	github.com/octohelm/cuekit v0.0.0-20250616115049-8b426508df73
+	github.com/innoai-tech/infra v0.0.0-20250617102739-32eaecff5ec2
+	github.com/octohelm/crkit v0.0.0-20250617103029-ee588a198ac2
+	github.com/octohelm/cuekit v0.0.0-20250623074837-fb02e432fd72
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
 	github.com/octohelm/gengo v0.0.0-20250418031154-d14a228621d4
 	github.com/octohelm/kubekit v0.0.0-20250312095848-866464095748
 	github.com/octohelm/kubepkgspec v0.0.0-20250516101154-869c679a1af2
 	github.com/octohelm/unifs v0.0.0-20250507062355-585aea9fa90a
 	github.com/octohelm/x v0.0.0-20250409031213-9c254440c2b8
+)
+
+require (
+	cuelang.org/go v0.13.1
+	dagger.io/dagger v0.18.10
+	github.com/dagger/dagger v0.18.10
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
+	github.com/fatih/color v1.18.0
+	github.com/google/go-containerregistry v0.20.6
+	github.com/k0sproject/rig v0.0.0-00010101000000-000000000000
+	github.com/kevinburke/ssh_config v1.2.0
+	github.com/moby/buildkit v0.16.0-rc2.0.20240917172113-e15601a00fbe
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.1
 	github.com/pelletier/go-toml/v2 v2.2.4
@@ -54,12 +57,11 @@ require (
 	golang.org/x/net v0.41.0
 	golang.org/x/sync v0.15.0
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.33.1
+	k8s.io/apimachinery v0.33.2
 	sigs.k8s.io/controller-runtime v0.21.0
 )
 
 require (
-	cloud.google.com/go v0.120.0 // indirect
 	cuelabs.dev/go/oci/ociregistry v0.0.0-20250304105642-27e071d2c9b1 // indirect
 	dario.cat/mergo v1.0.1 // indirect
 	github.com/1password/onepassword-sdk-go v0.3.0 // indirect
@@ -291,7 +293,7 @@ require (
 	k8s.io/apiextensions-apiserver v0.33.1 // indirect
 	k8s.io/client-go v0.33.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff // indirect
+	k8s.io/kube-openapi v0.0.0-20250610211856-8b98d1ed966a // indirect
 	k8s.io/utils v0.0.0-20250502105355-0f33e8f1c979 // indirect
 	mvdan.cc/gofumpt v0.8.0 // indirect
 	sigs.k8s.io/gateway-api v1.3.0 // indirect
