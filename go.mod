@@ -29,7 +29,7 @@ require (
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
 	github.com/octohelm/gengo v0.0.0-20250418031154-d14a228621d4
 	github.com/octohelm/kubekit v0.0.0-20250312095848-866464095748
-	github.com/octohelm/kubepkgspec v0.0.0-20250516101154-869c679a1af2
+	github.com/octohelm/kubepkgspec v0.0.0-20250624080222-15b29c782cf5
 	github.com/octohelm/unifs v0.0.0-20250507062355-585aea9fa90a
 	github.com/octohelm/x v0.0.0-20250409031213-9c254440c2b8
 )
@@ -280,7 +280,7 @@ require (
 	golang.org/x/telemetry v0.0.0-20250613181904-e50bbf1d8fa3 // indirect
 	golang.org/x/term v0.32.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
-	golang.org/x/time v0.11.0 // indirect
+	golang.org/x/time v0.12.0 // indirect
 	golang.org/x/tools v0.34.0 // indirect
 	google.golang.org/genproto v0.0.0-20250505200425-f936aa4a68b2 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250603155806-513f23925822 // indirect
@@ -289,12 +289,12 @@ require (
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	k8s.io/api v0.33.1 // indirect
-	k8s.io/apiextensions-apiserver v0.33.1 // indirect
-	k8s.io/client-go v0.33.1 // indirect
+	k8s.io/api v0.33.2 // indirect
+	k8s.io/apiextensions-apiserver v0.33.2 // indirect
+	k8s.io/client-go v0.33.2 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250610211856-8b98d1ed966a // indirect
-	k8s.io/utils v0.0.0-20250502105355-0f33e8f1c979 // indirect
+	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397 // indirect
 	mvdan.cc/gofumpt v0.8.0 // indirect
 	sigs.k8s.io/gateway-api v1.3.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
