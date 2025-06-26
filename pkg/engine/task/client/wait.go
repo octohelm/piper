@@ -31,8 +31,15 @@ type WaitInterface struct {
 var _ cueflow.CueValueUnmarshaler = &WaitInterface{}
 
 func (w *WaitInterface) UnmarshalCueValue(v cue.Value) error {
-	if v.Kind() != cue.StructKind {
-		return fmt.Errorf("client.#Wait must be a struct, but got %s", v.Source())
+	if kind := v.Kind(); kind != cue.StructKind {
+		raw, _ := cueformat.Node(v.Syntax(
+			cue.Concrete(false), // allow incomplete values
+			cue.DisallowCycles(true),
+			cue.Docs(true),
+			cue.All(),
+		))
+
+		return fmt.Errorf("client.#Wait must be a struct, but got %s: \n\n %s", kind, raw)
 	}
 
 	i, err := v.Fields(cue.All())
