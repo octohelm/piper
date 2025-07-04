@@ -7,8 +7,8 @@ cloud.google.com/go/compute/metadata v0.7.0 h1:PBWF+iiAerVNe8UCHxdOt6eHLVc3ydFeO
 cloud.google.com/go/compute/metadata v0.7.0/go.mod h1:j5MvL9PprKL39t166CoB1uVHfQMs4tFQZZcKwksXUjo=
 cuelabs.dev/go/oci/ociregistry v0.0.0-20250304105642-27e071d2c9b1 h1:Dmbd5Q+ENb2C6carvwrMsrOUwJ9X9qfL5JdW32gYAHo=
 cuelabs.dev/go/oci/ociregistry v0.0.0-20250304105642-27e071d2c9b1/go.mod h1:dqrnoZx62xbOZr11giMPrWbhlaV8euHwciXZEy3baT8=
-dagger.io/dagger v0.18.11 h1:6lSfemlbGM2HmdOjhgevrX2+orMDGKU/xTaBMZ+otyY=
-dagger.io/dagger v0.18.11/go.mod h1:azlZ24m2br95t0jQHUBpL5SiafeqtVDLl1Itlq6GO+4=
+dagger.io/dagger v0.18.12 h1:s7v8aHlzDUogZ/jW92lHC+gljCNRML+0mosfh13R4vs=
+dagger.io/dagger v0.18.12/go.mod h1:azlZ24m2br95t0jQHUBpL5SiafeqtVDLl1Itlq6GO+4=
 dario.cat/mergo v1.0.1 h1:Ra4+bf83h2ztPIQYNP99R6m+Y7KfnARDfID+a+vLl4s=
 dario.cat/mergo v1.0.1/go.mod h1:uNxQE+84aUszobStD9th8a29P2fMDhsBdgRYvZOxGmk=
 github.com/1password/onepassword-sdk-go v0.3.1 h1:dz0LrYuIh/HrZ7rxr8NMymikNLBIXhyj4NBmo5Tdamc=
@@ -158,8 +158,8 @@ github.com/cyphar/filepath-securejoin v0.4.1 h1:JyxxyPEaktOD+GAnqIqTf9A8tHyAG22r
 github.com/cyphar/filepath-securejoin v0.4.1/go.mod h1:Sdj7gXlvMcPZsbhwhQ33GguGLDGQL7h7bg04C/+u9jI=
 github.com/dagger/buildkit v0.0.0-20250519134855-c1734e1f6155 h1:33pVtvFFq4kUJNM91wEJvvdwrhkwF0dP4WM9Ih3G1D8=
 github.com/dagger/buildkit v0.0.0-20250519134855-c1734e1f6155/go.mod h1:QLaQ4vyvIrzCaeg/4saPBcEibMXiGvIe+HaP5Ji0LCY=
-github.com/dagger/dagger v0.18.11 h1:OvtxZw7QRos0YVbUDgnE/aUH4JC5VisjY2r1pZJ3wOI=
-github.com/dagger/dagger v0.18.11/go.mod h1:LdFKNRm7Yz7QEmvX5AZn74B7QJfrcULOBdkZ/6hG690=
+github.com/dagger/dagger v0.18.12 h1:XMU6texst4inINNNimkPYCdaVhcoG1pAnHVG3g4tvE8=
+github.com/dagger/dagger v0.18.12/go.mod h1:HnatIh3R2jThxE3AiJ8DiTAOqrhgrkBuxfbUYdxUB/M=
 github.com/dagger/testctx v0.0.4 h1:In6AOkH1Q6LHWHAnMByViz9SFiXbYjKttGlO6GciE9s=
 github.com/dagger/testctx v0.0.4/go.mod h1:vfRtiq0HrtSux/H60iD1x7zYfrBgEtoDR1P3hJ523Oo=
 github.com/dagger/testctx/oteltest v0.0.3 h1:3a4u7S2HhQtUvZbRs+1WC4qWNCLlbcm2KoEK/Lhck/4=
@@ -237,8 +237,8 @@ github.com/go-git/go-git/v5 v5.16.2 h1:fT6ZIOjE5iEnkzKyxTHK1W4HGAsPhqEqiSAssSO77
 github.com/go-git/go-git/v5 v5.16.2/go.mod h1:4Ge4alE/5gPs30F2H1esi2gPd69R0C39lolkucHBOp8=
 github.com/go-jose/go-jose/v4 v4.0.5 h1:M6T8+mKZl/+fNNuFHvGIzDz7BTLQPIounk/b9dw3AaE=
 github.com/go-jose/go-jose/v4 v4.0.5/go.mod h1:s3P1lRrkT8igV8D9OjyL4WRyHvjB6a4JSllnOrmmBOA=
-github.com/go-json-experiment/json v0.0.0-20250625182306-a9cfae7f3654 h1:oSbYHc9OIFoLuGxc6oxRnEmv19baVLVEPfucUdXb/4A=
-github.com/go-json-experiment/json v0.0.0-20250625182306-a9cfae7f3654/go.mod h1:TiCD2a1pcmjd7YnhGH0f/zKNcCD06B029pHhzV23c2M=
+github.com/go-json-experiment/json v0.0.0-20250626171732-1a886bd29d1b h1:ooF9/NzXkXL3OOLRwtPuQT/D7Kx2S5w/Kl1GnMF9h2s=
+github.com/go-json-experiment/json v0.0.0-20250626171732-1a886bd29d1b/go.mod h1:TiCD2a1pcmjd7YnhGH0f/zKNcCD06B029pHhzV23c2M=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
 github.com/go-logr/logr v1.4.3 h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=
 github.com/go-logr/logr v1.4.3/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
@@ -356,8 +356,8 @@ github.com/in-toto/in-toto-golang v0.5.0 h1:hb8bgwr0M2hGdDsLjkJ3ZqJ8JFLL/tgYdAxF
 github.com/in-toto/in-toto-golang v0.5.0/go.mod h1:/Rq0IZHLV7Ku5gielPT4wPHJfH1GdHMCq8+WPxw8/BE=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
-github.com/innoai-tech/infra v0.0.0-20250626040909-c1890dc94539 h1:Jg2Dsi6NUTHVSPm1rnwnmetpQ9QHsJ/Uyqftu75AKwk=
-github.com/innoai-tech/infra v0.0.0-20250626040909-c1890dc94539/go.mod h1:X7GSECRF4rHq3woBXOetXa+01fb1h8CpOTVn6IclD78=
+github.com/innoai-tech/infra v0.0.0-20250703075817-5146c534b956 h1:u+WQfBpiAEDovQGyLOWNOtm0YUmEukgxylsOHsNrbzo=
+github.com/innoai-tech/infra v0.0.0-20250703075817-5146c534b956/go.mod h1:cFgehFYRcW56pvGodmIRROkrT9EqW3gDnrm2JFF7388=
 github.com/invopop/jsonschema v0.13.0 h1:KvpoAJWEjR3uD9Kbm2HWJmqsEaHt8lBUpd0qHcIi21E=
 github.com/invopop/jsonschema v0.13.0/go.mod h1:ffZ5Km5SWWRAIN6wbDXItl95euhFz2uON45H2qjYt+0=
 github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 h1:BQSFePA1RWJOlocH6Fxy8MmwDt+yVQYULKfN0RoTN8A=
@@ -494,8 +494,8 @@ github.com/muesli/termenv v0.16.0 h1:S5AlUN9dENB57rsbnkPyfdGuWIlkmzJjbFf0Tf5FWUc
 github.com/muesli/termenv v0.16.0/go.mod h1:ZRfOIKPFDYQoDFF4Olj7/QJbW60Ol/kL1pU3VfY/Cnk=
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq1c1nUAm88MOHcQC9l5mIlSMApZMrHA=
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
-github.com/octohelm/courier v0.0.0-20250626030519-93d6fe589100 h1:iiiogB0iSzaJL6grvoOSSiqEtUTDNQoVEmf+LAmfNCE=
-github.com/octohelm/courier v0.0.0-20250626030519-93d6fe589100/go.mod h1:qYiCkWH/bLWUhz6ky5dIuip4Iu9MQxjjnH7PmQ6hM1s=
+github.com/octohelm/courier v0.0.0-20250703075201-298ec05e0543 h1:8pxqXPuoVcuRMmMyQaKuCetcvxtQKeo+5ic6wwc5QVw=
+github.com/octohelm/courier v0.0.0-20250703075201-298ec05e0543/go.mod h1:LOgcHur3qtGzZY+dZnofobgeXuo5t88SVjOz9TLkk8Y=
 github.com/octohelm/crkit v0.0.0-20250617103029-ee588a198ac2 h1:kZ621+QsVZOQ7/HKyF/TzHlVYRgXZHDaJBhaJuIO+w8=
 github.com/octohelm/crkit v0.0.0-20250617103029-ee588a198ac2/go.mod h1:t1rDRjap+Q9GIgLDbNiTJqREbIF9xjfbPYSeza+xF+w=
 github.com/octohelm/cuekit v0.0.0-20250626042513-4c93fccb4c4d h1:MN7QkCurqk5ydLh0u+v26clj4W+5AyoIcbcL48ajqLA=
@@ -508,8 +508,8 @@ github.com/octohelm/kubekit v0.0.0-20250312095848-866464095748 h1:/2m6nQ9IDovbvd
 github.com/octohelm/kubekit v0.0.0-20250312095848-866464095748/go.mod h1:qeHUOCv6/oEf+rsdZ6eLNFgXAQMYcZWjHMmkeElKJWA=
 github.com/octohelm/kubepkgspec v0.0.0-20250626030619-22850620e641 h1:5kLaieY8c2zBqO2pAnwKfNW+HCOsWttLCKoN5wggG1M=
 github.com/octohelm/kubepkgspec v0.0.0-20250626030619-22850620e641/go.mod h1:c5HcLu3WJRicuaYrx8kMXoERZlAggHkhKrWbUOeelQw=
-github.com/octohelm/unifs v0.0.0-20250507062355-585aea9fa90a h1:gy0ciIayo2UbhRhFMcSbLvEU0Goxbm6sumdlygQK77I=
-github.com/octohelm/unifs v0.0.0-20250507062355-585aea9fa90a/go.mod h1:zbU4MnQkY14CnaN0hPJzO5zbpIGDINgOu+B+ZmJadRU=
+github.com/octohelm/unifs v0.0.0-20250704030712-ae6a1507060d h1:PrFP2wFUAve3EFtneorPaKC8ukG8PafjxNgJMCBeu9Y=
+github.com/octohelm/unifs v0.0.0-20250704030712-ae6a1507060d/go.mod h1:/iScFalRBQMNjPILa8qFGpyaJAQs2geLXnTEiA+iPqY=
 github.com/octohelm/x v0.0.0-20250409031213-9c254440c2b8 h1:agt4Jze3SYDcnZ64uq2XIFj8nCRRh43FENk2qzGe7nA=
 github.com/octohelm/x v0.0.0-20250409031213-9c254440c2b8/go.mod h1:xZNisutod9dwQzvy6LYdfRWTraKkS2DRH3pt/iWHjUk=
 github.com/onsi/ginkgo/v2 v2.23.3 h1:edHxnszytJ4lD9D5Jjc4tiDkPBZ3siDeJJkUZJJVkp0=

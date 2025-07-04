@@ -39,7 +39,7 @@ func (w *WaitInterface) UnmarshalCueValue(v cue.Value) error {
 			cue.All(),
 		))
 
-		return fmt.Errorf("client.#Wait must be a struct, but got %s: \n\n %s", kind, raw)
+		return fmt.Errorf("client.#Wait must be a struct, but got: \n\n %s \n\n %s", raw, v.Err())
 	}
 
 	i, err := v.Fields(cue.All())

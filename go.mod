@@ -23,21 +23,21 @@ replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2a
 
 require (
 	github.com/go-courier/logr v0.3.2
-	github.com/innoai-tech/infra v0.0.0-20250626040909-c1890dc94539
+	github.com/innoai-tech/infra v0.0.0-20250703075817-5146c534b956
 	github.com/octohelm/crkit v0.0.0-20250617103029-ee588a198ac2
 	github.com/octohelm/cuekit v0.0.0-20250626042513-4c93fccb4c4d
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
 	github.com/octohelm/gengo v0.0.0-20250418031154-d14a228621d4
 	github.com/octohelm/kubekit v0.0.0-20250312095848-866464095748
 	github.com/octohelm/kubepkgspec v0.0.0-20250626030619-22850620e641
-	github.com/octohelm/unifs v0.0.0-20250507062355-585aea9fa90a
+	github.com/octohelm/unifs v0.0.0-20250704030712-ae6a1507060d
 	github.com/octohelm/x v0.0.0-20250409031213-9c254440c2b8
 )
 
 require (
 	cuelang.org/go v0.13.2
-	dagger.io/dagger v0.18.11
-	github.com/dagger/dagger v0.18.11
+	dagger.io/dagger v0.18.12
+	github.com/dagger/dagger v0.18.12
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.18.0
 	github.com/google/go-containerregistry v0.20.6
@@ -110,7 +110,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.2.2 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.18.10 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.18.11 // indirect
 	github.com/danielgatis/go-ansicode v1.0.7 // indirect
 	github.com/danielgatis/go-iterator v0.0.1 // indirect
 	github.com/danielgatis/go-utf8 v1.0.0 // indirect
@@ -137,7 +137,7 @@ require (
 	github.com/go-git/go-billy/v5 v5.6.2 // indirect
 	github.com/go-git/go-git/v5 v5.16.2 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
-	github.com/go-json-experiment/json v0.0.0-20250625182306-a9cfae7f3654 // indirect
+	github.com/go-json-experiment/json v0.0.0-20250626171732-1a886bd29d1b // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.21.1 // indirect
@@ -215,7 +215,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/octohelm/courier v0.0.0-20250626030519-93d6fe589100 // indirect
+	github.com/octohelm/courier v0.0.0-20250703075201-298ec05e0543 // indirect
 	github.com/onsi/gomega v1.37.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
