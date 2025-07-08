@@ -95,6 +95,8 @@ func (r *Cueify) Do(ctx context.Context) error {
 			default:
 				gvk := o.GetObjectKind().GroupVersionKind()
 
+				filename = fmt.Sprintf("%s.%s.cue", strings.ToLower(o.GetName()), strings.ToLower(gvk.Kind))
+
 				v, err := anyjson.FromValue(o)
 				if err != nil {
 					return err
@@ -104,7 +106,7 @@ func (r *Cueify) Do(ctx context.Context) error {
 
 				data, err := cueconvert.Dump(
 					cleaned,
-					cueconvert.AsDecl(camelcase.UpperCamelCase(o.GetName())),
+					cueconvert.AsDecl(camelcase.UpperCamelCase(o.GetName()+gvk.Kind)),
 					cueconvert.WithPkg(r.PkgName),
 					cueconvert.WithStaticValue(map[string]any{
 						"apiVersion": gvk.GroupVersion().String(),
