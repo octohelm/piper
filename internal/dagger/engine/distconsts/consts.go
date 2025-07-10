@@ -19,10 +19,10 @@ const (
 )
 
 const (
-	AlpineVersion = "3.20.2"
+	AlpineVersion = "3.22.0"
 	AlpineImage   = "alpine:" + AlpineVersion
 
-	GolangVersion = "1.23.6"
+	GolangVersion = "1.24.4"
 	GolangImage   = "golang:" + GolangVersion + "-alpine"
 
 	BusyboxVersion = "1.37.0"

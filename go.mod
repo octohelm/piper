@@ -12,7 +12,7 @@ replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240920093217
 
 replace github.com/dagger/dagger/engine/distconsts => ./internal/dagger/engine/distconsts
 
-// cause by github.com/dagger/dagger v0.18.8
+// cause by github.com/dagger/dagger v0.18.12
 replace (
 	github.com/moby/buildkit => github.com/dagger/buildkit v0.0.0-20250519134855-c1734e1f6155
 	go.opentelemetry.io/otel/log => go.opentelemetry.io/otel/log v0.12.2
@@ -23,7 +23,7 @@ replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2a
 
 require (
 	github.com/go-courier/logr v0.3.2
-	github.com/innoai-tech/infra v0.0.0-20250703075817-5146c534b956
+	github.com/innoai-tech/infra v0.0.0-20250709085959-20270fc0cd15
 	github.com/octohelm/crkit v0.0.0-20250704073103-05d959e0a7b1
 	github.com/octohelm/cuekit v0.0.0-20250708033832-a4b24e73b1b7
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
@@ -55,7 +55,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.37.0
 	golang.org/x/crypto v0.39.0
 	golang.org/x/net v0.41.0
-	golang.org/x/sync v0.15.0
+	golang.org/x/sync v0.16.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.33.2
 	sigs.k8s.io/controller-runtime v0.21.0
@@ -215,7 +215,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/octohelm/courier v0.0.0-20250704062509-2ced01d0483d // indirect
+	github.com/octohelm/courier v0.0.0-20250709084559-8e79357f00d0 // indirect
 	github.com/onsi/gomega v1.37.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
