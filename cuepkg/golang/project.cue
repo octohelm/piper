@@ -42,7 +42,7 @@ import (
 					}
 					cmd: [
 						"go", "build",
-						"-ldflags", strconv.Quote(strings.Join(X.ldflags | *["-s", "-w"], " ")),
+						"-ldflags", strconv.Quote(strings.Join(X.ldflags, " ")),
 						"-o", _filename,
 						"\(X.main)",
 					]
