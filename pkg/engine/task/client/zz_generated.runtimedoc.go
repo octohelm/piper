@@ -46,9 +46,7 @@ func (v *GroupInterface) RuntimeDoc(names ...string) ([]string, bool) {
 
 		return nil, false
 	}
-	return []string{
-		"Group",
-	}, true
+	return []string{}, true
 }
 
 func (v *Merge) RuntimeDoc(names ...string) ([]string, bool) {
@@ -199,7 +197,7 @@ func (*StringOrSlice) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
-func (w *WaitInterface) RuntimeDoc(names ...string) ([]string, bool) {
+func (v *WaitInterface) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		case "Ok":
@@ -208,7 +206,7 @@ func (w *WaitInterface) RuntimeDoc(names ...string) ([]string, bool) {
 				"all task should break",
 			}, true
 		}
-		if doc, ok := runtimeDoc(&w.Checkpoint, "", names...); ok {
+		if doc, ok := runtimeDoc(&v.Checkpoint, "", names...); ok {
 			return doc, ok
 		}
 

@@ -288,7 +288,6 @@ func (v *Temp) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{
-		"Tm",
 		"create a tmp workdir",
 	}, true
 }

@@ -438,7 +438,7 @@ func (v *WriteAsTOML) RuntimeDoc(names ...string) ([]string, bool) {
 		return nil, false
 	}
 	return []string{
-		"WriteAsYAML read and parse yaml",
+		"read and parse toml",
 	}, true
 }
 

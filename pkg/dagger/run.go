@@ -33,7 +33,7 @@ func Run(ctx context.Context, name string, fn func(ctx context.Context) error) e
 		})
 
 		daggerRunner, err := NewRunner(
-			WithEngineCallback(frontend.ConnectedToEngine),
+			WithCloudURLCallback(frontend.SetCloudURL),
 			WithEngineLogs(frontend.LogExporter()),
 			WithEngineTrace(frontend.SpanExporter()),
 		)

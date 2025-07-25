@@ -17,9 +17,9 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func WithEngineCallback(callback func(context.Context, string, string, string)) EngineOptionFunc {
+func WithCloudURLCallback(callback func(context.Context, string, string, bool)) EngineOptionFunc {
 	return func(x *options) {
-		x.EngineCallback = callback
+		x.CloudURLCallback = callback
 	}
 }
 

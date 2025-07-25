@@ -149,6 +149,42 @@ func (v *OciTar) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
+func (v *Push) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "KubePkg":
+			return []string{
+				"spec",
+			}, true
+		case "Platforms":
+			return []string{
+				"of oci tar, if empty it will based on KubePkg",
+			}, true
+		case "WithAnnotations":
+			return []string{
+				"pick annotations of KubePkg as image annotations",
+			}, true
+		case "Rename":
+			return []string{
+				"for image repo name",
+				"go template rule",
+				"`{{ .registry }}/{{ .namespace }}/{{ .name }}`",
+			}, true
+		case "RemoteURL":
+			return []string{
+				"of container registry",
+			}, true
+
+		}
+		if doc, ok := runtimeDoc(&v.Task, "", names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
 func (v *PushOciTar) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
