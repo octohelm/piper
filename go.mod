@@ -30,7 +30,7 @@ require (
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
 	github.com/octohelm/gengo v0.0.0-20250711045910-061ca3315825
 	github.com/octohelm/kubekit v0.0.0-20250718064259-16bf9a10550a
-	github.com/octohelm/kubepkgspec v0.0.0-20250718064719-db95f100a787
+	github.com/octohelm/kubepkgspec v0.0.0-20250807030549-13e99627e687
 	github.com/octohelm/unifs v0.0.0-20250718023709-4c432fd297c1
 	github.com/octohelm/x v0.0.0-20250718061117-5256cd84ed4c
 )
@@ -315,8 +315,8 @@ require (
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397 // indirect
 	mvdan.cc/gofumpt v0.8.0 // indirect
 	sigs.k8s.io/gateway-api v1.3.0 // indirect
-	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
+	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.7.0 // indirect
-	sigs.k8s.io/yaml v1.5.0 // indirect
+	sigs.k8s.io/yaml v1.6.0 // indirect
 )
