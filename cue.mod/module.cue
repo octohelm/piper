@@ -4,7 +4,7 @@ language: {
 }
 deps: {
 	"github.com/octohelm/kubepkgspec@v0": {
-		v: "v0.0.0-20250624080222-15b29c782cf5"
+		v: "v0.0.0-20250821093829-602755f80b40"
 	}
 	"piper.octohelm.tech@v0": {
 		v:       "v0.0.0-builtin"

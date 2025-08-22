@@ -12,7 +12,7 @@ replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240920093217
 
 replace github.com/dagger/dagger/engine/distconsts => ./internal/dagger/engine/distconsts
 
-// cause by github.com/dagger/dagger v0.18.14
+// cause by github.com/dagger/dagger v0.18.16
 replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.7.27
 	github.com/moby/buildkit => github.com/dagger/buildkit v0.0.0-20250708131355-3c56a47e3f5c
@@ -24,26 +24,26 @@ replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2a
 
 require (
 	github.com/go-courier/logr v0.3.2
-	github.com/innoai-tech/infra v0.0.0-20250724091910-e1c0b7ef7708
-	github.com/octohelm/crkit v0.0.0-20250801041206-a5ed6ed9b35a
-	github.com/octohelm/cuekit v0.0.0-20250708033832-a4b24e73b1b7
+	github.com/innoai-tech/infra v0.0.0-20250814014730-584397d71f18
+	github.com/octohelm/crkit v0.0.0-20250814020856-9c15f5fe5a5f
+	github.com/octohelm/cuekit v0.0.0-20250822082600-dca10caea344
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
 	github.com/octohelm/gengo v0.0.0-20250711045910-061ca3315825
 	github.com/octohelm/kubekit v0.0.0-20250718064259-16bf9a10550a
-	github.com/octohelm/kubepkgspec v0.0.0-20250807030549-13e99627e687
+	github.com/octohelm/kubepkgspec v0.0.0-20250821093829-602755f80b40
 	github.com/octohelm/unifs v0.0.0-20250718023709-4c432fd297c1
-	github.com/octohelm/x v0.0.0-20250718061117-5256cd84ed4c
+	github.com/octohelm/x v0.0.0-20250814014249-e79c91160fc4
 )
 
 require (
 	cuelang.org/go v0.13.2
-	dagger.io/dagger v0.18.14
-	github.com/dagger/dagger v0.18.14
+	dagger.io/dagger v0.18.16
+	github.com/dagger/dagger v0.18.16
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.18.0
 	github.com/google/go-containerregistry v0.20.6
 	github.com/k0sproject/rig v0.0.0-00010101000000-000000000000
-	github.com/kevinburke/ssh_config v1.2.0
+	github.com/kevinburke/ssh_config v1.4.0
 	github.com/moby/buildkit v0.16.0-rc2.0.20240917172113-e15601a00fbe
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.1
@@ -54,11 +54,11 @@ require (
 	go.opentelemetry.io/otel/sdk v1.37.0
 	go.opentelemetry.io/otel/sdk/log v0.13.0
 	go.opentelemetry.io/otel/trace v1.37.0
-	golang.org/x/crypto v0.40.0
-	golang.org/x/net v0.42.0
+	golang.org/x/crypto v0.41.0
+	golang.org/x/net v0.43.0
 	golang.org/x/sync v0.16.0
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.33.3
+	k8s.io/apimachinery v0.33.4
 	sigs.k8s.io/controller-runtime v0.21.0
 )
 
@@ -116,7 +116,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.2.2 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.18.13 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.18.14 // indirect
 	github.com/danielgatis/go-ansicode v1.0.7 // indirect
 	github.com/danielgatis/go-iterator v0.0.1 // indirect
 	github.com/danielgatis/go-utf8 v1.0.0 // indirect
@@ -145,7 +145,7 @@ require (
 	github.com/go-git/go-billy/v5 v5.6.2 // indirect
 	github.com/go-git/go-git/v5 v5.16.2 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
-	github.com/go-json-experiment/json v0.0.0-20250725192818-e39067aee2d2 // indirect
+	github.com/go-json-experiment/json v0.0.0-20250813233538-9b1f9ea2e11b // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.21.1 // indirect
@@ -227,7 +227,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/octohelm/courier v0.0.0-20250725013153-ba5922ad6c47 // indirect
+	github.com/octohelm/courier v0.0.0-20250814023350-b0a29ea76639 // indirect
 	github.com/onsi/gomega v1.38.0 // indirect
 	github.com/opencontainers/runtime-spec v1.2.1 // indirect
 	github.com/opencontainers/selinux v1.11.1 // indirect
@@ -292,14 +292,14 @@ require (
 	go.opentelemetry.io/proto/otlp v1.7.1 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/mod v0.26.0 // indirect
+	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
-	golang.org/x/telemetry v0.0.0-20250729135900-28f32e417a03 // indirect
-	golang.org/x/term v0.33.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/telemetry v0.0.0-20250807160809-1a19826ec488 // indirect
+	golang.org/x/term v0.34.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
-	golang.org/x/tools v0.35.0 // indirect
+	golang.org/x/tools v0.36.0 // indirect
 	google.golang.org/genproto v0.0.0-20250603155806-513f23925822 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250728155136-f173205681a0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250728155136-f173205681a0 // indirect
