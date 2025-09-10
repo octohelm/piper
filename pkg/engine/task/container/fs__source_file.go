@@ -52,10 +52,13 @@ func (x *SourceFile) Do(ctx context.Context) error {
 			Include: []string{
 				srcFile,
 			},
+			NoGitAutoIgnore: true,
 		})
+
 		if x.Dest != "" {
 			return c.Directory().WithFile(x.Dest, src.File(srcFile)), nil
 		}
+
 		return c.Directory().WithFile("/"+srcFile, src.File(srcFile)), nil
 	})
 }

@@ -57,14 +57,14 @@ actions: release: {
 
 actions: ship: "distroless": distroless.#Ship & {
 	name: "ghcr.io/octohelm/distroless"
-	tag:  "static-debian-12"
+	tag:  "static-debian-13"
 }
 
 actions: ship: piper: containerutil.#Ship & {
 	name: "ghcr.io/octohelm/piper"
 	tag:  "\(ver.version)"
 
-	from: "docker.io/library/debian:bookworm-slim"
+	from: "docker.io/library/debian:trixie-slim"
 
 	steps: [
 		debian.#InstallPackage & {

@@ -4,11 +4,11 @@ import (
 	"piper.octohelm.tech/container"
 )
 
-#DefaultVersion: "bookworm"
+#DefaultVersion: "trixie"
 
 #DebianImage: #ImageSource & {
 	name:    string | *"docker.io/library/debian"
-	version: string | *"\(#DefaultVersion)" // debian 12
+	version: string | *"\(#DefaultVersion)" // debian 13
 	source:  "\(name):\(version)-slim"
 }
 

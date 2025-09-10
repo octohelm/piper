@@ -16,13 +16,13 @@ jobs:
         target: [ ship, release, ship-distroless ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - uses: docker/setup-qemu-action@v3
       - uses: extractions/setup-just@v3
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: '>=1.25.0'
 

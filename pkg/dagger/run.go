@@ -6,6 +6,7 @@ import (
 	"dagger.io/dagger/telemetry"
 	"github.com/dagger/dagger/dagql/dagui"
 	"github.com/dagger/dagger/engine/slog"
+	"github.com/dagger/dagger/util/cleanups"
 	"github.com/octohelm/piper/internal/logger"
 	"github.com/octohelm/piper/internal/version"
 	"go.opentelemetry.io/otel"
@@ -19,7 +20,7 @@ import (
 func Run(ctx context.Context, name string, fn func(ctx context.Context) error) error {
 	frontend := logger.NewFrontend()
 
-	return frontend.Run(ctx, dagui.FrontendOpts{TooFastThreshold: 1}, func(ctx context.Context) (rerr error) {
+	run := func(ctx context.Context) (rerr error) {
 		defer telemetry.Close()
 
 		ctx = telemetry.Init(ctx, telemetry.Config{
@@ -55,6 +56,10 @@ func Run(ctx context.Context, name string, fn func(ctx context.Context) error) e
 		slog.SetDefault(slog.SpanLogger(ctx, name))
 
 		return fn(RunnerContext.Inject(c, daggerRunner))
+	}
+
+	return frontend.Run(ctx, dagui.FrontendOpts{TooFastThreshold: 1}, func(ctx context.Context) (cleanups.CleanupF, error) {
+		return func() error { return nil }, run(ctx)
 	})
 }
 
