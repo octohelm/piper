@@ -11,7 +11,7 @@ import (
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
-	"gopkg.in/yaml.v3"
+	"sigs.k8s.io/yaml/kyaml"
 )
 
 func init() {
@@ -49,23 +49,23 @@ func (t *WriteAsYAML) Do(ctx context.Context) error {
 		}
 		defer f.Close()
 
-		enc := yaml.NewEncoder(f)
+		enc := &kyaml.Encoder{}
 
 		switch x := t.Data.Value.(type) {
 		case []any:
 			if t.With.AsStream {
 				for _, item := range x {
-					if err := enc.Encode(item); err != nil {
+					if err := enc.FromObject(item, f); err != nil {
 						return fmt.Errorf("marshal to yaml failed: %w", err)
 					}
 				}
 			} else {
-				if err := enc.Encode(x); err != nil {
+				if err := enc.FromObject(x, f); err != nil {
 					return fmt.Errorf("marshal to yaml failed: %w", err)
 				}
 			}
 		default:
-			if err := enc.Encode(x); err != nil {
+			if err := enc.FromObject(x, f); err != nil {
 				return fmt.Errorf("marshal to yaml failed: %w", err)
 			}
 		}
