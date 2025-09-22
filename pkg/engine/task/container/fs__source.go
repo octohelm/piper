@@ -50,9 +50,8 @@ func (x *Source) Do(ctx context.Context) error {
 	// important for multi-builder build
 	return x.Output.SyncLazyDirectory(ctx, x, func(ctx context.Context, c *dagger.Client) (*dagger.Directory, error) {
 		return c.Host().Directory(path, dagger.HostDirectoryOpts{
-			Include:         x.Include,
-			Exclude:         x.Exclude,
-			NoGitAutoIgnore: true,
+			Include: x.Include,
+			Exclude: x.Exclude,
 		}), nil
 	})
 }

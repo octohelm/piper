@@ -52,7 +52,6 @@ func (x *SourceFile) Do(ctx context.Context) error {
 			Include: []string{
 				srcFile,
 			},
-			NoGitAutoIgnore: true,
 		})
 
 		if x.Dest != "" {
