@@ -12,10 +12,10 @@ import (
 	"github.com/octohelm/unifs/pkg/filesystem/local"
 	"github.com/opencontainers/go-digest"
 
-	"github.com/go-courier/logr"
 	"github.com/k0sproject/rig"
 	"github.com/k0sproject/rig/exec"
 	"github.com/octohelm/unifs/pkg/filesystem"
+	"github.com/octohelm/x/logr"
 )
 
 type WorkDir interface {
@@ -250,7 +250,7 @@ func (w *wd) normalizeExecArgs(cmd string, optFns ...OptionFunc) (opt *Options, 
 
 	b.WriteString(cmd)
 
-	return
+	return opt, b, execOptions
 }
 
 func RealPath(dir WorkDir) (string, error) {

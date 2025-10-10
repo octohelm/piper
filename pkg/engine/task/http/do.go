@@ -11,12 +11,12 @@ import (
 
 	"github.com/octohelm/piper/pkg/progress"
 
-	"github.com/go-courier/logr"
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/engine/task/file"
 	"github.com/octohelm/piper/pkg/otel"
+	"github.com/octohelm/x/logr"
 	"github.com/octohelm/x/ptr"
 )
 

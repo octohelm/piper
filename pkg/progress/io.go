@@ -43,7 +43,7 @@ type processingWriter struct {
 func (r *processingWriter) Write(p []byte) (n int, err error) {
 	n = len(p)
 	r.written += int64(n)
-	return
+	return n, err
 }
 
 func (r *processingWriter) Process(ctx context.Context) <-chan Progress {

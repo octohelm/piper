@@ -6,10 +6,10 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/go-courier/logr"
-	"github.com/go-courier/logr/slog"
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
+	"github.com/octohelm/x/logr"
+	"github.com/octohelm/x/logr/slog"
 )
 
 func Test_processPool(t *testing.T) {

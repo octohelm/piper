@@ -5,8 +5,6 @@ import (
 	"sync"
 
 	"dagger.io/dagger"
-	"github.com/moby/buildkit/identity"
-
 	engineclient "github.com/dagger/dagger/engine/client"
 	contextx "github.com/octohelm/x/context"
 )
@@ -38,7 +36,7 @@ type Engine interface {
 }
 
 func NewEngine(params Params) Engine {
-	params.ID = identity.NewID()
+	params.ID = NewID()
 
 	return &engineImpl{params: params}
 }

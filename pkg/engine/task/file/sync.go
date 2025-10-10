@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/go-courier/logr"
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	"github.com/octohelm/piper/pkg/chunk"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
@@ -17,6 +16,7 @@ import (
 	"github.com/octohelm/piper/pkg/progress"
 	"github.com/octohelm/piper/pkg/wd"
 	"github.com/octohelm/unifs/pkg/filesystem"
+	"github.com/octohelm/x/logr"
 )
 
 func init() {
@@ -116,7 +116,7 @@ func (t *Sync) Do(ctx context.Context) error {
 				return fmt.Errorf("sync failed, expected %s, but got %s", srcDgst, dstDgst)
 			}
 
-			return
+			return err
 		})
 	})
 }

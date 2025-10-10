@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"dagger.io/dagger"
-	"github.com/go-courier/logr"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
+	"github.com/octohelm/x/logr"
 	"github.com/opencontainers/go-digest"
 )
 

@@ -14,11 +14,11 @@ import (
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	"github.com/octohelm/piper/pkg/progress"
 
-	"github.com/go-courier/logr"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
 	"github.com/octohelm/piper/pkg/otel"
 	"github.com/octohelm/unifs/pkg/filesystem"
+	"github.com/octohelm/x/logr"
 )
 
 func init() {

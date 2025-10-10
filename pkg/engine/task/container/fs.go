@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"dagger.io/dagger"
-	"github.com/go-courier/logr"
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
+	"github.com/octohelm/x/logr"
 	"github.com/opencontainers/go-digest"
 )
 

@@ -8,10 +8,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/go-courier/logr"
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/octohelm/piper/pkg/otel"
+	"github.com/octohelm/x/logr"
 )
 
 func NewProcessPool(action string) *ProcessPool {

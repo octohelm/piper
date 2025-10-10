@@ -3,9 +3,9 @@ package engine
 import (
 	"context"
 
-	"github.com/go-courier/logr"
 	"github.com/innoai-tech/infra/pkg/configuration"
 	"github.com/octohelm/piper/internal/logger"
+	"github.com/octohelm/x/logr"
 )
 
 // +gengo:enum

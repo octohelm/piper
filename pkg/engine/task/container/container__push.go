@@ -8,12 +8,12 @@ import (
 
 	"dagger.io/dagger"
 
-	"github.com/go-courier/logr"
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/generic/record"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
+	"github.com/octohelm/x/logr"
 	"golang.org/x/sync/errgroup"
 )
 

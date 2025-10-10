@@ -82,5 +82,5 @@ func (tr *tableReader) normalize(cols []string) (finals []string) {
 		finals[i] = col
 	}
 
-	return
+	return finals
 }
