@@ -20,6 +20,38 @@ func (v *Do) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
+func (v *Fmt) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		}
+		if doc, ok := runtimeDoc(&v.FmtRun, "", names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v *FmtRun) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Inputs":
+			return []string{}, true
+		case "Simplify":
+			return []string{}, true
+		case "Files":
+			return []string{}, true
+		case "Check":
+			return []string{}, true
+
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
 func (v *Init) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
@@ -45,7 +77,42 @@ func (v *InitRun) RuntimeDoc(names ...string) ([]string, bool) {
 	return []string{}, true
 }
 
+func (v *Lsp) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		}
+		if doc, ok := runtimeDoc(&v.LspRun, "", names...); ok {
+			return doc, ok
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v *LspRun) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		case "Args":
+			return []string{}, true
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
 func (v *Tidy) RuntimeDoc(names ...string) ([]string, bool) {
+	if len(names) > 0 {
+		switch names[0] {
+		}
+
+		return nil, false
+	}
+	return []string{}, true
+}
+
+func (v *Version) RuntimeDoc(names ...string) ([]string, bool) {
 	if len(names) > 0 {
 		switch names[0] {
 		}

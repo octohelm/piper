@@ -125,7 +125,7 @@ settings: {
 
 actions: pkg: {
 	manifests: kubepkg.#Manifests & {
-		"kubepkg": example.#Example & {}
+		kubepkg: example.#Example & {}
 	}
 
 	yaml: file.#WriteAsYAML & {
@@ -137,9 +137,9 @@ actions: pkg: {
 	}
 
 	ocitar: kubepkg.#OciTar & {
-		"kubepkg": manifests.kubepkg
-		"rename":  "docker.io/x/{{ .name }}"
-		"outFile": {
+		kubepkg: manifests.kubepkg
+		rename:  "docker.io/x/{{ .name }}"
+		outFile: {
 			wd:       hosts.local.dir
 			filename: "target/\(manifests.kubepkg.metadata.name).kubepkg.tar"
 		}

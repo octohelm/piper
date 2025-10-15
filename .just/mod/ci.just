@@ -7,6 +7,12 @@ build:
 archive:
     {{ piper }} do go archive
 
+fmt:
+    {{ piper }} fmt -s .
+
+lsp-debug:
+    {{ piper }} lsp format ./piper.cue
+
 tidy:
     {{ piper }} mod tidy
 

@@ -16,5 +16,5 @@ test:
 test-race:
     CGO_ENABLED=1 go test -race ./...
 
-fmt:
+fmt-go:
     go tool gofumpt -w -l .
