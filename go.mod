@@ -1,6 +1,6 @@
 module github.com/octohelm/piper
 
-go 1.25.1
+go 1.25.3
 
 tool (
 	github.com/octohelm/piper/cmd/piper
@@ -25,7 +25,7 @@ replace (
 )
 
 require (
-	github.com/innoai-tech/infra v0.0.0-20250928074913-04e5ca3fbf27
+	github.com/innoai-tech/infra v0.0.0-20251015094202-0434a76eb4dd
 	github.com/octohelm/courier v0.0.0-20251010073531-57524a0631a3 // indirect
 	github.com/octohelm/crkit v0.0.0-20251010042040-0665303ac637
 	github.com/octohelm/cuekit v0.0.0-20251015062337-1c01c69696d9
@@ -33,8 +33,8 @@ require (
 	github.com/octohelm/gengo v0.0.0-20250928050614-7aa009184957
 	github.com/octohelm/kubekit v0.0.0-20250901023337-86a6a03e18da
 	github.com/octohelm/kubepkgspec v0.0.0-20251014050748-c2efe1f2100d
-	github.com/octohelm/unifs v0.0.0-20251010041736-d1c7f30be9b1
-	github.com/octohelm/x v0.0.0-20251009020353-8be04f917d90
+	github.com/octohelm/unifs v0.0.0-20251020060716-dd781374ba4f
+	github.com/octohelm/x v0.0.0-20251017072300-519c0f14bc17
 )
 
 require (
@@ -256,7 +256,7 @@ require (
 	github.com/prometheus/common v0.67.1 // indirect
 	github.com/prometheus/otlptranslator v1.0.0 // indirect
 	github.com/prometheus/procfs v0.17.0 // indirect
-	github.com/protocolbuffers/txtpbfmt v0.0.0-20251002044816-ff5ff96e8aaf // indirect
+	github.com/protocolbuffers/txtpbfmt v0.0.0-20251016062345-16587c79cd91 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect

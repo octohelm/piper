@@ -422,8 +422,8 @@ github.com/in-toto/in-toto-golang v0.9.0 h1:tHny7ac4KgtsfrG6ybU8gVOZux2H8jN05AXJ
 github.com/in-toto/in-toto-golang v0.9.0/go.mod h1:xsBVrVsHNsB61++S6Dy2vWosKhuA3lUTQd+eF9HdeMo=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
-github.com/innoai-tech/infra v0.0.0-20250928074913-04e5ca3fbf27 h1:KnYZpQ6cMU1y5d9dv+eOZqmUY4Q95qfjglqAGjxyCT8=
-github.com/innoai-tech/infra v0.0.0-20250928074913-04e5ca3fbf27/go.mod h1:wZmMSPBqLmKs1emdMZE4Ey6PG5RwwM15vZey3KQC9XU=
+github.com/innoai-tech/infra v0.0.0-20251015094202-0434a76eb4dd h1:lgUQUzuo/FFVzD+dm3HH4VE6NdIw/gK+q6UcSwZQFDc=
+github.com/innoai-tech/infra v0.0.0-20251015094202-0434a76eb4dd/go.mod h1:VvTZx0qN2joUWKNYlUymXq9+qqLytlYr6vFc9llXwhQ=
 github.com/invopop/jsonschema v0.13.0 h1:KvpoAJWEjR3uD9Kbm2HWJmqsEaHt8lBUpd0qHcIi21E=
 github.com/invopop/jsonschema v0.13.0/go.mod h1:ffZ5Km5SWWRAIN6wbDXItl95euhFz2uON45H2qjYt+0=
 github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 h1:BQSFePA1RWJOlocH6Fxy8MmwDt+yVQYULKfN0RoTN8A=
@@ -580,10 +580,10 @@ github.com/octohelm/kubekit v0.0.0-20250901023337-86a6a03e18da h1:DQoDYFjAL+30Jb
 github.com/octohelm/kubekit v0.0.0-20250901023337-86a6a03e18da/go.mod h1:71yyufYJ/uBLxLSmAP0H8COJ0fYTfoCwj5F3CMvQkyM=
 github.com/octohelm/kubepkgspec v0.0.0-20251014050748-c2efe1f2100d h1:76GWutsgada8gGa6h7f+b4Xbgcez+uh3iQC9PqWhSHA=
 github.com/octohelm/kubepkgspec v0.0.0-20251014050748-c2efe1f2100d/go.mod h1:+dyMX97VEQ7Cq31dWeEGm9JL/MsNPvGqu25fIy6/ymU=
-github.com/octohelm/unifs v0.0.0-20251010041736-d1c7f30be9b1 h1:Y0kGSjSzXH7TX+1PzHv/WJ4WjMbV4IMUV5Ebaqh7WDA=
-github.com/octohelm/unifs v0.0.0-20251010041736-d1c7f30be9b1/go.mod h1:fAyt+JpQ4+lKYWH4KKA5M69kvzmQE6AOhiWVpzUzaOI=
-github.com/octohelm/x v0.0.0-20251009020353-8be04f917d90 h1:anbkT10NtjlBg5Z7syB7wLoG5FyGDD2qYjM/rtI89ho=
-github.com/octohelm/x v0.0.0-20251009020353-8be04f917d90/go.mod h1:LTsJ+rfWzwOK93EkNowu59RoM8otlSgI/ROJhXCG/G4=
+github.com/octohelm/unifs v0.0.0-20251020060716-dd781374ba4f h1:Gph1xjy1otCupyH3z+TzhFOAC0jJZaWvBIOysGOkqVM=
+github.com/octohelm/unifs v0.0.0-20251020060716-dd781374ba4f/go.mod h1:Sc1bJhPVkKK8qtyQdBXFIKfGl061YrnHsmbf5vnP6tQ=
+github.com/octohelm/x v0.0.0-20251017072300-519c0f14bc17 h1:RZ26moChSdu6JlKlCtt5EMuY5PkAcyqwKUmR72Oxg3o=
+github.com/octohelm/x v0.0.0-20251017072300-519c0f14bc17/go.mod h1:LTsJ+rfWzwOK93EkNowu59RoM8otlSgI/ROJhXCG/G4=
 github.com/onsi/ginkgo/v2 v2.25.1 h1:Fwp6crTREKM+oA6Cz4MsO8RhKQzs2/gOIVOUscMAfZY=
 github.com/onsi/ginkgo/v2 v2.25.1/go.mod h1:ppTWQ1dh9KM/F1XgpeRqelR+zHVwV81DGRSDnFxK7Sk=
 github.com/onsi/gomega v1.38.1 h1:FaLA8GlcpXDwsb7m0h2A9ew2aTk3vnZMlzFgg5tz/pk=
@@ -630,8 +630,8 @@ github.com/prometheus/otlptranslator v1.0.0 h1:s0LJW/iN9dkIH+EnhiD3BlkkP5QVIUVEo
 github.com/prometheus/otlptranslator v1.0.0/go.mod h1:vRYWnXvI6aWGpsdY/mOT/cbeVRBlPWtBNDb7kGR3uKM=
 github.com/prometheus/procfs v0.17.0 h1:FuLQ+05u4ZI+SS/w9+BWEM2TXiHKsUQ9TADiRH7DuK0=
 github.com/prometheus/procfs v0.17.0/go.mod h1:oPQLaDAMRbA+u8H5Pbfq+dl3VDAvHxMUOVhe0wYB2zw=
-github.com/protocolbuffers/txtpbfmt v0.0.0-20251002044816-ff5ff96e8aaf h1:lmsLwgRWDPaoxhssHOuIenD/oe80VJMzP7nYEGZBpsU=
-github.com/protocolbuffers/txtpbfmt v0.0.0-20251002044816-ff5ff96e8aaf/go.mod h1:JSbkp0BviKovYYt9XunS95M3mLPibE9bGg+Y95DsEEY=
+github.com/protocolbuffers/txtpbfmt v0.0.0-20251016062345-16587c79cd91 h1:s1LvMaU6mVwoFtbxv/rCZKE7/fwDmDY684FfUe4c1Io=
+github.com/protocolbuffers/txtpbfmt v0.0.0-20251016062345-16587c79cd91/go.mod h1:JSbkp0BviKovYYt9XunS95M3mLPibE9bGg+Y95DsEEY=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
 github.com/rivo/uniseg v0.1.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
