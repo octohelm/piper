@@ -15,15 +15,19 @@ import (
 	"cuelang.org/go/cue/interpreter/embed"
 	"cuelang.org/go/cue/interpreter/wasm"
 	"github.com/k0sproject/rig"
+
 	cuekitcuecontext "github.com/octohelm/cuekit/pkg/cuecontext"
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/cuekit/pkg/cueflow/runner"
 	"github.com/octohelm/cuekit/pkg/cuepath"
+
 	"github.com/octohelm/piper/cuepkg"
 	"github.com/octohelm/piper/pkg/dagger"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/wd"
+)
 
+import (
 	_ "github.com/octohelm/piper/pkg/engine/task/archive"
 	_ "github.com/octohelm/piper/pkg/engine/task/client"
 	_ "github.com/octohelm/piper/pkg/engine/task/container"

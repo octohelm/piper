@@ -7,10 +7,11 @@ import (
 	"time"
 
 	"dagger.io/dagger/telemetry"
-	"github.com/octohelm/piper/pkg/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/octohelm/piper/pkg/otel"
 )
 
 const LogAttrSpanName = "$$spanName"

@@ -5,12 +5,14 @@ import (
 	"io"
 	"os"
 
+	"sigs.k8s.io/kustomize/kyaml/yaml"
+
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	"github.com/octohelm/x/anyjson"
+
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/client"
 	"github.com/octohelm/piper/pkg/wd"
-	"github.com/octohelm/x/anyjson"
-	"sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
 func init() {

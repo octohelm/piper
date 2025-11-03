@@ -1,6 +1,8 @@
 package otel
 
-import "dagger.io/dagger/telemetry"
+import (
+	"dagger.io/dagger/telemetry"
+)
 
 const (
 	LogAttrScope = "$scope"

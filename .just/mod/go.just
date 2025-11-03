@@ -1,8 +1,13 @@
+devtool := 'go tool devtool'
+
 install:
     go install ./cmd/piper
 
+fmt:
+    {{ devtool }} fmt -w -l .
+
 gen:
-    go tool devtool gen --all ./cmd/piper
+    {{ devtool }} gen --all ./cmd/piper
 
 update:
     go get -u ./...
@@ -11,10 +16,8 @@ dep:
     go mod tidy
 
 test:
-    go test -failfast ./...
+    go test -count=1 -failfast ./...
 
 test-race:
-    CGO_ENABLED=1 go test -race ./...
-
-fmt-go:
-    go tool gofumpt -w -l .
+    CGO_ENABLED=1 \
+      go test -count=1  -race ./...

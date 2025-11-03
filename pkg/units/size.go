@@ -1,6 +1,8 @@
 package units
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func CustomSize(format string, size float64, base float64, _map []string) string {
 	size, unit := getSizeAndUnit(size, base, _map)

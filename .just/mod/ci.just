@@ -7,7 +7,7 @@ build:
 archive:
     {{ piper }} do go archive
 
-fmt:
+piper-fmt:
     {{ piper }} fmt -s .
 
 lsp-debug:

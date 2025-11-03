@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"github.com/innoai-tech/infra/pkg/configuration"
-	"github.com/octohelm/piper/internal/logger"
 	"github.com/octohelm/x/logr"
+
+	"github.com/octohelm/piper/internal/logger"
 )
 
 // +gengo:enum

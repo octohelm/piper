@@ -10,8 +10,9 @@ import (
 
 	"github.com/octohelm/cuekit/pkg/cueflow/runner"
 	"github.com/octohelm/cuekit/pkg/mod/modmem"
-	"github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/unifs/pkg/filesystem"
+
+	"github.com/octohelm/piper/pkg/engine/task"
 )
 
 func RegisterAsMemModule() error {

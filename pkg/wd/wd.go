@@ -9,12 +9,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/octohelm/unifs/pkg/filesystem/local"
-	"github.com/opencontainers/go-digest"
-
 	"github.com/k0sproject/rig"
 	"github.com/k0sproject/rig/exec"
+	"github.com/opencontainers/go-digest"
+
 	"github.com/octohelm/unifs/pkg/filesystem"
+	"github.com/octohelm/unifs/pkg/filesystem/local"
 	"github.com/octohelm/x/logr"
 )
 

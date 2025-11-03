@@ -6,9 +6,11 @@ import (
 	"sync"
 
 	"dagger.io/dagger"
-	piperdagger "github.com/octohelm/piper/pkg/dagger"
-	"github.com/octohelm/x/logr"
 	"github.com/opencontainers/go-digest"
+
+	"github.com/octohelm/x/logr"
+
+	piperdagger "github.com/octohelm/piper/pkg/dagger"
 )
 
 var containerIDs = sync.Map{}

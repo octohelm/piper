@@ -5,9 +5,11 @@ import (
 	"testing"
 
 	"github.com/k0sproject/rig"
-	"github.com/octohelm/piper/pkg/sshutil"
-	testingx "github.com/octohelm/x/testing"
 	"golang.org/x/net/context"
+
+	testingx "github.com/octohelm/x/testing"
+
+	"github.com/octohelm/piper/pkg/sshutil"
 )
 
 func TestFS(t *testing.T) {

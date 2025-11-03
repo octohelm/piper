@@ -6,10 +6,11 @@ import (
 	"io/fs"
 	"os"
 
-	"github.com/octohelm/unifs/pkg/filesystem"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/net/webdav"
+
+	"github.com/octohelm/unifs/pkg/filesystem"
 )
 
 func WrapSFTP(c *ssh.Client) (filesystem.FileSystem, error) {

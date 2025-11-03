@@ -9,8 +9,9 @@ import (
 	"path/filepath"
 
 	"github.com/k0sproject/rig/pkg/rigfs"
-	"github.com/octohelm/unifs/pkg/filesystem"
 	"golang.org/x/net/webdav"
+
+	"github.com/octohelm/unifs/pkg/filesystem"
 )
 
 func WrapRigFS(fsys rigfs.Fsys) filesystem.FileSystem {

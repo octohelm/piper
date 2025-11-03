@@ -6,11 +6,13 @@ import (
 	"fmt"
 
 	"dagger.io/dagger"
+	"github.com/opencontainers/go-digest"
+
 	"github.com/octohelm/cuekit/pkg/cueflow"
+	"github.com/octohelm/x/logr"
+
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	"github.com/octohelm/piper/pkg/generic/record"
-	"github.com/octohelm/x/logr"
-	"github.com/opencontainers/go-digest"
 )
 
 var fsIDs = record.Map[string, any]{}

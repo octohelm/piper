@@ -9,6 +9,7 @@ import (
 	"runtime/debug"
 
 	"cuelang.org/go/cue"
+
 	"github.com/innoai-tech/infra/pkg/cli"
 )
 
@@ -22,8 +23,7 @@ type Version struct {
 	VersionRun
 }
 
-type VersionRun struct {
-}
+type VersionRun struct{}
 
 func (r *VersionRun) Run(ctx context.Context) error {
 	bi, ok := debug.ReadBuildInfo()

@@ -7,14 +7,15 @@ import (
 	"github.com/dagger/dagger/dagql/dagui"
 	"github.com/dagger/dagger/engine/slog"
 	"github.com/dagger/dagger/util/cleanups"
-	"github.com/octohelm/piper/internal/logger"
-	"github.com/octohelm/piper/internal/version"
 	"go.opentelemetry.io/otel"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/octohelm/piper/internal/logger"
+	"github.com/octohelm/piper/internal/version"
 )
 
 func Run(ctx context.Context, name string, fn func(ctx context.Context) error) error {

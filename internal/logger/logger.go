@@ -9,13 +9,15 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/octohelm/piper/pkg/chunk"
-	"github.com/octohelm/piper/pkg/otel"
-	"github.com/octohelm/x/logr"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/octohelm/x/logr"
+
+	"github.com/octohelm/piper/pkg/chunk"
+	"github.com/octohelm/piper/pkg/otel"
 )
 
 type Logger struct {

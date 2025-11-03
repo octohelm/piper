@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/octohelm/x/ptr"
-
 	"github.com/k0sproject/rig"
 	"github.com/kevinburke/ssh_config"
+
+	"github.com/octohelm/x/ptr"
 )
 
 func Load(configPath string, hostKey string) (*rig.SSH, error) {

@@ -1,6 +1,8 @@
 package ocitar
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func WithRoundTripperFunc(fn func(req *http.Request, next http.RoundTripper) (*http.Response, error)) func(next http.RoundTripper) http.RoundTripper {
 	return func(next http.RoundTripper) http.RoundTripper {
