@@ -25,7 +25,7 @@ replace (
 
 // +gengo:import:group=0_controlled
 require (
-	github.com/innoai-tech/infra v0.0.0-20251028101358-f21d68904467
+	github.com/innoai-tech/infra v0.0.0-20251103062905-2a0dd3969469
 	github.com/octohelm/courier v0.0.0-20251010073531-57524a0631a3 // indirect
 	github.com/octohelm/crkit v0.0.0-20251010042040-0665303ac637
 	github.com/octohelm/cuekit v0.0.0-20251015062337-1c01c69696d9
@@ -58,7 +58,7 @@ require (
 	golang.org/x/net v0.46.0
 	golang.org/x/sync v0.17.0
 	k8s.io/apimachinery v0.34.1
-	sigs.k8s.io/controller-runtime v0.22.3
+	sigs.k8s.io/controller-runtime v0.22.4
 	sigs.k8s.io/kustomize/kyaml v0.20.1
 	sigs.k8s.io/yaml v1.6.0
 )

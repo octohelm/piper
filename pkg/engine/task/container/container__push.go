@@ -11,10 +11,10 @@ import (
 
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	"github.com/octohelm/x/logr"
+	syncx "github.com/octohelm/x/sync"
 
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
-	"github.com/octohelm/piper/pkg/generic/record"
 	pkgwd "github.com/octohelm/piper/pkg/wd"
 )
 
@@ -46,7 +46,7 @@ func (x *Push) Do(ctx context.Context) error {
 	}
 
 	eg := &errgroup.Group{}
-	published := record.Map[*pkgwd.Platform, string]{}
+	published := syncx.Map[*pkgwd.Platform, string]{}
 
 	for platform, container := range x.Images {
 		eg.Go(func() error {

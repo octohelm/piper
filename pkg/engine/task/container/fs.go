@@ -10,12 +10,12 @@ import (
 
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/x/logr"
+	syncx "github.com/octohelm/x/sync"
 
 	piperdagger "github.com/octohelm/piper/pkg/dagger"
-	"github.com/octohelm/piper/pkg/generic/record"
 )
 
-var fsIDs = record.Map[string, any]{}
+var fsIDs = syncx.Map[string, any]{}
 
 type Fs struct {
 	Ref struct {
@@ -96,7 +96,7 @@ func (fs *Fs) SyncLazyDirectory(ctx context.Context, inputs any, do LazyDoFn) er
 	})
 
 	if loaded {
-		panic(fmt.Errorf("lazy fs conflicted, %s", key))
+		logr.FromContext(ctx).Warn(fmt.Errorf("lazy dir already loaded: %s", data))
 	}
 
 	fs.Ref.ID = key

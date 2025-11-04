@@ -2,15 +2,15 @@ package task
 
 import (
 	contextx "github.com/octohelm/x/context"
+	syncx "github.com/octohelm/x/sync"
 
-	"github.com/octohelm/piper/pkg/generic/record"
 	"github.com/octohelm/piper/pkg/wd"
 )
 
-var WorkDirStore = &record.Map[string, wd.WorkDir]{}
+var WorkDirStore = &syncx.Map[string, wd.WorkDir]{}
 
-var WorkDirContext = contextx.New[*record.Map[string, wd.WorkDir]](
-	contextx.WithDefaultsFunc[*record.Map[string, wd.WorkDir]](func() *record.Map[string, wd.WorkDir] {
+var WorkDirContext = contextx.New[*syncx.Map[string, wd.WorkDir]](
+	contextx.WithDefaultsFunc[*syncx.Map[string, wd.WorkDir]](func() *syncx.Map[string, wd.WorkDir] {
 		return WorkDirStore
 	}),
 )
