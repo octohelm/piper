@@ -18,17 +18,16 @@ replace (
 	go.opentelemetry.io/otel/sdk/log => go.opentelemetry.io/otel/sdk/log v0.14.0
 )
 
-replace (
-	cuelang.org/go => github.com/morlay/cue v0.14.3-0.20251015060733-4c79745edb01
-	github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240920093217-dd32573e1cbd
-)
+replace cuelang.org/go => github.com/morlay/cue v0.15.1-0.20251107024512-675234fd06ac
+
+replace github.com/k0sproject/rig => github.com/morlay/rig v0.0.0-20240920093217-dd32573e1cbd
 
 // +gengo:import:group=0_controlled
 require (
 	github.com/innoai-tech/infra v0.0.0-20251103062905-2a0dd3969469
 	github.com/octohelm/courier v0.0.0-20251010073531-57524a0631a3 // indirect
 	github.com/octohelm/crkit v0.0.0-20251010042040-0665303ac637
-	github.com/octohelm/cuekit v0.0.0-20251015062337-1c01c69696d9
+	github.com/octohelm/cuekit v0.0.0-20251107024850-9517ffe797b6
 	github.com/octohelm/enumeration v0.0.0-20250115091102-ddf41951d733
 	github.com/octohelm/gengo v0.0.0-20251031090256-3806c0e4d0f8
 	github.com/octohelm/kubekit v0.0.0-20250901023337-86a6a03e18da
@@ -38,9 +37,9 @@ require (
 )
 
 require (
-	cuelang.org/go v0.14.2
-	dagger.io/dagger v0.19.4
-	github.com/dagger/dagger v0.19.4
+	cuelang.org/go v0.15.0
+	dagger.io/dagger v0.19.5
+	github.com/dagger/dagger v0.19.5
 	github.com/fatih/color v1.18.0
 	github.com/google/go-containerregistry v0.20.6
 	github.com/k0sproject/rig v0.0.0-00010101000000-000000000000
@@ -68,8 +67,6 @@ require (
 	dario.cat/mergo v1.0.1 // indirect
 	github.com/1password/onepassword-sdk-go v0.3.1 // indirect
 	github.com/99designs/gqlgen v0.17.81 // indirect
-	github.com/AdaLogics/go-fuzz-headers v0.0.0-20240806141605-e8a1dd7889d6 // indirect
-	github.com/AdamKorcz/go-118-fuzz-build v0.0.0-20231105174938-2b5cbb29f3e2 // indirect
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/ChrisTrenkamp/goxpath v0.0.0-20210404020558-97928f7e12b6 // indirect
 	github.com/Khan/genqlient v0.8.1 // indirect
@@ -103,22 +100,24 @@ require (
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cockroachdb/apd/v3 v3.2.1 // indirect
-	github.com/containerd/cgroups/v3 v3.0.3 // indirect
+	github.com/containerd/cgroups/v3 v3.0.5 // indirect
 	github.com/containerd/console v1.0.5 // indirect
 	github.com/containerd/containerd v1.7.28 // indirect
 	github.com/containerd/containerd/api v1.9.0 // indirect
+	github.com/containerd/containerd/v2 v2.1.4 // indirect
 	github.com/containerd/continuity v0.4.5 // indirect
 	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/fifo v1.1.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/containerd/platforms v1.0.0-rc.1 // indirect
+	github.com/containerd/plugin v1.0.0 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.18.0 // indirect
 	github.com/containerd/ttrpc v1.2.7 // indirect
 	github.com/containerd/typeurl/v2 v2.2.3 // indirect
 	github.com/creasty/defaults v1.7.0 // indirect
-	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
-	github.com/dagger/dagger/engine/distconsts v0.19.3 // indirect
+	github.com/cyphar/filepath-securejoin v0.5.1 // indirect
+	github.com/dagger/dagger/engine/distconsts v0.19.4 // indirect
 	github.com/danielgatis/go-ansicode v1.0.7 // indirect
 	github.com/danielgatis/go-iterator v0.0.1 // indirect
 	github.com/danielgatis/go-utf8 v1.0.0 // indirect
@@ -132,7 +131,6 @@ require (
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker v28.5.1+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.3 // indirect
-	github.com/docker/go-events v0.0.0-20190806004212-e31b211e4f1c // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dylibso/observe-sdk/go v0.0.0-20240819160327-2d926c5d788a // indirect
@@ -280,7 +278,7 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	github.com/yuin/goldmark v1.7.12 // indirect
+	github.com/yuin/goldmark v1.7.13 // indirect
 	github.com/yuin/goldmark-emoji v1.0.5 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
@@ -308,7 +306,6 @@ require (
 	golang.org/x/text v0.30.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
 	golang.org/x/tools v0.38.0 // indirect
-	google.golang.org/genproto v0.0.0-20250603155806-513f23925822 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20251022142026-3a174f9686a8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251022142026-3a174f9686a8 // indirect
 	google.golang.org/grpc v1.76.0 // indirect

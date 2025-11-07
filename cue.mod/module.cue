@@ -1,6 +1,6 @@
 module: "github.com/octohelm/piper@v0"
 language: {
-	version: "v0.14.2"
+	version: "v0.15.0"
 }
 deps: {
 	"github.com/octohelm/kubepkgspec@v0": {
