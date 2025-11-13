@@ -34,7 +34,6 @@ import (
 				}
 			},
 			#InstallPackage & {
-				input:      _
 				"packages": packages
 			},
 			for step in steps {

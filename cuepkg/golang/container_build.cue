@@ -34,7 +34,9 @@ import (
 	_info: #GoInfo & {
 		gomod: wd: source.cwd
 	}
-	
+
+	cgo: *false | bool
+
 	module: _ | *_info.output.module
 
 	_goenv: client.#Env & {
@@ -111,9 +113,18 @@ import (
 					run:       "go build -ldflags=\"\(strings.Join(X.ldflags, " "))\" -o \(_outDir)/\(X.bin) \(X.main)"
 					"env": {
 						env
-						CGO_ENABLED: "0"
-						GOOS:        "\(_os)"
-						GOARCH:      "\(_arch)"
+						GOOS:   "\(_os)"
+						GOARCH: "\(_arch)"
+
+						if !cgo {
+							CGO_ENABLED: "0"
+						}
+						if cgo {
+							CGO_ENABLED: "1"
+							CXX:         "zig c++ -target \(debian.#GnuArch["\(_arch)"])-linux"
+							CC:          "zig cc -target \(debian.#GnuArch["\(_arch)"])-linux"
+							AR:          "zig ar -target \(debian.#GnuArch["\(_arch)"])-linux"
+						}
 					}
 					"mounts": {
 						mounts
