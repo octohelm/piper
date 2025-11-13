@@ -11,6 +11,8 @@ import (
 	"piper.octohelm.tech/client"
 	"piper.octohelm.tech/exec"
 	"piper.octohelm.tech/archive"
+
+	"github.com/octohelm/piper/cuepkg/debian"
 )
 
 #Project: X = {
@@ -36,9 +38,18 @@ import (
 					"env": {
 						X.env
 
-						CGO_ENABLED: "0"
-						GOOS:        _os
-						GOARCH:      _arch
+						GOOS:   _os
+						GOARCH: _arch
+
+						if !X.cgo {
+							CGO_ENABLED: "0"
+						}
+						if X.cgo {
+							CGO_ENABLED: "1"
+							CXX:         "zig c++ -target \(debian.#GnuArch["\(_arch)"])-linux"
+							CC:          "zig cc -target \(debian.#GnuArch["\(_arch)"])-linux"
+							AR:          "zig ar -target \(debian.#GnuArch["\(_arch)"])-linux"
+						}
 					}
 					cmd: [
 						"go", "build",
@@ -89,6 +100,7 @@ import (
 	version!: string
 	goos: [...string] | *["darwin", "linux"]
 	goarch: [...string] | *["amd64", "arm64"]
+	cgo: *false | bool
 	ldflags?: [...string]
 	env: [Name=string]: client.#SecretOrString
 	bin: string | *path.Base(main)

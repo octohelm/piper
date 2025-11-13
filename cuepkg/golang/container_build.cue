@@ -35,8 +35,6 @@ import (
 		gomod: wd: source.cwd
 	}
 
-	cgo: *false | bool
-
 	module: _ | *_info.output.module
 
 	_goenv: client.#Env & {
@@ -116,10 +114,10 @@ import (
 						GOOS:   "\(_os)"
 						GOARCH: "\(_arch)"
 
-						if !cgo {
+						if !X.cgo {
 							CGO_ENABLED: "0"
 						}
-						if cgo {
+						if X.cgo {
 							CGO_ENABLED: "1"
 							CXX:         "zig c++ -target \(debian.#GnuArch["\(_arch)"])-linux"
 							CC:          "zig cc -target \(debian.#GnuArch["\(_arch)"])-linux"
