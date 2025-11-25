@@ -29,7 +29,7 @@ func ParseLogLevelLabelString(label string) (LogLevel, error) {
 		return WarnLevel, nil
 
 	default:
-		return "", InvalidLogLevel
+		return *new(LogLevel), InvalidLogLevel
 	}
 }
 

@@ -58,15 +58,14 @@ func (e *engineImpl) Shutdown(ctx context.Context) error {
 
 func (e *engineImpl) client(ctx context.Context) (*dagger.Client, error) {
 	v, _ := e.m.LoadOrStore("", sync.OnceValues(func() (*dagger.Client, error) {
-		engineClient, c, err := engineclient.Connect(context.WithoutCancel(ctx), e.params)
+		c := context.WithoutCancel(ctx)
+
+		engineClient, err := engineclient.Connect(c, e.params)
 		if err != nil {
 			return nil, err
 		}
 
-		e.daggerClient, err = dagger.Connect(
-			c,
-			dagger.WithConn(engineclient.EngineConn(engineClient)),
-		)
+		e.daggerClient, err = dagger.Connect(c, dagger.WithConn(engineclient.EngineConn(engineClient)))
 
 		return e.daggerClient, err
 	}))
