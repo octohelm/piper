@@ -3,25 +3,17 @@ package ocitar
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
-
-	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/go-containerregistry/pkg/v1/remote"
 
 	"github.com/octohelm/crkit/pkg/artifact/kubepkg"
-	"github.com/octohelm/crkit/pkg/artifact/kubepkg/cache"
-	"github.com/octohelm/crkit/pkg/ocitar"
+	ocitar "github.com/octohelm/crkit/pkg/oci/tar"
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	kubepkgv1alpha1 "github.com/octohelm/kubepkgspec/pkg/apis/kubepkg/v1alpha1"
 	"github.com/octohelm/kubepkgspec/pkg/workload"
 	"github.com/octohelm/unifs/pkg/filesystem"
 
-	"github.com/octohelm/piper/internal/pkg/processpool"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/container"
 	"github.com/octohelm/piper/pkg/engine/task/file"
@@ -73,58 +65,20 @@ func (t *Pull) Do(ctx context.Context) error {
 	}
 
 	registryAuthStore := container.RegistryAuthStoreContext.From(ctx)
-	p := processpool.NewProcessPool("pulling")
-	go p.Wait(ctx)
-	defer func() {
-		_ = p.Close()
-	}()
 
-	fetcher := &http.Client{
-		Transport: remote.DefaultTransport,
+	ns, err := container.NewNamespace(ctx, registryAuthStore, container.NamespaceOptions{
+		CacheDir: cacheDir,
+	})
+	if err != nil {
+		return err
 	}
 
-	transport := WithRoundTripperFunc(func(req *http.Request, next http.RoundTripper) (*http.Response, error) {
-		if req.Method == http.MethodGet && strings.Contains(req.URL.Path, "/blobs/") {
-			resp, err := fetcher.Do(req)
-			if err != nil {
-				return nil, err
-			}
-
-			if resp.ContentLength > 0 {
-				r, _ := name.NewRegistry(req.Host)
-				parts := strings.Split(strings.Split(req.URL.Path, "/v2/")[1], "/blobs/")
-				ref := r.Repo(parts[0]).Digest(parts[1])
-
-				resp.Body = processpool.NewProcessReader(resp.Body, resp.ContentLength, p.Progress(ref))
-			}
-
-			return resp, nil
-		}
-
-		return next.RoundTrip(req)
-	})(remote.DefaultTransport)
-
 	packer := &kubepkg.Packer{
-		Cache:           cache.NewFilesystemCache(cacheDir),
+		Namespace:       ns,
 		Renamer:         t.Rename.Renamer,
 		Platforms:       t.Platforms,
 		WithAnnotations: []string{"*"},
 		ImageOnly:       true,
-		CreatePuller: func(ref name.Reference, options ...remote.Option) (*remote.Puller, error) {
-			for auth := range registryAuthStore.RegistryAuths(ctx) {
-				if ref.Context().RegistryStr() == auth.Address {
-					options = append(options, remote.WithAuth(authn.FromConfig(authn.AuthConfig{
-						Username: auth.Username,
-						Password: auth.Password,
-					})))
-				}
-			}
-			return remote.NewPuller(append(
-				options,
-				remote.WithContext(ctx),
-				remote.WithTransport(transport),
-			)...)
-		},
 	}
 
 	return t.OutFile.WorkDir.Do(ctx, func(ctx context.Context, cwd pkgwd.WorkDir) error {

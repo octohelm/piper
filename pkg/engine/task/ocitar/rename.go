@@ -3,13 +3,13 @@ package ocitar
 import (
 	"encoding"
 
-	"github.com/octohelm/crkit/pkg/artifact/kubepkg"
+	"github.com/octohelm/crkit/pkg/artifact/kubepkg/renamer"
 )
 
 var _ encoding.TextUnmarshaler = &Rename{}
 
 type Rename struct {
-	kubepkg.Renamer
+	renamer.Renamer
 }
 
 func (r *Rename) CueType() []byte {
@@ -21,13 +21,13 @@ func (r *Rename) UnmarshalText(text []byte) error {
 		return nil
 	}
 
-	renamer, err := kubepkg.NewTemplateRenamer(string(text))
+	re, err := renamer.NewTemplate(string(text))
 	if err != nil {
 		return err
 	}
 
 	*r = Rename{
-		Renamer: renamer,
+		Renamer: re,
 	}
 
 	return nil

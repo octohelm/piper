@@ -5,15 +5,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/go-containerregistry/pkg/v1/remote"
-
-	"github.com/octohelm/crkit/pkg/artifact/kubepkg"
-	"github.com/octohelm/crkit/pkg/ocitar"
+	"github.com/octohelm/crkit/pkg/oci/remote"
+	ocitar "github.com/octohelm/crkit/pkg/oci/tar"
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 
-	"github.com/octohelm/piper/internal/pkg/processpool"
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/container"
 	"github.com/octohelm/piper/pkg/engine/task/file"
@@ -30,49 +25,23 @@ type Push struct {
 	// SrcFile of oci tar
 	SrcFile file.File `json:"srcFile"`
 
-	// RemoteURL of container registry
-	RemoteURL string `json:"remoteURL"`
-
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
 	Rename Rename `json:"rename,omitzero"`
-}
 
-func (t *Push) registry() (kubepkg.Registry, error) {
-	if t.RemoteURL != "" {
-		return kubepkg.NewRegistry(t.RemoteURL)
-	}
-	return nil, nil
+	// HostAliases to switch registry target
+	HostAliases map[string]string `json:"hostAliases,omitzero"`
 }
 
 func (t *Push) Do(ctx context.Context) error {
-	r, err := t.registry()
+	registryAuthStore := container.RegistryAuthStoreContext.From(ctx)
+
+	ns, err := container.NewNamespace(ctx, registryAuthStore, container.NamespaceOptions{
+		HostAliases: t.HostAliases,
+	})
 	if err != nil {
 		return err
-	}
-
-	registryAuthStore := container.RegistryAuthStoreContext.From(ctx)
-	p := processpool.NewProcessPool("pushing")
-	go p.Wait(ctx)
-	defer func() {
-		_ = p.Close()
-	}()
-
-	pusher := &kubepkg.Pusher{
-		Registry: r,
-		Renamer:  t.Rename.Renamer,
-		CreatePusher: func(ref name.Reference, options ...remote.Option) (*remote.Pusher, error) {
-			for auth := range registryAuthStore.RegistryAuths(ctx) {
-				if ref.Context().RegistryStr() == auth.Address {
-					options = append(options, remote.WithAuth(authn.FromConfig(authn.AuthConfig{
-						Username: auth.Username,
-						Password: auth.Password,
-					})))
-				}
-			}
-			return remote.NewPusher(append(options, remote.WithContext(ctx), remote.WithProgress(p.Progress(ref)))...)
-		},
 	}
 
 	return t.SrcFile.WorkDir.Do(ctx, func(ctx context.Context, wd pkgwd.WorkDir) error {
@@ -83,6 +52,6 @@ func (t *Push) Do(ctx context.Context) error {
 			return err
 		}
 
-		return pusher.PushIndex(ctx, idx)
+		return remote.PushIndex(ctx, idx, ns)
 	})
 }

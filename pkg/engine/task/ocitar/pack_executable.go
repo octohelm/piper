@@ -7,8 +7,10 @@ import (
 	"os"
 
 	"github.com/octohelm/crkit/pkg/artifact/executable"
-	"github.com/octohelm/crkit/pkg/ocitar"
+	"github.com/octohelm/crkit/pkg/oci"
+	ocitar "github.com/octohelm/crkit/pkg/oci/tar"
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
+	"github.com/octohelm/exp/xiter"
 
 	enginetask "github.com/octohelm/piper/pkg/engine/task"
 	"github.com/octohelm/piper/pkg/engine/task/file"
@@ -40,11 +42,11 @@ type PackExecutable struct {
 func (t *PackExecutable) Do(ctx context.Context) error {
 	packer := &executable.Packer{}
 
-	layers := make([]executable.LayerWithPlatform, 0, len(t.Files))
+	layers := make([]oci.Blob, 0, len(t.Files))
 
 	for p, f := range t.Files {
 		if err := f.WorkDir.Do(ctx, func(ctx context.Context, wd pkgwd.WorkDir) error {
-			l, err := executable.PlatformedBinary(p, func() (io.ReadCloser, error) {
+			l, err := executable.Platformed(p, func(ctx context.Context) (io.ReadCloser, error) {
 				return wd.OpenFile(ctx, f.Filename, os.O_RDONLY, os.ModePerm)
 			})
 			if err != nil {
@@ -65,9 +67,9 @@ func (t *PackExecutable) Do(ctx context.Context) error {
 		}
 		defer f.Close()
 
-		idx, err := packer.PackAsIndexOfOciTar(
+		idx, err := packer.PackAsIndex(
 			ctx,
-			layers,
+			xiter.Of(layers...),
 			executable.WithAnnotations(t.Annotations),
 			executable.WithImageName(t.Dest),
 		)
