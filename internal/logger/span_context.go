@@ -47,12 +47,12 @@ func getProgressAttrs(attrs []slog.Attr) []attribute.KeyValue {
 
 	for _, attr := range attrs {
 		switch attr.Key {
-		case otel.LogAttrProgressCurrent:
+		case otel.LogAttrProgressCurrent, "progress.current":
 			finalAttrs = append(
 				finalAttrs,
 				attribute.Int64(telemetry.ProgressCurrentAttr, attr.Value.Int64()),
 			)
-		case otel.LogAttrProgressTotal:
+		case otel.LogAttrProgressTotal, "progress.total":
 			finalAttrs = append(
 				finalAttrs,
 				attribute.Int64(telemetry.ProgressTotalAttr, attr.Value.Int64()),

@@ -146,16 +146,16 @@ func (l *Logger) printf(ll log.Logger, msg string, attrs []attribute.KeyValue) {
 	var total int64
 
 	for _, attr := range l.attrs {
-		if attr.Key == otel.LogAttrProgressTotal {
+		if attr.Key == otel.LogAttrProgressTotal || attr.Key == "progress.total" {
 			total = attr.Value.Int64()
 		}
 	}
 
 	for _, attr := range l.attrs {
 		switch attr.Key {
-		case otel.LogAttrProgressTotal:
+		case otel.LogAttrProgressTotal, "progress.total":
 			continue
-		case otel.LogAttrProgressCurrent:
+		case otel.LogAttrProgressCurrent, "progress.current":
 			if total > 0 {
 				if current := attr.Value.Int64(); current < total {
 					_, _ = fmt.Fprint(buf,

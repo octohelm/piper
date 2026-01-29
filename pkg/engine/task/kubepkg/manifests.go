@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/go-containerregistry/pkg/name"
-
 	"github.com/octohelm/cuekit/pkg/cueflow/task"
 	kubepkgv1alpha1 "github.com/octohelm/kubepkgspec/pkg/apis/kubepkg/v1alpha1"
 	"github.com/octohelm/kubepkgspec/pkg/kubepkg"
@@ -57,11 +55,7 @@ func (r *Manifests) Do(ctx context.Context) error {
 		})
 
 		for img := range images {
-			repo, err := name.NewRepository(img.Name)
-			if err != nil {
-				return err
-			}
-			img.Name = renamer.Rename(repo)
+			img.Name = renamer.Rename(img.Name)
 		}
 	}
 

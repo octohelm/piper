@@ -1,12 +1,15 @@
 package container
 
 import (
+	"cmp"
 	"context"
+	"fmt"
 	"iter"
 	"strings"
 	"sync"
 
 	"dagger.io/dagger"
+	"github.com/octohelm/crkit/pkg/content/remote"
 
 	contextx "github.com/octohelm/x/context"
 
@@ -21,6 +24,7 @@ func Secret(ctx context.Context, c *dagger.Client, s *client.Secret) (*dagger.Se
 }
 
 type Auth struct {
+	Server   string        `json:"server,omitzero"`
 	Username string        `json:"username"`
 	Secret   client.Secret `json:"secret"`
 }
@@ -48,9 +52,9 @@ type RegistryAuthStore interface {
 }
 
 type RegistryAuth struct {
-	Address  string
-	Username string
-	Password string
+	Host string
+
+	remote.RegistryHost
 }
 
 func NewRegistryAuthStore() RegistryAuthStore {
@@ -64,15 +68,20 @@ type registryAuthStore struct {
 func (r *registryAuthStore) RegistryAuths(ctx context.Context) iter.Seq[RegistryAuth] {
 	return func(yield func(RegistryAuth) bool) {
 		for key, value := range r.m.Range {
-			address := key.(string)
+			host := key.(string)
 			a := value.(*Auth)
 
 			if password, ok := a.Secret.Value(ctx); ok {
-				if !yield(RegistryAuth{
-					Address:  address,
+				ra := RegistryAuth{
+					Host: host,
+				}
+				ra.Server = cmp.Or(a.Server, fmt.Sprintf("https://%s", host))
+				ra.Auth = &remote.RegistryAuth{
 					Username: a.Username,
 					Password: password.Value,
-				}) {
+				}
+
+				if !yield(ra) {
 				}
 			}
 		}

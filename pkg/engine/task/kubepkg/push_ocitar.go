@@ -20,20 +20,19 @@ type PushOciTar struct {
 	// SrcFile of oci tar
 	SrcFile file.File `json:"srcFile"`
 
-	// RemoteURL of container registry
-	RemoteURL string `json:"remoteURL"`
-
 	// Rename for image repo name
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
 	Rename taskocitar.Rename `json:"rename,omitzero"`
+
+	// HostAliases to switch registry target
+	HostAliases map[string]string `json:"hostAliases,omitzero"`
 }
 
 func (t *PushOciTar) Do(ctx context.Context) error {
 	p := taskocitar.Push{}
 	p.Task = t.Task
-
-	p.RemoteURL = t.RemoteURL
+	p.HostAliases = t.HostAliases
 	p.SrcFile = t.SrcFile
 	p.Rename = t.Rename
 
