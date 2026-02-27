@@ -84,9 +84,7 @@ func (w *Worker) next() bool {
 func (w *Worker) Do(action func(c Chunk) error) {
 	w.once.Do(func() {
 		for i := 0; i < w.maxConcurrent; i++ {
-			w.wg.Add(1)
-			go func() {
-				defer w.wg.Done()
+			w.wg.Go(func() {
 
 				for c := range w.chunkQueue {
 					if err := action(c); err != nil {
@@ -97,7 +95,7 @@ func (w *Worker) Do(action func(c Chunk) error) {
 						return
 					}
 				}
-			}()
+			})
 		}
 
 		go func() {

@@ -2,12 +2,12 @@ package engine
 
 import (
 	"bytes"
+	context0 "context"
 	"fmt"
 	"os"
 
 	cueerrors "cuelang.org/go/cue/errors"
 	cuetoken "cuelang.org/go/cue/token"
-	"golang.org/x/net/context"
 )
 
 type Pipeline struct {
@@ -31,7 +31,7 @@ func (pipeline *Pipeline) SetDefaults() {
 	}
 }
 
-func (pipeline *Pipeline) Run(ctx context.Context) error {
+func (pipeline *Pipeline) Run(ctx context0.Context) error {
 	p, err := New(
 		ctx,
 		WithProject(pipeline.Project),

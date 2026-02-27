@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"maps"
 
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 )
@@ -49,9 +50,7 @@ func (p *OciTarPatcher) PatchTo(w io.Writer, r io.Reader) error {
 						m.Annotations = map[string]string{}
 					}
 
-					for k, v := range p.Manifests[i].Annotations {
-						m.Annotations[k] = v
-					}
+					maps.Copy(m.Annotations, p.Manifests[i].Annotations)
 				}
 
 				index.Manifests[i] = m

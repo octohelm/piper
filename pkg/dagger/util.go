@@ -86,7 +86,7 @@ type EnvVariable struct {
 	Value string `json:"value"`
 }
 
-func query(ctx context.Context, c *dagger.Client, data interface{}, query string) error {
+func query(ctx context.Context, c *dagger.Client, data any, query string) error {
 	return c.Do(
 		ctx,
 		&dagger.Request{

@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"maps"
 	"strings"
 
 	"cuelang.org/go/cue"
@@ -93,8 +94,6 @@ var _ cueconvert.OutputValuer = &WaitInterface{}
 
 func (w *WaitInterface) OutputValues() map[string]any {
 	values := map[string]any{}
-	for k, v := range w.values {
-		values[k] = v
-	}
+	maps.Copy(values, w.values)
 	return values
 }

@@ -1,11 +1,11 @@
 package wd
 
 import (
+	context0 "context"
 	"os"
 	"testing"
 
 	"github.com/k0sproject/rig"
-	"golang.org/x/net/context"
 
 	testingx "github.com/octohelm/x/testing"
 
@@ -52,7 +52,7 @@ func TestFS(t *testing.T) {
 
 func doWDFSTesting(t *testing.T, w WorkDir) {
 	t.Run("touch file", func(t *testing.T) {
-		f, err := w.OpenFile(context.Background(), "1.txt", os.O_WRONLY|os.O_CREATE, os.ModePerm)
+		f, err := w.OpenFile(context0.Background(), "1.txt", os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		testingx.Expect(t, err, testingx.Be[error](nil))
 
 		_, err = f.Write([]byte("123"))

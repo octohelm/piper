@@ -14,17 +14,17 @@ func init() {
 
 type discord struct{}
 
-func (discord) Tracef(s string, i ...interface{}) {
+func (discord) Tracef(s string, i ...any) {
 }
 
-func (discord) Debugf(s string, i ...interface{}) {
+func (discord) Debugf(s string, i ...any) {
 }
 
-func (discord) Infof(s string, i ...interface{}) {
+func (discord) Infof(s string, i ...any) {
 }
 
-func (discord) Warnf(s string, i ...interface{}) {
+func (discord) Warnf(s string, i ...any) {
 }
 
-func (discord) Errorf(s string, i ...interface{}) {
+func (discord) Errorf(s string, i ...any) {
 }

@@ -64,7 +64,7 @@ func (f *sftpFile) Readdir(count int) ([]fs.FileInfo, error) {
 
 	if count > 0 && count < len(list) {
 		final := make([]fs.FileInfo, 0, count)
-		for i := 0; i < count; i++ {
+		for i := range count {
 			final = append(final, list[i])
 		}
 		return final, nil
