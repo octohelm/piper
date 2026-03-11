@@ -1,7 +1,7 @@
 package otel
 
 import (
-	"dagger.io/dagger/telemetry"
+	telemetry "github.com/dagger/otel-go"
 )
 
 const (
