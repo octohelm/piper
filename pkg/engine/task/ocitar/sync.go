@@ -34,6 +34,9 @@ type Sync struct {
 	// go template rule
 	// `{{ .registry }}/{{ .namespace }}/{{ .name }}`
 	Rename Rename `json:"rename,omitzero"`
+
+	// HostAliases to switch registry target
+	HostAliases map[string]string `json:"hostAliases,omitzero"`
 }
 
 func (t *Sync) Do(ctx context.Context) error {
@@ -44,7 +47,9 @@ func (t *Sync) Do(ctx context.Context) error {
 		registryHosts[auth.Host] = auth.RegistryHost
 	}
 
-	ns, err := contentremote.New(ctx, registryHosts)
+	ns, err := container.NewNamespace(ctx, registryAuthStore, container.NamespaceOptions{
+		HostAliases: t.HostAliases,
+	})
 	if err != nil {
 		return err
 	}
